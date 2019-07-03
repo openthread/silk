@@ -1,0 +1,9 @@
+*.pyc
+*.log
+*.json
+silk/results/*.*
+silk/tests/results/*.*
+build/*.*
+dist/*.*
+testbed.egg-info/*.*
+
