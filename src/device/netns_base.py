@@ -179,11 +179,11 @@ class NetnsController(SystemCallManager):
         self.make_netns_call_async(command, "", 1)
 
     def enable_ipv6_forwarding(self):
-        command = "sysctl -w net.ipv6.confcx.all.forwarding=1"
+        command = "sysctl -w net.ipv6.conf.all.forwarding=1"
         self.make_netns_call_async(command, "", 1, None)
 
     def disable_ipv6_forwarding(self):
-        command = "sysctl -w net.ipv6.confcx.all.forwarding=0"
+        command = "sysctl -w net.ipv6.conf.all.forwarding=0"
         self.make_netns_call_async(command, "", 1, None)
 
     def add_route(self, dest, dest_subnet_length, via_addr, interface_name):

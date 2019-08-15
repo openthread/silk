@@ -51,7 +51,7 @@ setup(name="testbed",
 
       packages=find_packages(),
 
-      package_data={'src': ['config/clusters.confcx',
+      package_data={'src': ['config/clusters.conf',
                             'shell/build_nrf52840.sh',
                             'shell/nrfjprog.sh',
                             'shell/flash_wpantund.sh',

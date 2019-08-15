@@ -128,7 +128,7 @@ nrfjprog -f nrf52 --reset chip-serial-number
 # Disable MSD, this is very important
 cd /opt/SEGGER/JLink_XXX).
 ./JLinkExe -SelectEmuBySN 683906489
-msdddisable
+msddisable
 exit
 ```
 # Note
