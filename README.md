@@ -20,7 +20,7 @@ sudo make install-cluster
 Silk relies on configuration files to determine what devices that are connected to your computer are eligible to be 
 used in tests. 
 
-An example of hwconfig.ini is in src/tests folder.
+An example of hwconfig.ini is in silk/tests folder.
  
 The hardware model should be defined as 'nRF52840_OpenThread_Device' or 'NordicSniffer' in hwconfig.ini file.
 
@@ -46,7 +46,7 @@ Interface Number. DutSerial is the SN number printed on the chip or displayed by
 ### clusters.conf
 Silk reads thread mode (NCP or RCP mode) from clusters.conf which should be added to /opt/openthread_test folder.
 
-An example of clusters.conf is in src/config folder. 
+An example of clusters.conf is in silk/config folder. 
 
 ## Run test
 
@@ -80,7 +80,7 @@ Please note that the openthread image should have child-supervision, mac-filter 
 ### Build Openthread image from script build_nrf52840.sh
 
 To build openthread image for testbed devices and sniffer you can make use of script build_nrf52840.sh present at 
-silk/src/shell.
+silk/silk/shell.
 
 With build_nrf52840.sh an openthread image ot-ncp-ftd.hex will be created and copied to location /opt/openthread_test/
 nrf52840_image/
@@ -89,7 +89,7 @@ To flash the build on testbed device attach usb cable to j-link port and replace
 chip(e.g. 683906489).
 
 ```shell
-cd silk/src/shell
+cd silk/silk/shell
 ./nrfjprog.sh --erase-all 683906489
 ./nrfjprog.sh --flash /opt/openthread_test/nrf52840_image/ot-ncp-ftd.hex 683906489
 ```
