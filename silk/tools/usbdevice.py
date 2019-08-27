@@ -32,7 +32,7 @@ CONFIG_VID = 'idVendor'
 # eg. /dev/tty.usbserial-14232A
 DEVICE_NAME_SERIAL_REGEX = re.compile("/dev/tty\.usbserial\-(\w*)[A-Z]")
 
-DEVICE_KNOWN_LIST = ('nRF52840_OpenThread_Device',)
+DEVICE_KNOWN_LIST = ('Nrf52840',)
 
 
 def devname_get_serial(devname):
