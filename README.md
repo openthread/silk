@@ -22,11 +22,11 @@ used in tests.
 
 An example of hwconfig.ini is in silk/tests folder.
  
-The hardware model should be defined as 'nRF52840_OpenThread_Device' or 'NordicSniffer' in hwconfig.ini file.
+The hardware model should be defined as 'Nrf52840' or 'NordicSniffer' in hwconfig.ini file.
 
 ``` shell
 [Dev-8A7D]
-HwModel: nRF52840_OpenThread_Device
+HwModel: Nrf52840
 HwRev: 1.0
 InterfaceSerialNumber: E1A5012E8A7D
 USBInterfaceNumber: 1

@@ -33,7 +33,7 @@ hwEfr32 = "Efr32"
 
 """HW Config Models"""
 hwNordicSniffer = "NordicSniffer"
-hwNrf52840 = "nRF52840_OpenThread_Device"
+hwNrf52840 = "Nrf52840"
 
 dev_devices = [hwNrf52840, hwEfr32, hwNordicSniffer]
 
