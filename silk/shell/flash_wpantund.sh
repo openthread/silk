@@ -26,12 +26,16 @@ if [[ $output == *"Already"* ]]; then
 
  else
 
+  git reset hard
+  git pull
+
   echo "Started to build wpantund..........."
 
   ./bootstrap.sh
 
   ./configure && make
 
+  sudo make -j 20
   sudo make install
 
   sudo setcap cap_net_admin+ep /usr/local/sbin/wpantund

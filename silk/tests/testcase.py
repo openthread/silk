@@ -231,7 +231,14 @@ def setup_class_decorator(func):
             # If the user's setUpClass call succeeded, try to Thread sniffers
             cls.thread_sniffer_start_all()
         except HardwareNotFound as e:
+            cls.results[cls.current_test_class]['setupClass'] = False
+
             cls.release_devices()
+            cls.logger.error('Hardware Not Found Error !!!')
+            output_file = open(os.path.join(cls.current_output_directory, "results.json"), "w")
+            json.dump(cls.results, output_file, indent=4)
+            output_file.close()
+
             raise
 
         except:
@@ -239,6 +246,12 @@ def setup_class_decorator(func):
             for call in traceback.format_tb(stack[2]):
                 for line in call.rstrip().splitlines():
                     cls.logger.error(line)
+
+            cls.results[cls.current_test_class]['setupClass'] = False
+            cls.logger.error('Hardware Configuration Error !!!')
+            output_file = open(os.path.join(cls.current_output_directory, "results.json"), "w")
+            json.dump(cls.results, output_file, indent=4)
+            output_file.close()
 
             cls.logger.info("=====================================================================")
             cls.logger.info("==================== CHECK HARDWARE CONFIGURATION ===================")
