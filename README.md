@@ -96,7 +96,13 @@ cd silk/silk/shell
 Note: On raspberry Pi JLink installed should be of the form JLink_Linux_XXX_arm.tgz and present at /opt/SEGGER. Create 
 a symbolic link for JLink_Linux_XXX to "JLink". Make sure to run the command “sudo cp 99-jlink.rules /etc/udev/rules.d/”
 given in README.txt of JLink and reboot the system.
-
+Example output of Jlink executable:
+```shell
+user@user:/opt/SEGGER$ ls -l
+total 4
+lrwxrwxrwx 1 root root   23 Sep 26  2018 JLink -> /opt/SEGGER/JLink_V634g
+drwxr-xr-x 8 root root 4096 Aug 20 10:21 JLink_V634g
+```
 ## OpenThread Sniffer
 nRF52840 can be used as a Thread Sniffer in Silk which can capture all 15.4 traffic in the specific wireless channel 
 during test suite execution. The pcap file will be saved to the test result folder.
