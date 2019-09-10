@@ -83,7 +83,7 @@ class NetnsController(SystemCallManager):
 
     def delete_netns(self):
         """
-        Delete netns containing this Needle.
+        Delete netns containing this device.
         """
         self.log_info("Deleting network namespace for %s" % self.device_path)
 
@@ -92,7 +92,7 @@ class NetnsController(SystemCallManager):
 
     def netns_pids(self):
         """
-        List all PIDs running in this Needle's netns
+        List all PIDs running in this device's netns
         """
         self.log_info("Getting PIDs for network namespace for %s" % self.device_path)
 
@@ -120,7 +120,7 @@ class NetnsController(SystemCallManager):
 
     def construct_netns_command(self, user_command):
         """
-        Format a command so that it is called in this Needle's
+        Format a command so that it is called in this device's
         network namespace.
         """
         command = "sudo ip netns exec %s " % self.netns

@@ -29,16 +29,19 @@ from silk.device.netns_base import StandaloneNetworkNamespace
 from silk.node import wpan_node
 from silk.node.thread_node import ThreadNode
 from silk.node.wpantund_base import role_is_thread
+from silk.node.wpantund_base import role_supports_legacy
 from silk.node.wpantund_base import WpantundWpanNode
 from silk.utils import signal, subprocess_runner
+
 from silk.tools import wpan_table_parser
 from silk.config import wpan_constants as wpan
 
 from silk.utils.directorypath import DirectoryPath
 from silk.utils.process import Process
+from silk.utils.process_cleanup import ps_cleanup
 from silk.postprocessing import ip as silk_ip
-
 from silk.utils.jsonfile import JsonFile
+
 
 LOG_PATH = '/opt/openthread_test/results/'
 POSIX_PATH = '/opt/'
@@ -133,7 +136,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
                 if cluster['ip'] == local_ip:
                     self.thread_mode = cluster['thread_mode']
         except:
-            logging.info('Cannot load cluster.conf file. Running on NCP mode')
+            logging.info('Cannot load cluster.conf file. Running on NCP mode.')
 
         logging.debug('Thread Mode: {}'.format(self.thread_mode))
 
@@ -145,8 +148,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             self.wpantund_start_time = 30
 
         if os.geteuid() != 0:
-            print('ERROR: {0} requires "sudo" access'.
-                  format(type(self).__name__))
+            logging.error('ERROR: {0} requires "sudo" access'.format(type(self).__name__))
             raise EnvironmentError
 
         # Acquire necessary hardware
@@ -155,18 +157,19 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.get_device(sw_version=sw_version)
         super(wpan_node.WpanNode, self).__init__(self.device.name())
 
-        print self.device.interface_serial(), self.device_path, self.device.get_dut_serial()
+        self.logger.info('Device interface: {}'.format(self.device.interface_serial()))
+        self.log_info('Device Path: {}'.format(self.device_path))
 
         # Setup netns
         NetnsController.__init__(self)
 
     def get_device(self, name=None, sw_version=None):
         """
-        Find an unused Needle, dev board, or other hardware.
+        Find an unused dev board, or other hardware.
         """
-        self.device = silk.hw.hw_resource.global_instance().get_hw_module(self._hwModel,
-                                                                         name=name,
-                                                                         sw_version=sw_version)
+        self.device = silk.hw.hw_resource.global_instance().get_hw_module(self.hwModel,
+                                                                          name=name,
+                                                                          sw_version=sw_version)
         self.device_path = self.device.port()
 
 #################################
@@ -213,18 +216,23 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         Create a network namespace for this device.
         Start wpantund in the network namespace.
         """
+
+        self.__stop_wpantund()
+
         self.log_debug('Device Interface Serial: {}'.format(self.device.interface_serial()))
         self.log_debug('Device Port: {}'.format(self.device.port()))
 
         try:
-
             self.__start_wpantund(self.thread_mode)
             time.sleep(5)
+
             self.wpanctl_async("setup", "getprop NCP:HardwareAddress", "[0-9a-fA-F]{16}", 1,
                                self.wpan_mac_addr_label)
         except (RuntimeError, ValueError) as e:
             self.logger.critical(e.message)
-            self.logger.debug('Cannot start wpantund on {} !!!'.format(self.netns))
+            self.logger.debug('Cannot start wpantund on {}'.format(self.netns))
+
+        NetnsController.__init__(self)
 
         self.thread_interface = self.netns
         self.legacy_interface = self.netns + "-L"
@@ -270,6 +278,14 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             # Get the mesh-local address
             wpanctl_command = 'get IPv6:MeshLocalAddress'
             self.wpanctl_async('Wpanctl get', wpanctl_command, self._ip6_mla_regex, 1, self.ip6_mla_label)
+
+        if role_supports_legacy(self.role):
+            # Get the link-local address
+            self.make_netns_call_async("ifconfig %s" % self.legacy_interface,
+                                       self._ip6_lla_regex, 1, self.ip6_lla_label)
+            # Get the legacy ULA address
+            self.make_netns_call_async("ifconfig %s" % self.legacy_interface,
+                                       self._ip6_legacy_ula_regex, 1, self.ip6_legacy_ula_label)
 
 
 #################################
@@ -432,7 +448,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
     def get_device_name(self):
         return self.device.name()
 
-    def image_flash(self, serial_number, fw_file, result_log_path=None):
+    def image_flash_nrf52840(self, serial_number, fw_file, result_log_path=None):
         flash_rel = True
 
         cmd = DirectoryPath.get_dir('shell') + 'nrfjprog.sh ' + '--erase-all ' + serial_number
@@ -467,15 +483,35 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         return flash_rel
 
-    @staticmethod
-    def __verify_image_flash(log):
+    def image_flash_efr32(self, serial_number, fw_file, result_log_path=None):
+        flash_rel = True
+
+        cmd = DirectoryPath.get_dir('shell') + 'shell_flash_efr32.sh ' + serial_number
+        self.logger.debug(cmd)
+
+        proc = Process(cmd=cmd)
+        log = proc.get_process_result()
+
+        if not self.__verify_image_flash(log):
+            flash_rel = False
+
+        self.logger.debug(log)
+        if result_log_path:
+            self.__write_to_log(result_log_path, 'efr32_flash.log', log)
+
+        time.sleep(5)
+
+        self.flash_result = flash_rel
+
+        return flash_rel
+
+    def __verify_image_flash(self, log):
         for line in log.split('\n'):
             if line.startswith('Script processing completed'):
                 return True
         return False
 
-    @staticmethod
-    def __write_to_log(file_path, filename, data):
+    def __write_to_log(self, file_path, filename, data):
         if not os.path.exists(file_path):
             os.mkdir(file_path)
 
@@ -496,12 +532,26 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             jlink_serial_number = self.device.get_dut_serial()
             self.log_info(jlink_serial_number)
 
-            return self.image_flash(jlink_serial_number, fw_file, result_log_path)
+            return self.image_flash_nrf52840(jlink_serial_number, fw_file, result_log_path)
+
+        def do_flash_efr32(delegates):
+
+            result_log_path = LOG_PATH + datetime.datetime.now().strftime('%b%d%Y_%H_%M_%S')
+
+            jlink_serial_number = self.device.get_dut_serial()
+            self.log_info(jlink_serial_number)
+
+            return self.image_flash_efr32(jlink_serial_number, fw_file, result_log_path)
 
         for process in self.netns_pids():
             self.make_system_call_async("firmware-update", "kill -SIGINT %s" % process, None, 1)
 
-        self.make_function_call_async(do_flash_nrf52840)
+        if 'nrf52840' in fw_file:
+            self.make_function_call_async(do_flash_nrf52840)
+        elif 'efr32' in fw_file:
+            self.make_function_call_async(do_flash_efr32)
+        else:
+            self.log_critical('Silk does not support the image flashing for {}'.format(fw_file))
 
     @property
     def framing_errors(self):
@@ -527,9 +577,10 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
            `prefix_len` is an `int` specifying the prefix length.
            NOTE: this method uses linux `ip` command.
         """
-        cmd = 'ip -6 address add ' + address + '/{} dev '.format(prefix_len) + self.thread_interface
 
+        cmd = 'ip -6 address add ' + address + '/{} dev '.format(prefix_len) + self.thread_interface
         result = self.make_netns_call(cmd, 15)
+
         return result
 
     def remove_ip6_address_on_interface(self, address, prefix_len=64):
@@ -538,9 +589,10 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
            `prefix_len` is an `int` specifying the prefix length.
            NOTE: this method uses linux `ip` command.
         """
-        cmd = 'ip  -6 address del ' + address + '/{} dev '.format(prefix_len) + self.thread_interface
 
+        cmd = 'ip  -6 address del ' + address + '/{} dev '.format(prefix_len) + self.thread_interface
         result = self.make_netns_call(cmd, 15)
+
         return result
 
 
@@ -569,20 +621,27 @@ class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode, ThreadNode):
 
 class ThreadDevBoard(FifteenFourDevBoardThreadNode):
     """
-    Class for controlling a Dev. Board running Thread
+    Class for controlling a Dev Board running Thread
     Requires sudo
     """
     _hwModel = silk.hw.hw_module.hwNrf52840
 
     def get_device(self, name=None, sw_version=None):
         """
-        Find an unused Needle, dev board, or other hardware.
+        Find an unused dev board, or other hardware.
         """
         try:
             self.device = silk.hw.hw_resource.global_instance().get_hw_module(silk.hw.hw_module.hwNrf52840,
                                                                               name=name,
                                                                               sw_version=sw_version)
+            self.hwModel = silk.hw.hw_module.hwNrf52840
         except:
-            self.log_critical('Cannot find nRF52840 hardware')
+            try:
+                self.device = silk.hw.hw_resource.global_instance().get_hw_module(silk.hw.hw_module.hwEfr32,
+                                                                                  name=name,
+                                                                                  sw_version=sw_version)
+                self.hwModel = silk.hw.hw_module.hwEfr32
+            except:
+                self.log_critical('Cannot find nRF52840 or efr32 Dev. board!! ')
 
         self.device_path = self.device.port()
