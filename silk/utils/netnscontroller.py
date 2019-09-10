@@ -68,7 +68,7 @@ class NetnsController(object):
     @staticmethod
     def delete_netns(serial_number):
         """
-        Delete netns containing this Needle.
+        Delete netns containing this device.
         """
         # self.log_info("Deleting network namespace for %s" % self.device_path)
 
@@ -100,7 +100,7 @@ class NetnsController(object):
     @staticmethod
     def construct_netns_command(serial_number, user_command):
         """
-        Format a command so that it is called in this Needle's
+        Format a command so that it is called in this device's
         network namespace.
         """
         command = "sudo ip netns exec %s " % serial_number

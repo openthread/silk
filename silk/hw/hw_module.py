@@ -28,14 +28,17 @@ interfaceSerial = 'InterfaceSerialNumber'
 interfaceNumber = 'USBInterfaceNumber'
 dutSerialNumber = 'DutSerial'
 
+"""HW Config Models"""
+
+# Nordic Dev Board NRF52840
+hwNrf52840 = "nRF52840_OpenThread_Device"
+hwNordicSniffer = "NordicSniffer"
+
 # Silabs Dev Board EFR32
 hwEfr32 = "Efr32"
 
-"""HW Config Models"""
-hwNordicSniffer = "NordicSniffer"
-hwNrf52840 = "Nrf52840"
-
 dev_devices = [hwNrf52840, hwEfr32, hwNordicSniffer]
+
 
 class HwModule(object):
     """
@@ -100,9 +103,8 @@ class HwModule(object):
 
         return devname
 
-    def find_dev_board_from_serial(self, serial, interface_number):
-        port = self.find_device_from_serial(hwNrf52840, serial, interface_number)
-        return port
+    def find_dev_board_from_serial(self, serial, interface_number, model):
+        return self.find_device_from_serial(model, serial, interface_number)
 
     def set_port(self):
         serial_to_find = self.interface_serial()
@@ -112,7 +114,7 @@ class HwModule(object):
 
         if model in dev_devices:
             self._port = \
-                self.find_dev_board_from_serial(serial_to_find, interface_number)
+                self.find_dev_board_from_serial(serial_to_find, interface_number, model)
         else:
             raise RuntimeError('Device not supported %s' % model)
 

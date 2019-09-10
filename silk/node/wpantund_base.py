@@ -53,10 +53,10 @@ def role_supports_legacy(role):
 class WpantundWpanNode(wpan_node.WpanNode):
     """
     This is the base class for controlling interactions with wpantund.  This
-    should provide a flexible overlay that can be ported to control Needles,
+    should provide a flexible overlay that can be ported to control Nordic,
     SiLabs dev boards, and any other dev board connected to a Linux machine
-    with wpantund running in network name spaces, Diamonds, Flintstones,
-    Quartz, and any other device that runs wpantund.
+    with wpantund running in network name spaces and any other device that
+    runs wpantund.
 
     This base class contains all the necessary hooks for calling into wpanctl
     to configure the NCP and query its state information.
