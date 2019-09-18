@@ -16,7 +16,8 @@
 
 echo "Check if a new build is needed for  wpantund"
 
-cd ~/wpantund
+# TODO: move path to a config file
+cd /home/pi/wpantund
 
 output=$(git pull | grep "Already up to date")
 
@@ -26,7 +27,7 @@ if [[ $output == *"Already"* ]]; then
 
  else
 
-  git reset hard
+  git reset --hard
   git pull
 
   echo "Started to build wpantund..........."
