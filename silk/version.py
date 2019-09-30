@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env python
 #
 # Copyright 2019 Google LLC
 #
@@ -14,33 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "Check if a new build is needed for  wpantund"
+"""
+This module maintains the version number of silk.
+"""
 
-# TODO: move path to a config file
-cd /home/pi/wpantund
-
-git reset --hard
-
-output=$(git pull | grep "Already up to date")
-
-if [[ $output == *"Already"* ]]; then
-
- echo "No code changes for wpantund........."
-
- else
-
-  echo "Started to build wpantund..........."
-
-  ./bootstrap.sh
-
-  ./configure
-
-  sudo make
-
-  sudo make install
-
-  sudo setcap cap_net_admin+ep /usr/local/sbin/wpantund
-
-  echo "Done wpantund build"
-
-fi
+__version__ = '1.0.0'
