@@ -27,7 +27,6 @@ from silk.device.netns_base import createLinkPair
 from silk.device.netns_base import NetnsController
 from silk.device.netns_base import StandaloneNetworkNamespace
 from silk.node import wpan_node
-from silk.node.thread_node import ThreadNode
 from silk.node.wpantund_base import role_is_thread
 from silk.node.wpantund_base import role_supports_legacy
 from silk.node.wpantund_base import WpantundWpanNode
@@ -596,7 +595,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         return result
 
 
-class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode, ThreadNode):
+class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode):
     """
     FifteenFourDevBoardNode with added Thread functionality.
     Inheriting classes require sudo
