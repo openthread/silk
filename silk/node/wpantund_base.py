@@ -13,14 +13,19 @@
 # limitations under the License.
 
 import silk.hw.hw_resource
+from silk import constant
 from silk.node import wpan_node
 from silk.config import wpan_constants as wpan
-import random
-import socket
-import asyncore
-import time
 
-ROLES = {
+import os
+
+
+def get_roles_dict():
+    """
+    This function will get Roles dict from constant.py in silk,
+    or from constant_ext.py from silk_ext
+    example for ROLES in silk on github:
+    ROLES = {
             "router": 2,
             "end-node": 3,
             "sleepy-end-device": 4,
@@ -28,13 +33,35 @@ ROLES = {
             3: "end-node",
             4: "sleepy-end-device"
         }
+    :return: dict of Roles
+    """
+    try:
+        roles_dict = os.environ['ROLES_DICT']
+    except KeyError:
+        roles_dict = getattr(constant, "ROLES")
+    return roles_dict
+
+
+def get_roles_list():
+    """
+    This function will get Roles list from constant.py in silk,
+    or from constant_ext.py from silk_ext
+    example for roles list in silk on github:
+    [2, 3, 4]
+    :return: list of Roles
+    """
+    try:
+        roles_list = os.environ['ROLES_LIST']
+    except KeyError:
+        roles_list = getattr(constant, "RolesList")
+    return roles_list
 
 
 def role_is_thread(role):
     if type(role) is not int:
-        role = ROLES[role]
+        role = get_roles_dict()[role]
 
-    if role in [2, 3, 4]:
+    if role in get_roles_list():
         return True
     else:
         return False
@@ -42,9 +69,9 @@ def role_is_thread(role):
 
 def role_supports_legacy(role):
     if type(role) is not int:
-        role = ROLES[role]
+        role = get_roles_dict()[role]
 
-    if role in [0x82, 6]:
+    if role in getattr(constant, "LegacyRoles"):
         return True
     else:
         return False
@@ -167,11 +194,10 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.wpanctl_async("form", command, None, 1)
 
-        role = ROLES[role]
+        role = get_roles_dict()[role]
         self.store_data(role, self.role_label)
 
-        if role == 0x82:
-            role = 2
+        self.__change_role(role)
 
         command = "form %s -T %s" \
                   % (network.name, role)
@@ -199,11 +225,10 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.wpanctl_async("join", command, None, 1)
 
-        role = ROLES[role]
+        role = get_roles_dict()[role]
         self.store_data(role, self.role_label)
 
-        if role == 0x82:
-            role = 2
+        self.__change_role(role)
 
         join_command = "join %s -T %s -c %s -x %s -p 0x%x" %\
                        (network.name, role, network.channel,
@@ -223,11 +248,10 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.store_data(network.xpanid, self.xpanid_label)
 
-        role = ROLES[role]
+        role = get_roles_dict()[role]
         self.store_data(role, self.role_label)
 
-        if role == 0x82:
-            role = 2
+        self.__change_role(role)
 
         join_command = "join %s -T %s -c %s -x %s -p 0x%x" %\
                        (network.name, role, network.channel,
@@ -246,7 +270,16 @@ class WpantundWpanNode(wpan_node.WpanNode):
         self.__get_network_properties("join", network)
 
         self._get_addr("join")
-        
+
+    def __change_role(self, role):
+        """
+        if role is 0x82, change role to 2
+        :param role: role int value
+        :return: role int value
+        """
+        if role == 0x82:
+            role = 2
+        return role
 
     def __get_network_properties(self, action, network):
         """
