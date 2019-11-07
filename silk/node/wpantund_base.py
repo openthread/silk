@@ -15,36 +15,13 @@
 import silk.hw.hw_resource
 from silk.node import wpan_node
 from silk.config import wpan_constants as wpan
-import random
-import socket
-import asyncore
-import time
-
-ROLES = {
-            "router": 2,
-            "end-node": 3,
-            "sleepy-end-device": 4,
-            2: "router",
-            3: "end-node",
-            4: "sleepy-end-device"
-        }
 
 
 def role_is_thread(role):
     if type(role) is not int:
-        role = ROLES[role]
+        role = getattr(wpan, "ROLES")[role]
 
     if role in [2, 3, 4]:
-        return True
-    else:
-        return False
-
-
-def role_supports_legacy(role):
-    if type(role) is not int:
-        role = ROLES[role]
-
-    if role in [0x82, 6]:
         return True
     else:
         return False
@@ -167,11 +144,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.wpanctl_async("form", command, None, 1)
 
-        role = ROLES[role]
+        role = getattr(wpan, "ROLES")[role]
         self.store_data(role, self.role_label)
-
-        if role == 0x82:
-            role = 2
 
         command = "form %s -T %s" \
                   % (network.name, role)
@@ -199,11 +173,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.wpanctl_async("join", command, None, 1)
 
-        role = ROLES[role]
+        role = getattr(wpan, "ROLES")[role]
         self.store_data(role, self.role_label)
-
-        if role == 0x82:
-            role = 2
 
         join_command = "join %s -T %s -c %s -x %s -p 0x%x" %\
                        (network.name, role, network.channel,
@@ -223,11 +194,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.store_data(network.xpanid, self.xpanid_label)
 
-        role = ROLES[role]
+        role = getattr(wpan, "ROLES")[role]
         self.store_data(role, self.role_label)
-
-        if role == 0x82:
-            role = 2
 
         join_command = "join %s -T %s -c %s -x %s -p 0x%x" %\
                        (network.name, role, network.channel,
@@ -246,7 +214,6 @@ class WpantundWpanNode(wpan_node.WpanNode):
         self.__get_network_properties("join", network)
 
         self._get_addr("join")
-        
 
     def __get_network_properties(self, action, network):
         """

@@ -179,3 +179,13 @@ THREAD_MODE_FLAG_SECURE_DATA_REQUEST = (1 << 2)
 THREAD_MODE_FLAG_RX_ON_WHEN_IDLE     = (1 << 3)
 
 #-----------------------------------------------------------------------------------------------------------------------
+# thread roles
+ROLES = {
+            "router": 2,
+            "end-node": 3,
+            "sleepy-end-device": 4,
+            2: "router",
+            3: "end-node",
+            4: "sleepy-end-device"
+        }
+
