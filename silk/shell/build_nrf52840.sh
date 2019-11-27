@@ -20,7 +20,7 @@ date=`date +"%Y-%m-%d"`
 
 echo 'current date:' $date
 
-cd ~/openthread
+cd /home/pi/openthread
 
 output=$(git pull | grep "Already up to date")
 
