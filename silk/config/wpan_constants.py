@@ -88,6 +88,7 @@ WPAN_OT_MSG_BUFFER_COUNTERS                    = "OpenThread:MsgBufferCounters"
 WPAN_OT_MSG_BUFFER_COUNTERS_AS_STRING          = "OpenThread:MsgBufferCounters:AsString"
 WPAN_OT_DEBUG_TEST_ASSERT                      = "OpenThread:Debug:TestAssert"
 WPAN_OT_DEBUG_TEST_WATCHDOG                    = "OpenThread:Debug:TestWatchdog"
+WPAN_OT_SLAAC_ENABLED                          = "OpenThread:SLAAC:Enabled"
 
 WPAN_NCP_COUNTER_ALL_MAC                       = "NCP:Counter:AllMac"
 WPAN_NCP_COUNTER_ALL_MAC_ASVALMAP              = "NCP:Counter:AllMac:AsValMap"
