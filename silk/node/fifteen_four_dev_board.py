@@ -42,7 +42,7 @@ from silk.utils.jsonfile import JsonFile
 
 
 LOG_PATH = '/opt/openthread_test/results/'
-POSIX_PATH = '/opt/'
+POSIX_PATH = '/opt/openthread_test/posix'
 RETRY = 3
 
 
@@ -310,7 +310,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         elif thread_mode.upper() == 'RCP':
 
-            _OT_NCP_FTD_POSIX_APP = POSIX_PATH + '/openthread/output/posix/x86_64-unknown-linux-gnu/bin/ot-ncp'
+            _OT_NCP_FTD_POSIX_APP = POSIX_PATH + '/ot-ncp'
 
             ncp_socket_path = 'system:{} {} 115200'.format(_OT_NCP_FTD_POSIX_APP, self.device_path)
 
