@@ -15,12 +15,15 @@
 """
 Watchable, an implementation of an object whose state can be watched
 """
+from __future__ import absolute_import
 
+from builtins import str
+from builtins import object
 import threading
 
 from datetime import datetime
 
-import deadline as silk_deadline
+from . import deadline as silk_deadline
 
 
 def is_watchable(object):

@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -207,7 +208,7 @@ class TestWpanGetSet(testcase.TestCase):
 
         for prop in all_gettable_props:
             value = self.router.get(prop)
-            print value
+            print(value)
 
             self.assertFalse('Property Not Found' in value, 'Property: {} was not found !!!'.format(prop))
 

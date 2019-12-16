@@ -15,6 +15,7 @@
 """
 Implements publisher/subscriber classes for passing messages.
 """
+from builtins import object
 import logging
 
 import dispatch

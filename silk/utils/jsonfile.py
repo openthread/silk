@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import object
 import os
 import json
 
 CONF_PATH = '/opt/openthread_test/'
 
 
-class JsonFile:
+class JsonFile(object):
 
     def __init__(self):
         pass

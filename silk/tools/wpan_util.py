@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +15,7 @@
 # limitations under the License.
 
 from silk.config import wpan_constants as wpan
-import wpan_table_parser
+from . import wpan_table_parser
 import time
 import inspect
 
@@ -37,7 +39,7 @@ def verify(condition):
         error_message = 'verify() failed at line {} in "{}"'.format(calling_frame.f_lineno,
                                                                     calling_frame.f_code.co_filename)
         if not _is_in_verify_within:
-            print error_message
+            print(error_message)
         return False
     return True
 
@@ -56,8 +58,8 @@ def verify_within(condition_checker_func, wait_time, delay_time=0.1):
             condition_checker_func()
         except VerifyError as e:
             if time.time() - start_time > wait_time:
-                print 'Took too long to pass the condition ({}>{} sec)'.format(time.time() - start_time, wait_time)
-                print e.message
+                print('Took too long to pass the condition ({}>{} sec)'.format(time.time() - start_time, wait_time))
+                print(e.message)
                 return False
         except:
             return False
@@ -84,7 +86,7 @@ def verify_prefix(node_list, prefix, prefix_len=64, stable=True, priority='med',
     This function verifies that the `prefix` is present on all the nodes in the `node_list`.
     """
     for node in node_list:
-        print node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES)
+        print(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
         prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
         for p in prefixes:
             if p.prefix == prefix:
@@ -99,5 +101,5 @@ def verify_prefix(node_list, prefix, prefix_len=64, stable=True, priority='med',
                 verify(p.priority == priority)
                 break
         else:
-            print "Did not find prefix {} on node {}".format(prefix, node)
+            print("Did not find prefix {} on node {}".format(prefix, node))
             exit(1)

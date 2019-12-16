@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
 import silk.hw.hw_resource as hwr
@@ -45,7 +47,7 @@ class TestScan(testcase.TestCase):
                 break
             else:
                 cls.leader_list.append(device)
-        print cls.leader_list
+        print(cls.leader_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -101,7 +103,7 @@ class TestScan(testcase.TestCase):
 
         for device in self.device_list:
             ret = device.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
     @testcase.test_method_decorator
     def test02_Scan(self):
@@ -111,7 +113,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.scanner.get_active_scan()))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         for device in self.device_list[1:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
@@ -132,7 +134,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.scanner.get_active_scan()))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         for device in self.device_list[1:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
@@ -146,7 +148,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.device_list[1].get_active_scan()))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         for device in self.device_list[2:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
@@ -160,7 +162,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.scanner.get_active_scan(channel=channel)))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         device = self.device_list[1]
         self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
@@ -174,7 +176,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.scanner.get_discover_scan()))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         for device in self.device_list[1:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
@@ -188,7 +190,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.device_list[1].get_discover_scan()))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         for device in self.device_list[2:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
@@ -202,7 +204,7 @@ class TestScan(testcase.TestCase):
             scan_result.append(wpan_table_parser.parse_scan_result(self.scanner.get_discover_scan(channel=channel)))
             time.sleep(5)
 
-        print scan_result
+        print(scan_result)
 
         device = self.device_list[1]
         self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),

@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,14 +15,15 @@
 # limitations under the License.
 
 
-import wpan_util
+from builtins import object
+from . import wpan_util
 from silk.config import wpan_constants as wpan
 
 import re
 
 
 def is_associated(sed):
-    print sed.getprop(wpan.WPAN_STATE)
+    print(sed.getprop(wpan.WPAN_STATE))
     return sed.getprop(wpan.WPAN_STATE) == wpan.STATE_ASSOCIATED
 
 
@@ -382,7 +385,7 @@ def parse_scan_result(scan_result):
  3 |       NO | "Silk-PAN-F926"    | 0x3DDA | 11 | E35BFBBBB014A4FF | EAD5AFC58F50D056 |  -49
     Exclude the last item '"' after split('\n')
     """
-    print scan_result
+    print(scan_result)
     return [ScanResult(item) for item in scan_result.strip().split('\n')[2:]]  # skip first two lines which are table headers
 
 
@@ -402,11 +405,11 @@ def is_in_scan_result(node, scan_results):
         for item in scan_result:
 
             if item.network_name == name:
-                print [item.panid.strip() == panid.strip(),
+                print([item.panid.strip() == panid.strip(),
                        item.xpanid.strip() == xpanid.strip(),
                        int(item.channel, 16) == int(channel, 16),
                        item.ext_address == ext_address,
-                       (item.type == ScanResult.TYPE_DISCOVERY_SCAN) or (item.joinable == joinable)]
+                       (item.type == ScanResult.TYPE_DISCOVERY_SCAN) or (item.joinable == joinable)])
 
             if all([item.network_name == name,
                     item.panid.strip() == panid.strip(),

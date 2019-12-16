@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 from silk.tools.wpan_util import verify
 from silk.tools import wpan_table_parser

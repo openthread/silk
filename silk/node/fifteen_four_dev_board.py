@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import division
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
+from past.utils import old_div
 import logging
 import os
 import re
@@ -333,7 +337,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         try:
             self.wpantund_process = subprocess_runner.SubprocessRunner(command)
         except Exception:
-            print traceback.format_exc()
+            print(traceback.format_exc())
 
         # Install signal listeners here
         self.wpantund_monitor = WpantundMonitor(publisher=self.wpantund_process)
@@ -605,7 +609,7 @@ class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode):
 
     def add_route(self, prefix, subnet, mac, length):
         ip_addr = silk_ip.assemble(prefix, subnet, mac)
-        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,length/8),
+        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,old_div(length,8)),
                            "Route prefix added.", 5)
 
 

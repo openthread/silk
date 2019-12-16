@@ -15,7 +15,9 @@
 """
 Various time and timeout related utilties
 """
+from __future__ import print_function
 
+from builtins import object
 import datetime
 
 
@@ -87,7 +89,7 @@ class Duration(object):
         retval = self.__start_time is None
         if retval:
             self.__start_time = datetime.datetime.now()
-            print "Started", self.__start_time
+            print("Started", self.__start_time)
 
         return retval
 
@@ -109,7 +111,7 @@ class Duration(object):
         self.__calculate_start_time()
 
         now = datetime.datetime.now()
-        print "Now", now
+        print("Now", now)
         diff = now - self.start_time
         retval = diff.seconds
 

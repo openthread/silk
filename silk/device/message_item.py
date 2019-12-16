@@ -19,7 +19,8 @@ This module provides a base class for message items processed by the embedded sh
 """
 
 
-class MessageItemDelegates:
+from builtins import object
+class MessageItemDelegates(object):
 
     # Constructor
     # @param instance Instance object for all of the callables

@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +26,7 @@ def createLinkPair(interface_1, interface_2):
     command = "sudo ip link add name %s " % interface_1
     command += "type veth peer name %s"   % interface_2
 
-    print command
+    print(command)
 
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 

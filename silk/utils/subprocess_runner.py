@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 import select
 import subprocess
 import threading
@@ -42,9 +44,9 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
         try:
             super(SubprocessRunner, self).start()
             self.running = True
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            print "Error in SubprocessRunner start:", str(e)
+            print("Error in SubprocessRunner start:", str(e))
 
     def stop(self, timeout=15):
         """
@@ -81,9 +83,9 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
                     line = self.proc.stdout.readline().rstrip()
                     if line:
                         self.emit(line=line)
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            print "Error in SubprocessRunner run:", str(e)
+            print("Error in SubprocessRunner run:", str(e))
         finally:
             self.running = False
             try:

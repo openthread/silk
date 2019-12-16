@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -135,10 +137,10 @@ class TestNeighborTable(testcase.TestCase):
 
         for _ in range(10):
             node_type = self.routers[1].wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print node_type == 'router'
+            print(node_type == 'router')
 
             if node_type == 'router':
-                print 'End-node moved up to a Router.'
+                print('End-node moved up to a Router.')
                 break
             time.sleep(10)
         else:
@@ -146,7 +148,7 @@ class TestNeighborTable(testcase.TestCase):
 
         for device in self.device_list:
             ret = device.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
     @testcase.test_method_decorator
     def test02_Verify_Router_Type(self):
@@ -159,7 +161,7 @@ class TestNeighborTable(testcase.TestCase):
         neighborTable = self.routers[0].wpanctl("get", "get "+wpan.WPAN_THREAD_NEIGHBOR_TABLE, 2)
         neighborTable = wpan_table_parser.parse_neighbor_table_result(neighborTable)
 
-        print neighborTable
+        print(neighborTable)
 
         self.assertEqual(len(neighborTable), len(self.routers)-1+len(self.children))
 
@@ -185,7 +187,7 @@ class TestNeighborTable(testcase.TestCase):
         neighborTable = self.routers[0].wpanctl("get", "get " + wpan.WPAN_THREAD_NEIGHBOR_TABLE, 2)
         neighborTable = wpan_table_parser.parse_neighbor_table_result(neighborTable)
 
-        print neighborTable
+        print(neighborTable)
 
         self.assertEqual(len(neighborTable), len(self.routers)-1+len(self.children))
 
@@ -211,7 +213,7 @@ class TestNeighborTable(testcase.TestCase):
     def test05_Verify_NeighborTable_AsValMap(self):
         neighborTable = self.routers[0].wpanctl("get", "get "+wpan.WPAN_THREAD_NEIGHBOR_TABLE_ASVALMAP, 2)
 
-        print neighborTable
+        print(neighborTable)
 
         total_neighbor_table_entry = len(self.routers) - 1 + len(self.children)
 

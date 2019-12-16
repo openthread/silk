@@ -31,6 +31,7 @@ This module requires that the OpenThread spinel-cli tools are installed
 This module makes subprocess calls out to sniffer.py to generate packet
 captures.
 """
+from builtins import str
 import os
 import subprocess
 

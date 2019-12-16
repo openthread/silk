@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -88,7 +90,7 @@ class TestChildModeChange(testcase.TestCase):
         table entry's mode value matches the children Thread mode.
         """
         child_table = wpan_table_parser.parse_child_table_result(parent.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE, 2))
-        print child_table
+        print(child_table)
 
         verify(len(child_table) == len(children))
         for child in children:

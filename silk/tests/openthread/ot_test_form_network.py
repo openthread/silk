@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -41,7 +43,7 @@ class TestFormNetwork(testcase.TestCase):
                 break
             else:
                 cls.joiner_list.append(device)
-        print cls.joiner_list
+        print(cls.joiner_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -127,11 +129,11 @@ class TestFormNetwork(testcase.TestCase):
             for e in self.joiner_list[-2:]:
                 sed_list.append(e.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1])
 
-            print router_list
-            print sed_list
+            print(router_list)
+            print(sed_list)
 
             if all(e == 'router' for e in router_list) and all(e == 'sleepy-end-device' for e in sed_list):
-                print 'All End-node moved up to  Router.'
+                print('All End-node moved up to  Router.')
                 break
             time.sleep(8)
         else:

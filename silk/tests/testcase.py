@@ -18,6 +18,9 @@ Silk testcase class definition.
 All Silk tests should inherit from this class.
 
 """
+from __future__ import print_function
+from builtins import range
+from builtins import object
 import collections
 import json
 import logging
@@ -284,7 +287,7 @@ def teardown_class_decorator(func):
         cls.logger.info("=====================================================================")
         cls.logger.info("============================= SUMMARY ===============================")
         cls.logger.info("=====================================================================")
-        for test_class in cls.results.keys():
+        for test_class in list(cls.results.keys()):
             cls.logger.info(test_class)
 
             for test_case in cls.results[test_class]:
@@ -349,7 +352,7 @@ def test_method_decorator(func):
     return wrapper
 
 
-class stress_test_decorator:
+class stress_test_decorator(object):
     def __init__(self, num_iterations, allowed_failures=0):
         self.num_iterations = num_iterations
         self.allowed_failures = allowed_failures
@@ -490,7 +493,7 @@ class TestCase(unittest.TestCase):
             return node_type()
         except:
             traceback_message = traceback.format_exc()
-            print traceback_message
+            print(traceback_message)
             return None
 
     @classmethod
@@ -517,17 +520,17 @@ class TestCase(unittest.TestCase):
 
     @classmethod
     def thread_sniffer_start_all(cls):
-        for key in cls.thread_sniffers.keys():
+        for key in list(cls.thread_sniffers.keys()):
             cls.thread_sniffer_start(key)
 
     @classmethod
     def thread_sniffer_stop_all(cls):
-        for key in cls.thread_sniffer.keys():
+        for key in list(cls.thread_sniffer.keys()):
             cls.thread_sniffer_stop(key)
 
     @classmethod
     def thread_sniffer_tear_down_all(cls):
-        for key in cls.thread_sniffers.keys():
+        for key in list(cls.thread_sniffers.keys()):
             cls.thread_sniffer_stop(key)
             cls.thread_sniffer_tear_down(key)
 
