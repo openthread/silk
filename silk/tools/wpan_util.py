@@ -103,20 +103,4 @@ def verify_prefix(node_list, prefix, prefix_len=64, stable=True, priority='med',
             exit(1)
 
 
-def verify_no_address(node_list, prefix):
-    """
-    This function verifies that none of nodes in the `node_list` contain an IPv6 address with the given `prefix`.
-    """
-    for node in node_list:
-        all_addrs = wpan_table_parser.parse_list(node.get(wpan.WPAN_IP6_ALL_ADDRESSES))
-        verify(all([not addr.startswith(prefix[:-1]) for addr in all_addrs]))
 
-
-def verify_no_prefix(node_list, prefix):
-    """
-    This function verifies that the `prefix` is NOT present on any node in the `node_list`.
-    """
-    for node in node_list:
-        prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
-        for p in prefixes:
-            verify(not p.prefix == prefix)

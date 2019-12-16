@@ -18,4 +18,5 @@ echo "Check if a new build is needed for  wpantund"
 
 cd /home/pi/wpantund
 
+git reset --hard
 git pull

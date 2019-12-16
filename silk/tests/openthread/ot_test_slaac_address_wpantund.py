@@ -35,36 +35,39 @@ IP_ADDRESS_2 = PREFIX + "2"
 
 WAIT_INTERVAL = 5
 
+
 class TestSlaacAddressWpantund(testcase.TestCase):
-    # -----------------------------------------------------------------------------------------------------------------------
-    # Test description: addition/removal of SLAAC IPv6 address by `wpantund`
-    #
-    # Test topology:
-    #     r1 ---- r2
-    #            |
-    #            |
-    #          fed1
-    #
-    # SLAAC prefix and user-added IPv6 addresses are added as follows:
-    # - On `r1` add `PREFIX`
-    # - On `r2` add user-added `IP_ADDRESS`
+    """
+    Test description: addition/removal of SLAAC IPv6 address by `wpantund`
 
-    # This test covers the behavior of SLAAC module in wpantund:
-    #
-    # - Before starting the test ensure that SLAAC module on NCP is disabled on all nodes
-    # - Verify that adding prefix with SLAAC flag causes following:
-    #     On this node: 2 entries for prefix are seen (1 as origin:ncp (and rloc16 of this node)
-    #                   and other as origin:user (with rloc:0x0000))
-    #                   Also corresponding SLAAC IPv6 address will be added
-    #     On other nodes: 1 entry for this prefix are seen (origin:ncp (and rloc16 of the node the prefix was added to))
-    #                   Also corresponding SLAAC IPv6 address will be added
-    # - Verify resetting a node re-adds the SLAAC prefix and corresponding IP address back.
-    # - Verify that removing the prefix, would remove the SLAAC address.
-    # - Verify behavior when same prefix is added/removed on multiple nodes (with or without SLAAC flag).
-    #     When a prefix is added without SLAAC flag no ipv6 addresses are added on any node
-    # - Check behavior when a user-added address with the same prefix already exists.
-    # - Ensure removal of SLAAC prefix does not remove user-added address with same prefix.
+    Test topology:
+        r1 ---- r2
+               |
+               |
+             fed1
 
+    SLAAC prefix and user-added IPv6 addresses added are as follows:
+    - On `r1` add `PREFIX`
+    - On `r2` add `PREFIX`
+    - On `r1` add user-added `IP_ADDRESS`
+    - On `r2` add user-added `IP_ADDRESS_2`
+
+    This test covers the behavior of SLAAC module in wpantund:
+
+    - Before starting the test ensure that SLAAC module on NCP is disabled on all nodes
+    - Verify that adding prefix with SLAAC flag on a node causes following:
+        On this node: 2 entries for prefix are seen (1 as origin:ncp (with rloc16 of this node)
+                      and other as origin:user (with rloc:0x0000))
+                      Also corresponding SLAAC IPv6 address will be added
+        On other nodes: 1 entry for this prefix are seen(origin:ncp (with rloc16 of the node the prefix was added to))
+                      Also corresponding SLAAC IPv6 address will be added
+    - Verify resetting a node re-adds the SLAAC prefix and corresponding IP address back.
+    - Verify that removing the prefix, would remove the SLAAC address.
+    - Verify behavior when same prefix is added/removed on multiple nodes (with or without SLAAC flag).
+        When a prefix is added without SLAAC flag no ipv6 addresses are added on any node
+    - Check behavior when a user-added address with the same prefix already exists.
+    - Ensure removal of SLAAC prefix does not remove user-added address with same prefix.
+    """
 
     @classmethod
     def hardwareSelect(cls):
@@ -111,16 +114,36 @@ class TestSlaacAddressWpantund(testcase.TestCase):
     def tearDown(self):
         pass
 
+    @staticmethod
+    def verify_no_address(node_list, prefix):
+        """
+        This function verifies that none of nodes in the `node_list` contain an IPv6 address with the given `prefix`.
+        """
+        for node in node_list:
+            all_addrs = wpan_table_parser.parse_list(node.get(wpan.WPAN_IP6_ALL_ADDRESSES))
+            verify(all([not addr.startswith(prefix[:-1]) for addr in all_addrs]))
+
+    @staticmethod
+    def verify_no_prefix(node_list, prefix):
+        """
+        This function verifies that the `prefix` is NOT present on any node in the `node_list`.
+        """
+        for node in node_list:
+            prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
+            for p in prefixes:
+                verify(not p.prefix == prefix)
+
     def check_prefix_and_slaac_address_are_added(self):
         wpan_util.verify_prefix(self.all_nodes, PREFIX, stable=True, on_mesh=True, slaac=True)
         wpan_util.verify_address(self.all_nodes, PREFIX)
 
     def check_prefix_and_slaac_address_are_removed(self):
-        wpan_util.verify_no_prefix(self.all_nodes, PREFIX)
-        wpan_util.verify_no_address(self.all_nodes, PREFIX)
+        self.verify_no_prefix(self.all_nodes, PREFIX)
+        self.verify_no_address(self.all_nodes, PREFIX)
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
+        # Form the test topology
         self.r1.whitelist_node(self.r2)
         self.r2.whitelist_node(self.r1)
 
@@ -145,33 +168,38 @@ class TestSlaacAddressWpantund(testcase.TestCase):
 
         for _ in range(12):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print node_type == 'router'
+            print(node_type == 'router')
 
             if node_type == 'router':
-                print 'End-node moved up to a Router.'
+                print('End-node moved up to a Router.')
                 break
             time.sleep(5)
         else:
             self.assertFalse(True, 'Router cannot get into router role after 60 seconds timeout')
 
     @testcase.test_method_decorator
-    def test02_Verify_Prefix_added(self):
-
+    def test02_Disable_slaac_on_ncp(self):
+        # Disable slaac module on ncp on all nodes and verify it is disabled.
         for node in self.all_nodes:
             node.setprop(wpan.WPAN_OT_SLAAC_ENABLED, 'false')
             verify(node.get(wpan.WPAN_OT_SLAAC_ENABLED) == 'false')
 
+    @testcase.test_method_decorator
+    def test03_Verify_Prefix_added(self):
+        # Add slaac prefix on r1
         self.r1.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
 
-        # Verify that all nodes get the prefix and add the SLAAC address
+        # Verify that all nodes get the prefix and add the SLAAC address.
+        # r1 should add 2 entries for prefix, 1 as origin:ncp (with rloc16 of r1), 2nd as origin:user (with rloc:0x0000)
+        # r2 and fed1 should have 1 related prefix entry seen as origin:ncp (with rloc16 of r1)
+        # Due to slaac=True prefix all the nodes should add related ip address.
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
-    def test03_Reset_NCP_Remove_Prefix(self):
-
-        # Reset r1 and check that prefix and SLAAC address are re-added
+    def test04_Reset_NCP_Remove_Prefix(self):
+        # Reset r1 and verify that prefix and SLAAC address are re-added
         self.r1.reset_thread_radio()
         self.wait_for_completion(self.device_list)
 
@@ -184,23 +212,28 @@ class TestSlaacAddressWpantund(testcase.TestCase):
         verify_within(self.check_prefix_and_slaac_address_are_removed, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
-    def test04_Add_same_Prefix(self):
+    def test05_Add_same_Prefix(self):
         # Add prefix on r2 with SLAAC flag
         self.r2.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
+        # Verify the prefix and related address gets added
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
 
-        # Add same prefix on r1 with SLAAC flag and verify prefix and addresses stay as before
+        # Add same prefix on r1 with SLAAC flag verify addresses stay as before and related prefix entries gets
+        # added on all the node.
+        # r1 should have 3 prefix entries((1 as origin:ncp (with rloc16 of r1), 2nd as origin:user (with rloc:0x0000))
+        # and 3rd as origin:ncp (with rloc16 of r2). Similarly 3 prefix entries should be on r2.
+        # On fed1 there should be 2 entries each from origin:ncp with rloc16 of r1 and r2
         self.r1.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
-    def test05_Remove_Prefix(self):
-        # Remove prefix on r1, addresses and prefixes should stay as before ( as r2 still has
-        # the same prefix)
+    def test06_Remove_Prefix_with_different_slaac_flag(self):
+        # Remove prefix on r1. Verify addresses stay as before (as r2 still has
+        # the same prefix) and related prefix entries belonging to r1 are removed.
         self.r1.remove_prefix(PREFIX)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
@@ -218,31 +251,37 @@ class TestSlaacAddressWpantund(testcase.TestCase):
         self.r2.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
+        # Verify that r1 has 3 prefix entries(1 as origin:ncp (with rloc16 of r1),2nd as origin:user (with rloc:0x0000)
+        # and 3rd as origin:ncp (with rloc16 of r2)). Similarly 3 such entries should be on r2.
+        # On fed1 only 2 prefix entries should be present seen as origin:ncp (with rloc16 of r1) and
+        # origin:ncp (with rloc16 of r2)
+        # Verify due to slaac = True flag each node gets an ip address related to the prefix
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
 
-        # Now remove the prefix on r2 and verify that SLAAC address is removed
+        # Now remove the prefix on r2 and verify that related slaac prefix and address are removed
         self.r2.remove_prefix(PREFIX)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
 
         def check_slaac_address_is_removed():
-            wpan_util.verify_no_address(self.all_nodes, PREFIX)
+            self.verify_no_address(self.all_nodes, PREFIX)
 
         verify_within(check_slaac_address_is_removed, WAIT_INTERVAL)
 
+        # Now remove the prefix on r1 and verify that all SLAAC prefix are removed
         self.r1.remove_prefix(PREFIX)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
         verify_within(self.check_prefix_and_slaac_address_are_removed, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
-    def test06_Add_IPv6_Address_For_Same_Prefix(self):
-        # Explicitly add an address with the prefix on r1, this should add the prefix on all nodes
+    def test07_Add_IPv6_Address_For_Same_Prefix(self):
+        # Explicitly add an ipv6 address with the prefix on r1, this should add the prefix on all nodes
         # but no ipv6 address should be added on other nodes
         self.r1.add_ip6_address_on_interface(IP_ADDRESS)
 
-        # Add the prefix on r2 (with SLAAC flag), this should add SLAAC prefix and address on all nodes
-        # except r1 as it already has an address with SLAAC prefix
+        # Add the prefix on r2 (with SLAAC flag), this should add SLAAC prefix on all nodes. And slaac related
+        # ipv6 address on all nodes except r1 as it already has an address with SLAAC prefix
         self.r2.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
@@ -260,14 +299,14 @@ class TestSlaacAddressWpantund(testcase.TestCase):
 
         verify(all([not addr.startswith(PREFIX[:-1]) for addr in r1_addrs]))
 
-        # Remove the SLAAC PREFIX on r2
+        # Remove the SLAAC PREFIX on r2.
         self.r2.remove_prefix(PREFIX)
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
 
         def check_ip6_addresses():
             # Verify that SLAAC addresses are removed on r2 and fed1
-            wpan_util.verify_no_address([self.r2, self.fed1], PREFIX)
+            self.verify_no_address([self.r2, self.fed1], PREFIX)
             # And that user-added address matching the prefix is not removed on r1
             r1_addrs = wpan_table_parser.parse_list(self.r1.get(wpan.WPAN_IP6_ALL_ADDRESSES))
             verify(IP_ADDRESS in r1_addrs)
@@ -275,10 +314,10 @@ class TestSlaacAddressWpantund(testcase.TestCase):
         verify_within(check_ip6_addresses, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
-    def test07_Ping_User_Added_Address(self):
-        # Ping from r2 to user-added address on r1 verifying that the address is present on NCP
+    def test08_Ping_User_Added_Address(self):
+        # Add a user-added address on r2 with the same prefix
         self.r2.add_ip6_address_on_interface(IP_ADDRESS_2)
-
+        # Ping from r2 to user-added address on r1 verifying that the address is present on NCP
         self.ping6(self.r2, IP_ADDRESS, num_pings=10, allowed_errors=5, ping_size=200)
 
 
