@@ -161,17 +161,17 @@ class TestSlaacAddressWpantund(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
-
+        
         self.fed1.join(self.network_data, "end-node")
 
         self.wait_for_completion(self.device_list)
 
         for _ in range(12):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print(node_type == 'router')
+            self.logger.info(node_type == 'router')
 
             if node_type == 'router':
-                print('End-node moved up to a Router.')
+                self.logger.info('End-node moved up to a Router.')
                 break
             time.sleep(5)
         else:
@@ -293,7 +293,7 @@ class TestSlaacAddressWpantund(testcase.TestCase):
 
         # Also verify that adding the prefix on r2 did not add a SLAAC address for same prefix on r1
         r1_addrs.remove(IP_ADDRESS)
-        print("r1_addrs: {}".format(r1_addrs))
+        self.logger.info("r1_addrs: {}".format(r1_addrs))
         self.wait_for_completion(self.device_list)
         time.sleep(WAIT_INTERVAL)
 
