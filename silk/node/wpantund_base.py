@@ -133,7 +133,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
 #################################
 #   wpan_node functionality
 #################################
-    def form(self, network, role):
+    def form(self, network, role, xpanid=None, panid=None):
         """
         Form the PAN specified by the arguments.
         """
@@ -147,10 +147,14 @@ class WpantundWpanNode(wpan_node.WpanNode):
         role = getattr(wpan, "ROLES")[role]
         self.store_data(role, self.role_label)
 
-        command = "form %s -T %s" \
-                  % (network.name, role)
+        command = "form {} -T {}".format(network.name, role)
 
-        command += " -c %s" % network.channel
+        command += " -c {}".format(network.channel)
+
+        if xpanid:
+            command += " -x {}".format(xpanid)
+        if panid:
+            command += " -p {}".format(hex(panid))
 
         self.wpanctl_async("form", command, "Successfully formed!", 60)
 
