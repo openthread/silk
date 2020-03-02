@@ -48,18 +48,15 @@ POSIX_PATH = '/opt/'
 RETRY = 3
 
 
+IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
+
 def get_local_ip():
-    if os.uname()[1] == 'raspberrypi':
-        config_info = os.popen('ifconfig eth0 | grep "inet "')
-        config_data = config_info.read()
-    else:
-        # some Linux PC has eno1 or eth0 interface
-        config_info = os.popen('ifconfig eno1 | grep "inet "')
-        config_data = config_info.read()
-        if 'inet' not in config_data:
-            config_info = os.popen('ifconfig eth0 | grep "inet "')
-            config_data = config_info.read()
-    return config_data
+    for ip_interface in IP_INTERFACES:
+        cmd = 'ifconfig ' + ip_interface
+        cmd += ' | grep "inet "'
+        config_data = os.popen(cmd).read()
+        if 'inet' in config_data:
+            return config_data
 
 
 class WpantundMonitor(signal.Subscriber):
