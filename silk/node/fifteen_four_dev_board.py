@@ -28,6 +28,7 @@ from silk.device.netns_base import NetnsController
 from silk.device.netns_base import StandaloneNetworkNamespace
 from silk.node import wpan_node
 from silk.node.wpantund_base import role_is_thread
+from silk.node.wpantund_base import role_supports_legacy
 from silk.node.wpantund_base import WpantundWpanNode
 from silk.utils import signal, subprocess_runner
 
@@ -46,18 +47,15 @@ POSIX_PATH = '/opt/openthread_test/posix'
 RETRY = 3
 
 
+IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
+
 def get_local_ip():
-    if os.uname()[1] == 'raspberrypi':
-        config_info = os.popen('ifconfig eth0 | grep "inet "')
-        config_data = config_info.read()
-    else:
-        # some Linux PC has eno1 or eth0 interface
-        config_info = os.popen('ifconfig eno1 | grep "inet "')
-        config_data = config_info.read()
-        if 'inet' not in config_data:
-            config_info = os.popen('ifconfig eth0 | grep "inet "')
-            config_data = config_info.read()
-    return config_data
+    for ip_interface in IP_INTERFACES:
+        cmd = 'ifconfig ' + ip_interface
+        cmd += ' | grep "inet "'
+        config_data = os.popen(cmd).read()
+        if 'inet' in config_data:
+            return config_data
 
 
 class WpantundMonitor(signal.Subscriber):
@@ -276,6 +274,14 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             # Get the mesh-local address
             wpanctl_command = 'get IPv6:MeshLocalAddress'
             self.wpanctl_async('Wpanctl get', wpanctl_command, self._ip6_mla_regex, 1, self.ip6_mla_label)
+
+        if role_supports_legacy(self.role):
+            # Get the link-local address
+            self.make_netns_call_async("ifconfig %s" % self.legacy_interface,
+                                       self._ip6_lla_regex, 1, self.ip6_lla_label)
+            # Get the legacy ULA address
+            self.make_netns_call_async("ifconfig %s" % self.legacy_interface,
+                                       self._ip6_legacy_ula_regex, 1, self.ip6_legacy_ula_label)
 
 
 #################################
