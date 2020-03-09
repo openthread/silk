@@ -27,7 +27,6 @@ from silk.device.netns_base import createLinkPair
 from silk.device.netns_base import NetnsController
 from silk.device.netns_base import StandaloneNetworkNamespace
 from silk.node import wpan_node
-from silk.node.thread_node import ThreadNode
 from silk.node.wpantund_base import role_is_thread
 from silk.node.wpantund_base import role_supports_legacy
 from silk.node.wpantund_base import WpantundWpanNode
@@ -44,22 +43,19 @@ from silk.utils.jsonfile import JsonFile
 
 
 LOG_PATH = '/opt/openthread_test/results/'
-POSIX_PATH = '/opt/'
+POSIX_PATH = '/opt/openthread_test/posix'
 RETRY = 3
 
 
+IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
+
 def get_local_ip():
-    if os.uname()[1] == 'raspberrypi':
-        config_info = os.popen('ifconfig eth0 | grep "inet "')
-        config_data = config_info.read()
-    else:
-        # some Linux PC has eno1 or eth0 interface
-        config_info = os.popen('ifconfig eno1 | grep "inet "')
-        config_data = config_info.read()
-        if 'inet' not in config_data:
-            config_info = os.popen('ifconfig eth0 | grep "inet "')
-            config_data = config_info.read()
-    return config_data
+    for ip_interface in IP_INTERFACES:
+        cmd = 'ifconfig ' + ip_interface
+        cmd += ' | grep "inet "'
+        config_data = os.popen(cmd).read()
+        if 'inet' in config_data:
+            return config_data
 
 
 class WpantundMonitor(signal.Subscriber):
@@ -320,7 +316,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         elif thread_mode.upper() == 'RCP':
 
-            _OT_NCP_FTD_POSIX_APP = POSIX_PATH + '/openthread/output/posix/x86_64-unknown-linux-gnu/bin/ot-ncp'
+            _OT_NCP_FTD_POSIX_APP = POSIX_PATH + '/ot-ncp'
 
             ncp_socket_path = 'system:{} {} 115200'.format(_OT_NCP_FTD_POSIX_APP, self.device_path)
 
@@ -596,7 +592,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         return result
 
 
-class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode, ThreadNode):
+class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode):
     """
     FifteenFourDevBoardNode with added Thread functionality.
     Inheriting classes require sudo

@@ -17,11 +17,12 @@
 import os
 from setuptools import find_packages, setup
 
+exec(open("silk/version.py").read())
 here = os.path.abspath(os.path.dirname(__file__))
 
 setup(name="silk",
 
-      version="0.0.1",
+      version=__version__,
 
       description="Openthread testbed",
 
