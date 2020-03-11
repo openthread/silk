@@ -28,7 +28,6 @@ from silk.device.netns_base import NetnsController
 from silk.device.netns_base import StandaloneNetworkNamespace
 from silk.node import wpan_node
 from silk.node.wpantund_base import role_is_thread
-from silk.node.wpantund_base import role_supports_legacy
 from silk.node.wpantund_base import WpantundWpanNode
 from silk.utils import signal, subprocess_runner
 
@@ -274,14 +273,6 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             # Get the mesh-local address
             wpanctl_command = 'get IPv6:MeshLocalAddress'
             self.wpanctl_async('Wpanctl get', wpanctl_command, self._ip6_mla_regex, 1, self.ip6_mla_label)
-
-        if role_supports_legacy(self.role):
-            # Get the link-local address
-            self.make_netns_call_async("ifconfig %s" % self.legacy_interface,
-                                       self._ip6_lla_regex, 1, self.ip6_lla_label)
-            # Get the legacy ULA address
-            self.make_netns_call_async("ifconfig %s" % self.legacy_interface,
-                                       self._ip6_legacy_ula_regex, 1, self.ip6_legacy_ula_label)
 
 
 #################################
