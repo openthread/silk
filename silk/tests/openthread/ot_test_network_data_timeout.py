@@ -16,10 +16,9 @@ from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
 import silk.hw.hw_resource as hwr
-from silk.tools import wpan_table_parser
 import silk.tests.testcase as testcase
 from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, verify_within, VerifyError
+from silk.tools.wpan_util import verify_within, verify_prefix_with_rloc16, verify_no_prefix_with_rloc16
 
 import random
 import unittest
@@ -32,16 +31,15 @@ prefix1 = "fd00:1::"
 prefix2 = "fd00:2::"
 prefix3 = "fd00:3::"
 
-ADDED_PREFIX_SYNC_WAIT = 60  # in seconds
+WAIT_TIME = 10  # in seconds
 PREFIX_SYNC_WAIT_AFTER_ROUTER_REMOVAL = 240  # in seconds
-WAIT_TIME = 15  # in seconds
 
 
 class TestNetworkDataTimeout(testcase.TestCase):
     # -----------------------------------------------------------------------------------------------------------------------
     # Test description: Network Data (on-mesh prefix) timeout and entry removal
     #
-    # Network topology
+    # Network topology:
     #
     #   r1 ----- r2
     #            |
@@ -56,10 +54,8 @@ class TestNetworkDataTimeout(testcase.TestCase):
     # - Verify that all the unique and common prefixes are present on all nodes are associated with correct RLOC16.
     # - Remove `r2` from network (which removes `sed1` as well) from Thread partition created by `r1`.
     # - Verify that all on-mesh prefixes added by `r2` or `sed1` (unique and common) are removed on `r1`.
-    #
 
     poll_interval = 400
-    r1_rloc16, r2_rloc16, sed1_rloc16 = None, None, None
 
     @classmethod
     def hardwareSelect(cls):
@@ -95,8 +91,8 @@ class TestNetworkDataTimeout(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -105,49 +101,6 @@ class TestNetworkDataTimeout(testcase.TestCase):
     @testcase.teardown_decorator
     def tearDown(self):
         pass
-
-    @staticmethod
-    def verify_prefix_and_rloc16(node_list, prefix, rloc16, prefix_len=64, stable=True, priority='med', on_mesh=False,
-                      slaac=False, dhcp=False, configure=False, default_route=False, preferred=True):
-        """
-        This function verifies that the `prefix` is present on all the nodes in the `node_list`. It also verifies
-         that the `prefix` is associated with the given `rloc16` (as an integer).
-        """
-        for node in node_list:
-            prefixes = wpan_table_parser.parse_on_mesh_prefix_result(
-                node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
-
-            for p in prefixes:
-                if (p.prefix == prefix and p.origin == "ncp" and
-                        int(p.rloc16(), 0) == rloc16):
-                    verify(int(p.prefix_len) == prefix_len)
-                    verify(p.is_stable() == stable)
-                    verify(p.is_on_mesh() == on_mesh)
-                    verify(p.is_def_route() == default_route)
-                    verify(p.is_slaac() == slaac)
-                    verify(p.is_dhcp() == dhcp)
-                    verify(p.is_config() == configure)
-                    verify(p.is_preferred() == preferred)
-                    verify(p.priority == priority)
-                    break
-            else:
-                raise VerifyError("Did not find prefix {} on node {}".format(prefix, node.name))
-
-    @staticmethod
-    def verify_no_prefix_with_rloc16(node_list, prefix, rloc16):
-        """
-        This function verifies that none of the nodes in `node_list` contains the on-mesh `prefix` associated with the
-        given `rloc16`.
-        """
-        for node in node_list:
-            prefixes = wpan_table_parser.parse_on_mesh_prefix_result(
-                node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
-
-            for p in prefixes:
-                if (p.prefix == prefix and p.origin == "ncp" and
-                        int(p.rloc16(), 0) == rloc16):
-                    raise VerifyError("Did find prefix {} with rloc16 {} on node {}"
-                                      .format(prefix, hex(rloc16), node.name))
 
     @testcase.test_method_decorator
     def test01_pairing(self):
@@ -174,7 +127,7 @@ class TestNetworkDataTimeout(testcase.TestCase):
 
         self.wait_for_completion(self.device_list)
 
-        for _ in range(18):
+        for _ in range(10):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
             self.logger.info(node_type == 'router')
 
@@ -183,7 +136,7 @@ class TestNetworkDataTimeout(testcase.TestCase):
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 180 seconds timeout')
+            self.assertFalse(True, 'Router cannot get into router role after 100 seconds timeout')
 
     @testcase.test_method_decorator
     def test02_verify_prefix(self):
@@ -208,42 +161,40 @@ class TestNetworkDataTimeout(testcase.TestCase):
 
         # Wait for on-mesh prefixes to be updated
         self.wait_for_completion(self.device_list)
-        self.logger.info("Wait for {}s for on-mesh prefix to be updated".format(ADDED_PREFIX_SYNC_WAIT))
-        time.sleep(ADDED_PREFIX_SYNC_WAIT)
 
         # Get all nodes rloc16
-        TestNetworkDataTimeout.r1_rloc16 = int(self.r1.get(wpan.WPAN_THREAD_RLOC16), 0)
-        TestNetworkDataTimeout.r2_rloc16 = int(self.r2.get(wpan.WPAN_THREAD_RLOC16), 0)
-        TestNetworkDataTimeout.sed1_rloc16 = int(self.sed1.get(wpan.WPAN_THREAD_RLOC16), 0)
+        r1_rloc16 = int(self.r1.get(wpan.WPAN_THREAD_RLOC16), 0)
+        r2_rloc16 = int(self.r2.get(wpan.WPAN_THREAD_RLOC16), 0)
+        sed1_rloc16 = int(self.sed1.get(wpan.WPAN_THREAD_RLOC16), 0)
 
         def check_prefixes():
             # Verify that all three `prefix1`, 'prefix2', and `prefix3` are present on all nodes and
             # are respectively associated with `r1`, r2, and `sed1` nodes.
             self.logger.info(" verify prefix1 i.e. {} added by r1 i.e. {} having rloc16:{}"
-                             " is present on all nodes".format(prefix1, self.r1.name, hex(self.r1_rloc16)))
-            self.verify_prefix_and_rloc16([self.r1, self.r2, self.sed1], prefix1, self.r1_rloc16,
+                             " is present on all nodes".format(prefix1, self.r1.name, hex(r1_rloc16)))
+            verify_prefix_with_rloc16([self.r1, self.r2, self.sed1], prefix1, r1_rloc16,
                                           on_mesh=True, preferred=True, stable=True)
             self.logger.info(" verify prefix2 i.e. {} added by r2 i.e. {} having rloc16:{}"
-                             " is present on all nodes".format(prefix2, self.r2.name, hex(self.r2_rloc16)))
-            self.verify_prefix_and_rloc16([self.r1, self.r2, self.sed1], prefix2, self.r2_rloc16,
+                             " is present on all nodes".format(prefix2, self.r2.name, hex(r2_rloc16)))
+            verify_prefix_with_rloc16([self.r1, self.r2, self.sed1], prefix2, r2_rloc16,
                                           on_mesh=True, preferred=True, stable=True, )
             self.logger.info(" verify prefix3 i.e. {} added by sed1 i.e.{} having rloc16:{}"
-                             " is present on all nodes".format(prefix3, self.sed1.name, hex(self.sed1_rloc16)))
-            self.verify_prefix_and_rloc16([self.r1, self.r2, self.sed1], prefix3, self.sed1_rloc16,
+                             " is present on all nodes".format(prefix3, self.sed1.name, hex(sed1_rloc16)))
+            verify_prefix_with_rloc16([self.r1, self.r2, self.sed1], prefix3, sed1_rloc16,
                                           on_mesh=True, preferred=True, stable=True, )
 
             # Verify the presence of `common_prefix` associated with each node (with correct flags).
             self.logger.info(" verify common_prefix i.e. {} added by r1 i.e. {} having rloc16:{}"
-                             " is present on all nodes".format(common_prefix, self.r1.name, hex(self.r1_rloc16)))
-            self.verify_prefix_and_rloc16([self.r1, self.r2, self.sed1], common_prefix, self.r1_rloc16,
+                             " is present on all nodes".format(common_prefix, self.r1.name, hex(r1_rloc16)))
+            verify_prefix_with_rloc16([self.r1, self.r2, self.sed1], common_prefix, r1_rloc16,
                                           on_mesh=True, preferred=True, stable=False,)
             self.logger.info(" verify common_prefix i.e. {} added by r2 i.e. {} having rloc16:{}"
-                             " is present on all nodes".format(common_prefix, self.r2.name, hex(self.r2_rloc16)))
-            self.verify_prefix_and_rloc16([self.r1, self.r2, self.sed1], common_prefix, self.r2_rloc16,
+                             " is present on all nodes".format(common_prefix, self.r2.name, hex(r2_rloc16)))
+            verify_prefix_with_rloc16([self.r1, self.r2, self.sed1], common_prefix, r2_rloc16,
                                           on_mesh=True, preferred=True, stable=True, )
             self.logger.info(" verify common_prefix i.e. {} added by sed1 i.e.{} having rloc16:{}"
-                             " is present on all nodes".format(common_prefix, self.sed1.name, hex(self.sed1_rloc16)))
-            self.verify_prefix_and_rloc16([self.r1, self.r2, self.sed1], common_prefix, self.sed1_rloc16,
+                             " is present on all nodes".format(common_prefix, self.sed1.name, hex(sed1_rloc16)))
+            verify_prefix_with_rloc16([self.r1, self.r2, self.sed1], common_prefix, sed1_rloc16,
                                           on_mesh=True, preferred=False, stable=True, )
 
         verify_within(check_prefixes, WAIT_TIME)
@@ -252,28 +203,34 @@ class TestNetworkDataTimeout(testcase.TestCase):
     def test03_verify_prefixes_on_r1_after_r2_leave(self):
         # Remove `r2` from the thread network. This should trigger all the prefixes added by it or its
         # child to timeout and be removed.
+        self.logger.info("Get all nodes rloc16 before r2 leaves the network")
+        r1_rloc16 = int(self.r1.get(wpan.WPAN_THREAD_RLOC16), 0)
+        r2_rloc16 = int(self.r2.get(wpan.WPAN_THREAD_RLOC16), 0)
+        sed1_rloc16 = int(self.sed1.get(wpan.WPAN_THREAD_RLOC16), 0)
+
         self.logger.info(" Remove r2 i.e. {} from the thread network".format(self.r2.name))
         self.r2.leave()
         self.wait_for_completion(self.device_list)
 
-        self.logger.info("Wait for {}s for on-mesh prefix to be updated".format(PREFIX_SYNC_WAIT_AFTER_ROUTER_REMOVAL))
+        self.logger.info("Wait for {}s for on-mesh prefix to be updated after r2's removal"
+                         .format(PREFIX_SYNC_WAIT_AFTER_ROUTER_REMOVAL))
         time.sleep(PREFIX_SYNC_WAIT_AFTER_ROUTER_REMOVAL)
 
         def check_prefixes_on_r1_after_r2_leave():
             # Verify that entries added by r1 are still present
             self.logger.info(" verify prefix entries {} and {} added by r1 ({})"
                              "are still present".format(prefix1, common_prefix, self.r1.name))
-            self.verify_prefix_and_rloc16([self.r1], prefix1, self.r1_rloc16,
+            verify_prefix_with_rloc16([self.r1], prefix1, r1_rloc16,
                                           on_mesh=True, preferred=True, stable=True)
-            self.verify_prefix_and_rloc16([self.r1], common_prefix, self.r1_rloc16,
+            verify_prefix_with_rloc16([self.r1], common_prefix, r1_rloc16,
                                           on_mesh=True, preferred=True, stable=False,)
 
             self.logger.info(" verify prefix entries {}, {}, {} added by `r2` {} or `sed1` {} are removed"
                              .format(prefix2, prefix3, common_prefix, self.r2.name, self.sed1.name))
-            self.verify_no_prefix_with_rloc16([self.r1], prefix2, self.r2_rloc16)
-            self.verify_no_prefix_with_rloc16([self.r1], prefix3, self.sed1_rloc16)
-            self.verify_no_prefix_with_rloc16([self.r1], common_prefix, self.r2_rloc16)
-            self.verify_no_prefix_with_rloc16([self.r1], common_prefix, self.sed1_rloc16)
+            verify_no_prefix_with_rloc16([self.r1], prefix2, r2_rloc16)
+            verify_no_prefix_with_rloc16([self.r1], prefix3, sed1_rloc16)
+            verify_no_prefix_with_rloc16([self.r1], common_prefix, r2_rloc16)
+            verify_no_prefix_with_rloc16([self.r1], common_prefix, sed1_rloc16)
 
         verify_within(check_prefixes_on_r1_after_r2_leave, WAIT_TIME)
 

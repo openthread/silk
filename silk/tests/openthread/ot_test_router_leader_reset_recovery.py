@@ -16,10 +16,9 @@ from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
 import silk.hw.hw_resource as hwr
-from silk.tools import wpan_table_parser
 import silk.tests.testcase as testcase
 from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, verify_within, is_associated, VerifyError
+from silk.tools.wpan_util import verify, verify_within, is_associated, check_neighbor_table
 
 import random
 import unittest
@@ -55,7 +54,6 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.ed1 = ffdb.ThreadDevBoard()
-
         cls.all_nodes = [cls.r1, cls.r2, cls.ed1]
 
     @classmethod
@@ -67,10 +65,8 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         cls.hardwareSelect()
 
         for device in cls.all_nodes:
-
             device.set_logger(cls.logger)
             cls.add_test_device(device)
-
             device.set_up()
 
         cls.network_data = WpanCredentials(
@@ -84,8 +80,8 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -95,19 +91,13 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
     def tearDown(self):
         pass
 
-    @staticmethod
-    def check_neighbor_table(node, neighbors):
-        """
-        This function verifies that the neighbor table of a given `node` contains the node in the `neighbors` list.
-        """
-        neighbor_table = wpan_table_parser.parse_neighbor_table_result(node.get(wpan.WPAN_THREAD_NEIGHBOR_TABLE))
-        for neighbor in neighbors:
-            ext_addr = neighbor.get(wpan.WPAN_EXT_ADDRESS)[1:-1]
-            for entry in neighbor_table:
-                if entry.ext_address == ext_addr:
-                    break
-            else:
-                raise VerifyError('Failed to find a neighbor entry for extended address {} in table'.format(ext_addr))
+    def check_r1_neighbor_table(self):
+        verify(is_associated(self.r1))
+        check_neighbor_table(self.r1, [self.r2])
+
+    def check_r2_neighbor_table(self):
+        verify(is_associated(self.r2))
+        check_neighbor_table(self.r2, [self.r1])
 
     @testcase.test_method_decorator
     def test01_pairing(self):
@@ -132,7 +122,7 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         self.ed1.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
-        for _ in range(18):
+        for _ in range(10):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
             print node_type == 'router'
 
@@ -141,17 +131,16 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 180 seconds timeout')
+            self.assertFalse(True, 'Router cannot get into router role after 100 seconds timeout')
 
     @testcase.test_method_decorator
     def test02_verify_neighbor_table(self):
         # Check that r1 and r2 are present in each other's neighbor table
         def check_neighbors_tables():
-            self.check_neighbor_table(self.r1, [self.r2])
-            self.check_neighbor_table(self.r2, [self.r1])
+            check_neighbor_table(self.r1, [self.r2])
+            check_neighbor_table(self.r2, [self.r1])
 
         verify_within(check_neighbors_tables, WAIT_INTERVAL)
-
         self.assertTrue(self.r1.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_LEADER)
         self.assertTrue(self.r2.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_ROUTER)
 
@@ -160,15 +149,9 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         # Reset r2 and check that everything recover correctly. Wait for it to be associated.
         self.r2.reset_thread_radio()
         self.wait_for_completion(self.device_list)
-
-        verify(is_associated(self.r2))
-        self.check_neighbor_table(self.r2, [self.r1])
-
-        def check_r2_neighbor_table():
-            verify(is_associated(self.r2))
-            self.check_neighbor_table(self.r2, [self.r1])
-
-        verify_within(check_r2_neighbor_table, WAIT_INTERVAL)
+        self.logger.info("verify after router {} reset and recovery it has leader(r1) {} in it's neighbor table"
+                         .format(self.r2.name, self.r1.name))
+        verify_within(self.check_r2_neighbor_table, WAIT_INTERVAL)
         self.assertTrue(self.r1.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_LEADER)
         self.assertTrue(self.r2.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_ROUTER)
 
@@ -177,15 +160,14 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         # Reset leader (i.e. r1) and check that everything recover correctly.
         self.r1.reset_thread_radio()
         self.wait_for_completion(self.device_list)
+        self.logger.info("verify after leader {} reset and recovery it has router(r2) {} in it's neighbor table"
+                         .format(self.r1.name, self.r2.name))
+        verify_within(self.check_r1_neighbor_table, WAIT_INTERVAL)
 
-        def check_r1_neighbor_table():
-            verify(is_associated(self.r1))
-            self.check_neighbor_table(self.r1, [self.r2])
-
-        verify_within(check_r1_neighbor_table, WAIT_INTERVAL)
         self.assertTrue(self.r1.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_LEADER)
         self.assertTrue(self.r2.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_ROUTER)
-        verify_within(self.check_neighbor_table(self.r2, [self.r1]), WAIT_INTERVAL)
+        self.logger.info("After leader reset verify r2's neighbor table too")
+        verify_within(self.check_r2_neighbor_table, WAIT_INTERVAL)
 
 
 if __name__ == "__main__":
