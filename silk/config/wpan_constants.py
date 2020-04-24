@@ -82,6 +82,7 @@ WPAN_THREAD_ADDRESS_CACHE_TABLE                = "Thread:AddressCacheTable"
 WPAN_THREAD_ADDRESS_CACHE_TABLE_ASVALMAP       = "Thread:AddressCacheTable:AsValMap"
 
 WPAN_OT_LOG_LEVEL                              = "OpenThread:LogLevel"
+WPAN_OT_SLAAC_ENABLED                          = "OpenThread:SLAAC:Enabled"
 WPAN_OT_STEERING_DATA_ADDRESS                  = "OpenThread:SteeringData:Address"
 WPAN_OT_STEERING_DATA_SET_WHEN_JOINABLE        = "OpenThread:SteeringData:SetWhenJoinable"
 WPAN_OT_MSG_BUFFER_COUNTERS                    = "OpenThread:MsgBufferCounters"
@@ -96,6 +97,7 @@ WPAN_NCP_STATE                                 = "NCP:State"
 WPAN_NCP_COUNTER_TX_ERR_CCA                    = "NCP:Counter:TX_ERR_CCA"
 WPAN_NCP_COUNTER_TX_IP_DROPPED                 = 'NCP:Counter:TX_IP_DROPPED'
 WPAN_NCP_COUNTER_TX_PKT_ACKED                  = 'NCP:Counter:TX_PKT_ACKED'
+WPAN_NCP_COUNTER_TX_PKT_DATA_POLL              = "NCP:Counter:TX_PKT_DATA_POLL"
 
 WPAN_MAC_WHITELIST_ENABLED                     = "MAC:Whitelist:Enabled"
 WPAN_MAC_WHITELIST_ENTRIES                     = "MAC:Whitelist:Entries"
