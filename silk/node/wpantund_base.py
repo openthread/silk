@@ -336,10 +336,27 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl('remove-route', 'remove-route ' + route_prefix +
                             (' -l {}'.format(prefix_len) if prefix_len is not None else '') +
                             (' -p {}'.format(priority) if priority is not None else ''))
+#################################
+#   Calls into wpanctl for commissioning process in commissioner-joiner model
+#################################
+
+    def commissioner_start(self):
+        self.wpanctl_async('commissioner start', "commissioner start", "Commissioner started", 20)
+
+    def commissioner_add_joiner(self, eui64, pskd, timeout='100'):
+        cmd = "commissioner joiner-add {} {} {}".format(eui64, timeout, pskd)
+        return self.wpanctl('commissioner add-joiner', cmd, 20)
+
+    def joiner_join(self, pskd):
+        return self.wpanctl('joiner-join', 'joiner --join {}'.format(pskd), 60)
+
+    def joiner_attach(self):
+        return self.wpanctl('joiner-attach', 'joiner --attach', 20)
 
 #################################
 #   Calls into wpanctl for querying commissioning data
 #################################
+
     def setprop(self, key, value, data=False):
         """
         Make a call into wpanctl setprop to set the desired parameter.
