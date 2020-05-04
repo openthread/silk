@@ -39,8 +39,7 @@ class ChildAddressEntry(object):
         #
         # We get rid of the first two chars `\t"' and last char '"', split the rest using whitespace as separator.
         # Then remove any ',' at end of items in the list.
-        items = [item[:-1] if item[-1] == ',' else item for item in text[2:-1].split()]
-
+        items = [item for item in text[2:-1].split(', ', 2)]
         # First item in the extended address
         self._ext_address = items[0]
 
@@ -133,7 +132,7 @@ def parse_child_table_result(child_table_list):
 def parse_child_table_address_result(child_table_list):
     """ Parses child table list string and returns an array of `ChildEntry` objects"""
     items = child_table_list.split('\n')[1:-1]
-    if items and ']' in items[-1]:
+    if items and ']' == items[-1]:
         items.pop()
     return [ChildAddressEntry(item) for item in items]
 

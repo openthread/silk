@@ -470,7 +470,8 @@ class TestCase(unittest.TestCase):
             sender.ping6(target_addr, num_pings, ping_size, interface)
             # Add a 2s delay to accommodate ping failure on Newman
             time.sleep(2)
-
+            self.wait_for_completion(self.device_list)
+            
         for sender in senders:
             error = sender.wait_for_completion()
 
