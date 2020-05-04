@@ -419,7 +419,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         else:
             command += " -I %s" % self.thread_interface
 
-        command += " %s -c %s -s %s -W 2" % (ipv6_target, num_pings, payload_size)
+        command += " %s -c %s -s %s -W 10" % (ipv6_target, num_pings, payload_size)
 
         search_string = "(?P<%s>[\d]+) packets transmitted, (?P<%s>[\d]+) received" \
                         % (self.ping6_sent_label, self.ping6_received_label)
