@@ -1,6 +1,6 @@
 #!/usr/bin/expect -f
 #
-# Copyright 2019 Google LLC
+# Copyright 2019-2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,11 +23,13 @@ if { $type == 0} {
     expect "*password:"
     set timeout 2
     send "raspberry\n"
+    set timeout 120
     expect eof
 } elseif { $type == 1 } {
     spawn scp -r -o StrictHostKeyChecking=no pi@$dest_ip:$source_file $dest_file
     expect "*password:"
     set timeout 2
     send "raspberry\n"
+    set timeout 120
     expect eof
 }
