@@ -96,6 +96,7 @@ WPAN_NCP_STATE                                 = "NCP:State"
 WPAN_NCP_COUNTER_TX_ERR_CCA                    = "NCP:Counter:TX_ERR_CCA"
 WPAN_NCP_COUNTER_TX_IP_DROPPED                 = 'NCP:Counter:TX_IP_DROPPED'
 WPAN_NCP_COUNTER_TX_PKT_ACKED                  = 'NCP:Counter:TX_PKT_ACKED'
+WPAN_NCP_COUNTER_TX_PKT_DATA_POLL              = "NCP:Counter:TX_PKT_DATA_POLL"
 
 WPAN_MAC_WHITELIST_ENABLED                     = "MAC:Whitelist:Enabled"
 WPAN_MAC_WHITELIST_ENTRIES                     = "MAC:Whitelist:Entries"
