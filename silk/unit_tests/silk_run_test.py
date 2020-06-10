@@ -20,7 +20,7 @@ RESULT_LOG_PATH = '/opt/openthread_test/results/'+'silk_run_' + \
                   datetime.datetime.today().strftime("%m-%d") + '/'
 CONFIG_PATH = '/opt/openthread_test/'
 
-os.chdir('../tests')
+os.chdir('/home/pi/silk/silk/tests')
 
 timestamp = datetime.datetime.today().strftime("%m-%d-%H:%M")
 

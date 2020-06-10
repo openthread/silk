@@ -8,7 +8,8 @@ netifaces==0.10.7
 numpy==1.15.2
 PyYAML==5.1
 PyDispatcher==2.0.5
-usbinfo==1.0.0
+usbinfo==1.1.1
+pyudev==0.21.0
 dpkt==1.9.1
 dispatcher==1.0
 jsonfield==2.0.2
