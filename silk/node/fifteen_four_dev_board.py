@@ -309,7 +309,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
             _OT_NCP_FTD_POSIX_APP = POSIX_PATH + '/ot-ncp'
 
-            ncp_socket_path = 'system:{} {} 115200'.format(_OT_NCP_FTD_POSIX_APP, self.device_path)
+            ncp_socket_path = 'system:{} spinel+hdlc+uart://{}?uart-baudrate=115200'.format(_OT_NCP_FTD_POSIX_APP, self.device_path)
 
             command += ' -o Config:NCP:SocketPath \"{}\"'.format(str(ncp_socket_path))
             command += ' -o Config:TUN:InterfaceName {} '.format(self.netns)
