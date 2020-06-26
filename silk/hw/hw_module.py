@@ -18,6 +18,8 @@ can be changed.
 Configs will be locked when they are read to prevent concurrent use of a
 device.
 """
+from builtins import str
+from builtins import object
 from silk.tools import usbdevice
 
 """HW Config file options"""

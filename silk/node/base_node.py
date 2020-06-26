@@ -15,16 +15,20 @@
 """
 Base class of node profiles
 """
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import logging
 import threading
-import Queue
+import queue
 
 import silk.tools.watchable as watchable
 
 
 def not_implemented(f):
     def wrapper(self, *args):
-        print "'%s.%s' not implemented" % (self.__class__.__name__, f.__name__)
+        print("'%s.%s' not implemented" % (self.__class__.__name__, f.__name__))
     return wrapper
 
 
@@ -37,7 +41,7 @@ class BaseNode(object):
     def __init__(self, name='Node'):
         self._connected = False
         self._name = name
-        self._error = Queue.Queue(1)
+        self._error = queue.Queue(1)
         self._all_clear = threading.Event()
         self._lock = threading.Lock()
         self.__store = dict()
@@ -74,7 +78,7 @@ class BaseNode(object):
         """
         try:
             err_msg = self._error.get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             err_msg = None
         return err_msg
 
@@ -85,9 +89,9 @@ class BaseNode(object):
         try:
             self.log_error(msg)
             self._error.put_nowait(msg)
-        except Queue.Full:
-            print '{0}: Failed to post error {1}. Already has error'.format(
-                self._name, msg)
+        except queue.Full:
+            print('{0}: Failed to post error {1}. Already has error'.format(
+                self._name, msg))
 
     def set_all_clear(self, is_all_clear):
         """Update Event to the value of is_all_clear
@@ -115,14 +119,14 @@ class BaseNode(object):
         """
         self._all_clear.wait(self._maxTimeout)
         if not self._all_clear.is_set():
-            print 'Did not get an all-clear!'
+            print('Did not get an all-clear!')
         return self.get_error()
 
     def store_data(self, value, field):
         with self._lock:
             assigned = False
 
-            print field, value
+            print(field, value)
             if isinstance(value, str):
                 value = value.strip()
 

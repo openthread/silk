@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -44,7 +46,7 @@ class TestChildTable(testcase.TestCase):
                 break
             else:
                 cls.joiner_list.append(device)
-        print cls.joiner_list
+        print(cls.joiner_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -104,7 +106,7 @@ class TestChildTable(testcase.TestCase):
             self.wait_for_completion([end_node])
             self.wait_for_completion(self.device_list)
 
-        #The last one will join in as end-device
+        # The last one will join in as end-device
         self.joiner_list[-1].join(self.network_data, "end-node")
         self.joiner_list[-1].set_sleep_poll_interval(100)
         self.wait_for_completion(self.device_list)
@@ -114,18 +116,18 @@ class TestChildTable(testcase.TestCase):
             self.logger.info(end_node.ip6_thread_ula)
 
         ret = self.router.wpanctl("get", "status", 2)
-        print ret
+        print(ret)
 
         for end_node in self.joiner_list:
             ret = end_node.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):
         childTable = self.router.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE, 2)
         childTable = wpan_table_parser.parse_child_table_result(childTable)
 
-        print childTable
+        print(childTable)
 
         self.assertEqual(len(childTable), len(self.joiner_list))
 
@@ -154,7 +156,7 @@ class TestChildTable(testcase.TestCase):
         childAddrTable = self.router.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE_ADDRESSES, 2)
         childAddrTable = wpan_table_parser.parse_child_table_address_result(childAddrTable)
 
-        print childAddrTable
+        print(childAddrTable)
 
         self.assertEqual(len(childAddrTable), len(self.joiner_list))
 
@@ -174,7 +176,7 @@ class TestChildTable(testcase.TestCase):
     def test04_Verify_ChildTable_AsValMap(self):
         childTable = self.router.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE_ASVALMAP, 2)
 
-        print childTable
+        print(childTable)
 
         total_child_table_entry = len(self.joiner_list)
         for item in CHILD_TABLE_AS_VALMAP_ENTRY:

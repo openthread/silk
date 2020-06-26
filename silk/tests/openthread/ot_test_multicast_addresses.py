@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,7 +106,7 @@ class TestMulticastAddresses(testcase.TestCase):
         self.wait_for_completion(self.device_list)
 
         for device in self.device_list:
-            print device.wpanctl("get", "status", 2)
+            print(device.wpanctl("get", "status", 2))
 
     @testcase.test_method_decorator
     def test02_Verify_Multicast_Addresses(self):

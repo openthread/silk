@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import fcntl
 import os
-import Queue
+import queue
 import re
 import select
 import subprocess
 import threading
 import time
 
-import message_item
+from . import message_item
 
 from silk.node.base_node import BaseNode
 
@@ -96,7 +100,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
 
 class SystemCallManager(object):
     def __init__(self):
-        self.__message_queue = Queue.Queue()
+        self.__message_queue = queue.Queue()
         self.__event_lock = threading.Lock()
         self.__worker_thread = threading.Thread(target=self.__worker_run, name="thread-" + self._name)
         self.__worker_thread.daemon = True
@@ -136,7 +140,7 @@ class SystemCallManager(object):
         self.log_debug(log_line)
         self.log_debug(command)
         try:
-            proc = subprocess.Popen(command, shell=True,
+            proc = subprocess.Popen(command, bufsize=0, shell=True,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
         except:
@@ -151,7 +155,6 @@ class SystemCallManager(object):
         curr_line = ""
 
         t_start = time.time()
-
         while True:
             if proc.poll() == 0:
                 break
@@ -164,8 +167,12 @@ class SystemCallManager(object):
 
                 # Check the length of the read list to see if there is new data
                 if len(poll_list[0]) > 0:
-                    curr_line += proc.stdout.read(1)
-            except ValueError:
+                    #print('+++++++++')
+                    curr_line += proc.stdout.read(1).decode('utf-8')
+                    #print('++++++++++++++')
+            #except ValueError:
+            except Exception as err:
+                print('EXCEPTION:{}'.format(err))
                 break
 
             if len(curr_line) > 0 and curr_line[-1] == "\n" and not curr_line.isspace():
@@ -186,10 +193,11 @@ class SystemCallManager(object):
             while True:
                 try:
                     new_char = proc.stdout.read(1)
-                    this_stdout += new_char
+                    this_stdout += new_char.decode('utf-8')
                     if not new_char:
                         break
-                except:
+                except Exception as err:
+                    print('Exception: {}'.format(err))
                     break
             if this_stdout:
                 this_stdout = curr_line + this_stdout
@@ -198,7 +206,6 @@ class SystemCallManager(object):
                 stdout += this_stdout
         except ValueError:
             pass
-
         return stdout
 
     def __clear_message_queue(self):
@@ -208,7 +215,7 @@ class SystemCallManager(object):
         try:
             while True:
                 self.__message_queue.get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             pass
 
     def __set_error(self, msg):

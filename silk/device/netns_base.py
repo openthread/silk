@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,9 +26,9 @@ def createLinkPair(interface_1, interface_2):
     command = "sudo ip link add name %s " % interface_1
     command += "type veth peer name %s"   % interface_2
 
-    print command
+    print(command)
 
-    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+    proc = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
     return proc.communicate()[0]
 
@@ -78,7 +79,10 @@ class NetnsController(SystemCallManager):
 
         self.netns = os.path.basename(self.device_path)
         command = "sudo ip netns add %s" % self.netns
+        print('+'*100)
+        print(command)
         output = self._make_system_call("netns-add", command, 2)
+        print(output)
         return self.netns
 
     def delete_netns(self):
@@ -124,6 +128,7 @@ class NetnsController(SystemCallManager):
         network namespace.
         """
         command = "sudo ip netns exec %s " % self.netns
+        #command = 'sudo '
         command += user_command
         return command
 

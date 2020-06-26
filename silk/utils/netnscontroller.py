@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import object
 import os
 import subprocess
 from silk.utils.process import Process
@@ -22,7 +24,7 @@ def createLinkPair(interface_1, interface_2):
     command = "sudo ip link add name %s " % interface_1
     command += "type veth peer name %s"   % interface_2
 
-    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+    proc = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
     return proc.communicate()[0]
 

@@ -20,7 +20,7 @@ RESULT_LOG_PATH = '/opt/openthread_test/results/'+'silk_run_' + \
                   datetime.datetime.today().strftime("%m-%d") + '/'
 CONFIG_PATH = '/opt/openthread_test/'
 
-os.chdir('/home/pi/silk/silk/tests')
+os.chdir('/home/pi/silk/silk/tests/')
 
 timestamp = datetime.datetime.today().strftime("%m-%d-%H:%M")
 
@@ -29,6 +29,7 @@ run_log_path = RESULT_LOG_PATH + 'test_run_on_' + timestamp + '/'
 argv = ['tests/silk_run.py', '-v2', '-c', CONFIG_PATH+'hwconfig.ini', '-d', run_log_path, 'ot_test_*.py']
 
 silk_run.SilkRunner(argv=argv)
+
 
 
 

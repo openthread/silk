@@ -15,9 +15,15 @@
 """
 This module maintains the set of hardware resources available for testing.
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
-import ConfigParser
-import hw_module
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
+import configparser
+from . import hw_module
 import os.path
 import silk.tests
 
@@ -33,15 +39,15 @@ class HardwareNotFound(Exception):
         return 'HW Model {0} not found for {2}'.format(self.model, self.name)
 
 
-class HwResource:
+class HwResource(object):
     def __init__(self, filename=None, create=False):
         self._hw_modules = []
         self._thread_sniffer_pool = []
-        self._parser = ConfigParser.SafeConfigParser()
+        self._parser = configparser.SafeConfigParser()
         self._filename = filename or DEFAULT_CONFIG_PATH
         self._create = create
         if not os.path.isfile(self._filename):
-            print 'ERROR: No hw config file found at {0}'.format(self._filename)
+            print('ERROR: No hw config file found at {0}'.format(self._filename))
 
     def load_config(self):
         """Returns a Config object from a given INI file"""
@@ -51,16 +57,16 @@ class HwResource:
         if len(filenames) == 0:
             raise RuntimeError("Failed to load objects from %s. Result %s" % (self._filename, str(filenames)))
 
-        print 'Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename)
+        print('Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
-        print 'Located {0} Physical Resources...'.format(len(self._hw_modules))
+        print('Located {0} Physical Resources...'.format(len(self._hw_modules)))
 
     def free_hw_module(self, module):
         """Free a particular module"""
         if module in self._hw_modules:
             module.free()
         else:
-            print 'Module %s not found!' % module.name()
+            print('Module %s not found!' % module.name())
 
     def get_hw_module(self, model, sw_version=None, name=None):
         """Get a particular hardware module"""
@@ -94,7 +100,7 @@ class HwResource:
 
     def print_hw_modules(self):
         for m in self._hw_modules:
-            print m
+            print(m)
 
     def _create_config_if_needed(self):
         if not os.path.isfile(self._filename) and self._create:
@@ -114,7 +120,7 @@ class HwResource:
                 try:
                     self._add_hw_module(hw_module.HwModule(s, self._parser))
                 except RuntimeError as e:
-                    print "Failed to add %s" % s
+                    print("Failed to add %s" % s)
                     pass
 
     def _add_hw_module(self, module):

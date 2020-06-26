@@ -23,12 +23,14 @@ else
           ./nrfjprog.sh --flash /opt/openthread_test/nrf52840_image/ot-ncp-ftd.hex $serial_num
       done
     fi
+
     echo "Running OT test suite with latest $REPO_NAME version"
-    sudo python /home/pi/silk/silk/unit_tests/silk_run_test.py
+    DATE=`date +%b%m%Y_%H_%M_%S`
+    LOG_FILE="/opt/openthread_test/results/$DATE"
+    sudo python ../tests/silk_run.py -v2 -c /opt/openthread_test/hwconfig.ini -d $LOG_FILE/ P ot_test_*.py
+    
 fi
 }
 
 run_test wpantund flash_wpantund.sh
 run_test openthread build_nrf52840.sh
-
-

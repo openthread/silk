@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -94,7 +96,7 @@ class TestParentResetChildRecovery(testcase.TestCase):
         child_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
         child_table = wpan_table_parser.parse_child_table_result(child_table)
 
-        print child_table
+        print(child_table)
 
         verify(len(child_table) == NUM_CHILDREN)
 
@@ -120,11 +122,11 @@ class TestParentResetChildRecovery(testcase.TestCase):
         self.wait_for_completion(self.device_list)
 
         ret = self.router.wpanctl("get", "status", 2)
-        print ret
+        print(ret)
 
         for end_node in self.all_children:
             ret = end_node.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):
@@ -138,7 +140,7 @@ class TestParentResetChildRecovery(testcase.TestCase):
         for child in self.all_children:
             child_num_state_changes.append(len(wpan_table_parser.parse_list(child.get("stat:ncp"))))
 
-        print child_num_state_changes
+        print(child_num_state_changes)
 
         # Reset the parent
         self.router.reset_thread_radio()

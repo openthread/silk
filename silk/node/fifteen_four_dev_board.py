@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import division
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
+from past.utils import old_div
 import logging
 import os
 import re
@@ -47,6 +51,7 @@ RETRY = 3
 
 
 IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
+
 
 def get_local_ip():
     for ip_interface in IP_INTERFACES:
@@ -137,10 +142,10 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         # Check what platform Silk is running on.  If it is an ARM device,
         # allow up to 2 minutes for wpantund to start.
-        if "armv7l" in subprocess.check_output("uname -m", shell=True):
-            self.wpantund_start_time = 120  # seconds
-        else:
-            self.wpantund_start_time = 30
+        #if "armv7l" in subprocess.check_output("uname -m", shell=True):
+        #    self.wpantund_start_time = 120  # seconds
+        #else:
+        self.wpantund_start_time = 30
 
         if os.geteuid() != 0:
             logging.error('ERROR: {0} requires "sudo" access'.format(type(self).__name__))
@@ -329,8 +334,9 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         try:
             self.wpantund_process = subprocess_runner.SubprocessRunner(command)
+
         except Exception:
-            print traceback.format_exc()
+            print(traceback.format_exc())
 
         # Install signal listeners here
         self.wpantund_monitor = WpantundMonitor(publisher=self.wpantund_process)
@@ -602,7 +608,7 @@ class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode):
 
     def add_route(self, prefix, subnet, mac, length):
         ip_addr = silk_ip.assemble(prefix, subnet, mac)
-        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,length/8),
+        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,old_div(length,8)),
                            "Route prefix added.", 5)
 
 

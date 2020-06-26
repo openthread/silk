@@ -17,6 +17,7 @@ this module is used to execute the shell script
 """
 
 from __future__ import absolute_import, print_function
+from builtins import object
 import subprocess
 import os
 import time
@@ -36,7 +37,7 @@ class Process(object):
 
     def process_cmd(self):
         try:
-            self.process = subprocess.Popen("exec " + self.cmd, shell=True, stdout=subprocess.PIPE)
+            self.process = subprocess.Popen("exec " + self.cmd, bufsize=0, shell=True, stdout=subprocess.PIPE)
             return self.process
         except Exception as e:
             return None
@@ -53,6 +54,7 @@ class Process(object):
     def process_cmd_asyc(self):
         self.stop_thread = threading.Event()
         self.process = subprocess.Popen(self.cmd,
+                                        bufsize=0,
                                         stdout=subprocess.PIPE,
                                         stdin=subprocess.PIPE,
                                         stderr=subprocess.STDOUT,
@@ -88,5 +90,5 @@ class Process(object):
 
     @staticmethod
     def execute_command(cmd):
-        process = subprocess.Popen("exec " + cmd, shell=True, stdout=subprocess.PIPE)
+        process = subprocess.Popen("exec " + cmd, bufsize=0, shell=True, stdout=subprocess.PIPE)
         process.communicate()

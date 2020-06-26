@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -112,10 +114,10 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
 
         for _ in range(18):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print node_type == 'router'
+            print(node_type == 'router')
 
             if node_type == 'router':
-                print 'Matched!!!!!!!!!!!!!'
+                print('Matched!!!!!!!!!!!!!')
                 break
             time.sleep(10)
         else:
@@ -159,8 +161,8 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
         wait_time = 5
         while not is_associated(self.r1):
             if time.time() - start_time > wait_time:
-                print 'Took too long for node to recover after reset ({}>{} sec)'.format(time.time() - start_time,
-                                                                                         wait_time)
+                print('Took too long for node to recover after reset ({}>{} sec)'.format(time.time() - start_time,
+                                                                                         wait_time))
                 exit(1)
             time.sleep(0.25)
 

@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -287,7 +288,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
             output = self.wpanctl("scan", "scan -c {}".format(channel), 20)
         else:
             output = self.wpanctl("scan", "scan ", 20)
-        print output
+        print(output)
         return output
 
     def get_energy_scan(self, channel=None):
@@ -336,6 +337,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl('remove-route', 'remove-route ' + route_prefix +
                             (' -l {}'.format(prefix_len) if prefix_len is not None else '') +
                             (' -p {}'.format(priority) if priority is not None else ''))
+
 #################################
 #   Calls into wpanctl for commissioning process in commissioner-joiner model
 #################################
@@ -356,7 +358,6 @@ class WpantundWpanNode(wpan_node.WpanNode):
 #################################
 #   Calls into wpanctl for querying commissioning data
 #################################
-
     def setprop(self, key, value, data=False):
         """
         Make a call into wpanctl setprop to set the desired parameter.
@@ -372,8 +373,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
         Make a call into wpanctl getprop to query the desired parameter.
         """
         prop = self.wpanctl("getprop", "getprop %s" % property_name, 2)
-        if isinstance(prop, unicode):
-            prop = prop.encode('ascii', 'ignore')
+        # if isinstance(prop, str):
+        #     prop = prop.encode('ascii', 'ignore')
         # Added check if wpantund is not started
         return prop.split("=")[1].strip() if '=' in prop else prop
 

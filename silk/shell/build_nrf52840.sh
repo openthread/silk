@@ -39,15 +39,18 @@ if [[ $output == *"Already"* ]]; then
   ./bootstrap
 
   CPPFLAGS="${CPPFLAGS} -DOPENTHREAD_CONFIG_LOG_LEVEL=OT_LOG_LEVEL_INFO"
+  CPPFLAGS="${CPPFLAGS} -DOPENTHREAD_CONFIG_MLE_INFORM_PREVIOUS_PARENT_ON_REATTACH=1"
   CPPFLAGS="${CPPFLAGS}" make -f examples/Makefile-nrf52840 \
     BORDER_ROUTER=1 \
     CHILD_SUPERVISION=1 \
-    LOG_OUTPUT=NCP_SPINEL \
+    LOG_OUTPUT=APP \
     MAC_FILTER=1 \
     REFERENCE_DEVICE=1 \
+    COMMISSIONER=1\
+    JOINER=1\
     USB=1
 
-  echo "Completed buildin, change to output/nrf52840/bin"
+  echo "Completed building, change to output/nrf52840/bin"
   cd output/nrf52840/bin/
 
   echo "Convert to hex file..."
