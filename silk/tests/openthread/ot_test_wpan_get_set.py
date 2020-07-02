@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +22,6 @@ from silk.utils import process_cleanup
 
 import random
 import unittest
-import time
 
 hwr.global_instance()
 
@@ -136,9 +136,9 @@ class TestWpanGetSet(testcase.TestCase):
 
         cls.add_test_device(cls.router)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
         cls.network_data = WpanCredentials(
             network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
@@ -151,8 +151,8 @@ class TestWpanGetSet(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -207,7 +207,7 @@ class TestWpanGetSet(testcase.TestCase):
 
         for prop in all_gettable_props:
             value = self.router.get(prop)
-            print value
+            print(value)
 
             self.assertFalse('Property Not Found' in value, 'Property: {} was not found !!!'.format(prop))
 

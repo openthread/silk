@@ -1,3 +1,4 @@
+
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 import re
-import string
 import silk.postprocessing.util
 import ipaddress
 
@@ -32,7 +33,7 @@ IPV6_CROSS_IGNORE_DESTS = [
 
 
 def ipv6_address_reformat(addr):
-    ret = ipaddress.ip_address(unicode(addr)).exploded
+    ret = ipaddress.ip_address(str(addr)).exploded
     ret = str(ret).upper()
 
     return ret
@@ -98,7 +99,7 @@ def ipv6_assemble(prefix, subnet, iid):
 
     if len(iid) != 16:
         #QK TODO
-        print 'iid={}'.format(iid)
+        print('iid={}'.format(iid))
         raise ValueError("iid must be length 16, %u given" % len(iid))
 
     lower64 = int(iid, 16) | ( 1 << 57 )
@@ -109,8 +110,8 @@ def ipv6_assemble(prefix, subnet, iid):
     addr = [x.replace(':','') for x in addr]
 
     # Join and Insert ':'s
-    addr = string.join(addr, '')
-    addr = string.join(re.findall(r"[0-9A-Fa-f]{4}", addr),':')
+    addr = ''.join(addr)
+    addr = ':'.join(re.findall(r"[0-9A-Fa-f]{4}", addr))
 
     return addr
 

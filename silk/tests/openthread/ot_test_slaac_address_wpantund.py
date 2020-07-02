@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -138,9 +139,9 @@ class TestSlaacAddressWpantund(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.fed1.join(self.network_data, "end-node")
-
         self.wait_for_completion(self.device_list)
 
         for _ in range(10):

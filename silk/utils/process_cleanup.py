@@ -29,7 +29,9 @@ def ps_cleanup(usb_port='ALL', logname=LOG_FILE):
         logging.info(output)
 
         logging.info('#'*10 + 'Kill all wpantund processes if any ' +  '#'*10)
-        for line in output.split('\n'):
+        output_str = output.decode('utf-8')
+        # for line in output.split('\n'):
+        for line in output_str:
             if 'sbin/wpantund' in line and (usb_port.upper() == 'ALL' or line.split()[-1] == usb_port):
                 pid = line.split()[1]
                 logging.info(pid)

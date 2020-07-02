@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +39,7 @@ class TestFirmwareUpgrade(testcase.TestCase):
                 break
             else:
                 cls.device_list.append(device)
-        print cls.device_list
+        print(cls.device_list)
 
     @classmethod
     @testcase.setup_class_decorator

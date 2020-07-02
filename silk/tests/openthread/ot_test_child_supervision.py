@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -32,6 +35,7 @@ CHILD_SUPERVISION_CHECK_TIMEOUT = 12
 PARENT_SUPERVISION_INTERVAL = 10
 
 hwr.global_instance()
+
 
 class TestChildSupervision(testcase.TestCase):
     poll_interval = 500
@@ -70,8 +74,8 @@ class TestChildSupervision(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -83,11 +87,10 @@ class TestChildSupervision(testcase.TestCase):
 
     def find_string_in_log_file(self):
         filename = os.path.join(self.current_output_directory, 'silk.log')
-
         cmd = 'grep ' + '"' + self.child_supervision_msg + '" ' + filename
         ret = subprocess.check_output(cmd, shell=True)
-        print ret   
-        return verify(self.child_supervision_msg in ret)
+        self.logger.info(ret)
+        return verify(self.child_supervision_msg in ret.decode('utf-8'))
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
@@ -102,40 +105,35 @@ class TestChildSupervision(testcase.TestCase):
         self.network_data.xpanid = self.router.xpanid
         self.network_data.panid = self.router.panid
 
-        # QK TODO change sleepy to sleepy-end-device
-        # self.joiner.join(self.network_data, "sleepy")
         self.sed.join(self.network_data, "sleepy-end-device")
-
-        self.sed.set_sleep_poll_interval(self.poll_interval)
         self.wait_for_completion(self.device_list)
+        self.sed.set_sleep_poll_interval(self.poll_interval)
 
         self.sed.setprop(wpan.WPAN_THREAD_CHILD_TIMEOUT, str(CHILD_TIMEOUT))
-
-        print self.sed.getprop(wpan.WPAN_THREAD_CHILD_TIMEOUT)
 
     @testcase.test_method_decorator
     def test02_GetWpanStatus(self):
         for _ in range(1):
             ret = self.router.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
             ret = self.router.wpanctl("get", "get Thread:NeighborTable", 2)
-            print ret
+            print(ret)
 
             ret = self.router.wpanctl("get", "get Thread:ChildTable", 2)
-            print ret
+            print(ret)
 
             ret = self.sed.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
             ret = self.sed.wpanctl("get", "get NCP:ExtendedAddress", 2)
-            print 'Extended Address:{}'.format(ret)
+            print('Extended Address:{}'.format(ret))
 
             ret = self.sed.wpanctl("get", "get NCP:HardwareAddress", 2)
-            print 'SED Hardware Address:{}'.format(ret)
+            print('SED Hardware Address:{}'.format(ret))
 
             ret = self.sed.wpanctl("get", "get NCP:MACAddress", 2)
-            print 'SED MAC Address:{}'.format(ret)
+            print('SED MAC Address:{}'.format(ret))
 
             time.sleep(5)
 
@@ -147,22 +145,22 @@ class TestChildSupervision(testcase.TestCase):
     def test04_settings(self):
         self.sed.setprop(wpan.WPAN_POLL_INTERVAL, str(self.poll_interval))
         interval = self.sed.getprop(wpan.WPAN_POLL_INTERVAL)
-        print interval
+        print(interval)
         self.assertEqual(int(interval), self.poll_interval)
 
         self.sed.setprop(wpan.WPAN_THREAD_CHILD_TIMEOUT, str(CHILD_TIMEOUT))
         timeout = self.sed.getprop(wpan.WPAN_THREAD_CHILD_TIMEOUT)
-        print timeout
+        print(timeout)
         self.assertEqual(int(timeout), CHILD_TIMEOUT)
 
         self.sed.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, '0')
         child_supervision_timeout = self.sed.getprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT)
-        print child_supervision_timeout
+        print(child_supervision_timeout)
         self.assertEqual(int(child_supervision_timeout, 16), 0)
 
         self.router.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, '0')
         child_supervision_interval = self.router.getprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL)
-        print child_supervision_interval
+        print(child_supervision_interval)
         self.assertEqual(int(child_supervision_interval, 16), 0)
 
     @testcase.test_method_decorator
@@ -176,7 +174,7 @@ class TestChildSupervision(testcase.TestCase):
                 break
         else:
             msg = 'Failed to find a child entry for extended address {} in table'.format(sed_ext_address)
-            print msg
+            print(msg)
 
         self.assertEqual(int(e.rloc16, 16), int(self.sed.wpanctl("get", "get " +
                                                                  wpan.WPAN_THREAD_RLOC16, 2).split('=')[-1].strip(), 16))
@@ -188,19 +186,19 @@ class TestChildSupervision(testcase.TestCase):
     def test06_enable_whitelist(self):
         self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, '1')
 
-        print self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED)
+        print(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED))
 
         self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), 'true')
 
         time.sleep(CHILD_TIMEOUT+3)
 
         childTable = self.router.wpanctl("get", "get Thread:ChildTable", 2)
-        print 'Child Table:'
-        print childTable
+        print('Child Table:')
+        print(childTable)
         childTable = wpan_table_parser.parse_child_table_result(childTable)
         sed_ext_address = self.sed.wpanctl("get", "get NCP:ExtendedAddress", 2).split('=')[-1].strip()[1:-1]
 
-        print childTable
+        print(childTable)
 
         for e in childTable:
             self.assertNotEqual(e.ext_address, sed_ext_address, 'SED MAC {} still still in Router ChildTable'.format(e.ext_address))
@@ -244,8 +242,8 @@ class TestChildSupervision(testcase.TestCase):
         # messages to its child, MAC counter for number of unicast tx is
         # used.
 
-        print parent_unicast_tx_count
-        print self.router.getprop("NCP:Counter:TX_PKT_UNICAST")
+        print(parent_unicast_tx_count)
+        print(self.router.getprop("NCP:Counter:TX_PKT_UNICAST"))
 
         self.assertGreaterEqual(int(self.router.getprop("NCP:Counter:TX_PKT_UNICAST"), 0), parent_unicast_tx_count+1)
 
@@ -261,9 +259,8 @@ class TestChildSupervision(testcase.TestCase):
 
         self.router.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
 
-        self.child_supervision_msg = 'Sending supervision message to child'
+        self.child_supervision_msg = ' Sending supervision message to child'
         result = verify_within(self.find_string_in_log_file, PARENT_SUPERVISION_INTERVAL*10)
-
         self.assertTrue(result, 'Cannot find the expected string:{} in log file !!!'.format(self.child_supervision_msg))
 
 

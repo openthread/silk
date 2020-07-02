@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -118,16 +119,17 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.ed1.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
         for _ in range(10):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print node_type == 'router'
+            print(node_type == 'router')
 
             if node_type == 'router':
-                print 'Matched!!!!!!!!!!!!!'
+                print('Matched!!!!!!!!!!!!!')
                 break
             time.sleep(10)
         else:

@@ -61,7 +61,6 @@ ip.IPV6_REGEX, ip.IPV6_ALL_NODES_BROADCAST_SHORT))
 __WPAN_PACKET_FROM_TO_WPANTUND_REGEX = re.compile("\s+(TO|FROM)\((LOCAL|REMOTE)\):\[(%s)\](:\d*)?" % ip.IPV6_REGEX)
 __WPAN_PACKET_CHECKSUM_REGEX = re.compile("\s*(NEXTH:\d+, )?CKSUM:0X(%s+)" % util.REGEX_HEX)
 
-# __WPAN_PACKET_PAYLOAD_REGEX = re.compile("\w*\xE2\x86\xB3\w+(%s+)" % util.REGEX_HEX)↳
 __WPAN_PACKET_PAYLOAD_REGEX = re.compile("\s*↳\s*(%s+)" % util.REGEX_HEX)
 
 WPAN_STATS_REGEX = re.compile("Stats ([A-Z_]*): ([\d]*)$")

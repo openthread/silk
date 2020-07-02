@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
 from silk.tools import wpan_table_parser
 import silk.hw.hw_resource as hwr
 import silk.tests.testcase as testcase
-from silk.tools.wpan_util import verify, verify_within, is_associated, VerifyError
+from silk.tools.wpan_util import verify, verify_within, VerifyError
 from silk.utils import process_cleanup
 import random
 import unittest
@@ -56,9 +58,9 @@ class TestChildModeChange(testcase.TestCase):
         cls.add_test_device(cls.child1)
         cls.add_test_device(cls.child2)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
         cls.network_data = WpanCredentials(
             network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
@@ -71,8 +73,8 @@ class TestChildModeChange(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -88,7 +90,7 @@ class TestChildModeChange(testcase.TestCase):
         table entry's mode value matches the children Thread mode.
         """
         child_table = wpan_table_parser.parse_child_table_result(parent.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE, 2))
-        print child_table
+        print(child_table)
 
         verify(len(child_table) == len(children))
         for child in children:
@@ -122,12 +124,12 @@ class TestChildModeChange(testcase.TestCase):
         self.network_data.panid = self.parent.panid
 
         self.child1.join(self.network_data, "end-node")
+        self.wait_for_completion(self.device_list)
         self.child1.set_sleep_poll_interval(self.poll_interval)
 
         self.child2.join(self.network_data, "sleepy-end-device")
-        self.child2.set_sleep_poll_interval(self.poll_interval)
-
         self.wait_for_completion(self.device_list)
+        self.child2.set_sleep_poll_interval(self.poll_interval)
 
     @testcase.test_method_decorator
     def test02_Verify_Child_Mode(self):
@@ -147,6 +149,8 @@ class TestChildModeChange(testcase.TestCase):
 
         # Reset parent and verify all children are recovered
         self.parent.reset_thread_radio()
+        self.wait_for_completion(self.device_list)
+
         verify_within(self.check_child_table, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
@@ -167,6 +171,8 @@ class TestChildModeChange(testcase.TestCase):
 
         # Reset parent and verify all children are recovered
         self.parent.reset_thread_radio()
+        self.wait_for_completion(self.device_list)
+
         verify_within(self.check_child_table, WAIT_INTERVAL)
 
 

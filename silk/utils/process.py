@@ -17,15 +17,10 @@ this module is used to execute the shell script
 """
 
 from __future__ import absolute_import, print_function
-import subprocess
+from builtins import object
 import os
-import time
-import fcntl
-import signal
 import subprocess
 import threading
-
-from silk.utils.jsonfile import JsonFile
 
 
 class Process(object):
@@ -36,14 +31,13 @@ class Process(object):
 
     def process_cmd(self):
         try:
-            self.process = subprocess.Popen("exec " + self.cmd, shell=True, stdout=subprocess.PIPE)
+            self.process = subprocess.Popen("exec " + self.cmd, bufsize=0, shell=True, stdout=subprocess.PIPE)
             return self.process
         except Exception as e:
             return None
 
     def process_cmd_asyc_end(self, key_word):
         self.stop_thread.set()
-        # os.kill(self.process.pid, signal.SIGTERM)
         kill_cmd = "ps -ef | grep " + "'" + key_word + "'"  \
                   + " | grep -v grep | awk '{print $2}'"         \
                   + " | xargs kill"
@@ -53,6 +47,7 @@ class Process(object):
     def process_cmd_asyc(self):
         self.stop_thread = threading.Event()
         self.process = subprocess.Popen(self.cmd,
+                                        bufsize=0,
                                         stdout=subprocess.PIPE,
                                         stdin=subprocess.PIPE,
                                         stderr=subprocess.STDOUT,
@@ -65,7 +60,7 @@ class Process(object):
     def read(self, process):
         while not self.stop_thread.is_set():
             output = process.stdout.readline()
-            #TODO: should add the logic to record the log info here
+            # TODO: should add the logic to record the log info here
             print(output.strip())
             if output == '' and self.process.poll() is not None:
                 break
@@ -88,5 +83,5 @@ class Process(object):
 
     @staticmethod
     def execute_command(cmd):
-        process = subprocess.Popen("exec " + cmd, shell=True, stdout=subprocess.PIPE)
+        process = subprocess.Popen("exec " + cmd, bufsize=0, shell=True, stdout=subprocess.PIPE)
         process.communicate()
