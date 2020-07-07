@@ -29,6 +29,7 @@ hwMacPortOption = 'MacSerialPort'
 interfaceSerial = 'InterfaceSerialNumber'
 interfaceNumber = 'USBInterfaceNumber'
 dutSerialNumber = 'DutSerial'
+otnsVisLocation = 'OTNSVisLocation'
 
 """HW Config Models"""
 
@@ -99,6 +100,9 @@ class HwModule(object):
 
     def get_dut_serial(self):
         return self.__get_option_str(dutSerialNumber)
+
+    def get_otns_vis_location(self):
+        return self.__get_option_str(otnsVisLocation)
 
     def find_device_from_serial(self, device_type, serial, interface_number):
         devname, device = usbdevice.device_find_from_serial(device_type, serial, interface_number)
