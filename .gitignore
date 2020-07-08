@@ -7,3 +7,5 @@ build/*.*
 dist/*.*
 testbed.egg-info/*.*
 
+*pb2.py
+*pb2_grpc.py

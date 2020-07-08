@@ -34,15 +34,15 @@ link_sh_to_bash()
 install_packages_apt()
 {
     # apt update and install dependencies
-#    sudo apt-get update
-    sudo apt-get install python-pip expect figlet graphviz python-tk -y
+    sudo apt-get update
+    sudo apt-get install python3-pip expect figlet graphviz python3-tk -y
 }
 
 install_packages_pip()
 {
     # pip install dependencies
-    sudo python -m pip install pip --upgrade
-    sudo python -m pip install -r requirements.txt
+    sudo python3 -m pip install pip --upgrade
+    sudo python3 -m pip install -r requirements.txt
 }
 
 install_packages()
@@ -52,9 +52,16 @@ install_packages()
     link_sh_to_bash
 }
 
+compile_proto()
+{
+    cd "$abs_top_srcdir"/silk/tools/pb || return 1
+    python3 -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. visualize_grpc.proto
+}
+
 main()
 {
     install_packages
+    compile_proto
 }
 
 main
