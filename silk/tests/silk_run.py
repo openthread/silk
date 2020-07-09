@@ -165,6 +165,9 @@ class SilkRunner(object):
         if args.results_dir is not None:
             print('Setting results dir to {0}'.format(args.results_dir))
             silk.tests.testcase.setOutputDirectory(args.results_dir)
+        if args.otns_server is not None:
+            print('Setting OTNS server host to {0}'.format(args.otns_server))
+            silk.tests.testcase.setOtnsHost(args.otns_server)
         silk.tests.testcase.setStreamVerbosity(self.verbosity)
         hw_resource.global_instance(args.hw_conf_file)
 

@@ -103,10 +103,20 @@ class HwModule(object):
         return self.__get_option_str(dutSerialNumber)
 
     def get_otns_vis_location(self):
-        return self.__get_option_str(otnsVisLocation)
+        coord_str = self.__get_option_str(otnsVisLocation)
+        parts = coord_str.split(",")
+        if len(parts) != 2:
+            raise ValueError(
+                "Node location must have x and y coords. Provided: %s" % coord_str)
+
+        return int(parts[0]), int(parts[1])
     
     def get_otns_vis_node_id(self):
-        return self.__get_option_str(otnsVisNodeId)
+        node_id = int(self.__get_option_str(otnsVisNodeId))
+        if node_id <= 0:
+            raise ValueError(
+                "Node ID must be greater than 0. Provided: %d" % node_id)
+        return node_id
 
     def find_device_from_serial(self, device_type, serial, interface_number):
         devname, device = usbdevice.device_find_from_serial(device_type, serial, interface_number)

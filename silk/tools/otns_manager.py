@@ -26,6 +26,7 @@ import struct
 
 import grpc
 
+from silk.hw.hw_module import HwModule
 from silk.node.fifteen_four_dev_board import ThreadDevBoard
 from silk.tools.pb import visualize_grpc_pb2
 from silk.tools.pb import visualize_grpc_pb2_grpc
@@ -83,12 +84,13 @@ class GRpcClient:
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
     self.logger = logging.getLogger("GRpcClient")
 
-  def add_node(self, x: int, y: int):
+  def add_node(self, x: int, y: int, node_id: int):
     """Sends an add node request.
 
     Args:
       x (int): x coordinate of the new node.
       y (int): y coordinate of the new node.
+      node_id (int): node ID of the new node.
     """
     mode = visualize_grpc_pb2.NodeMode(
         rx_on_when_idle=False,
@@ -96,9 +98,11 @@ class GRpcClient:
         full_thread_device=True,
         full_network_data=False)
     response = self.stub.CtrlAddNode(
-        visualize_grpc_pb2.AddNodeRequest(x=x, y=y, is_router=True, mode=mode))
+        visualize_grpc_pb2.AddNodeRequest(
+            x=x, y=y, node_id=node_id, is_router=True, mode=mode))
     self.logger.info(
-        "Added node at x={:d}, y={:d}, response: {})".format(x, y, response))
+        "Added node {:d} at x={:d}, y={:d}, response: {})".format(
+            node_id, x, y, response))
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request.
@@ -200,93 +204,32 @@ class OtnsNode(object):
 
   Attributes:
     node_id (int): ID of the node.
-    extaddr (int): extended address of the node. 8 bytes.
-    rloc16 (int): last 4 bytes of the routing locator (RLOC).
-    role (RoleType): role of the node.
-    par_id (int): ID of the partition in which the node is located.
-    children ([int]): list of children's extended addresses.
     sock (socket): UDP socket to send message from.
     source_addr (str, int): UDP source address.
     dest_addr  (str, int): UDP destination address.
   """
 
-  def __init__(self, node_id: int, extaddr: int,
-               dispatcher_host: str, dispatcher_port: int):
+  def __init__(self, node_id: int, dispatcher_host: str, dispatcher_port: int):
     """Initialize a node.
 
     Args:
       node_id (int): ID of the node.
-      extaddr (int): extended address of the node.
       dispatcher_host (str): host address of the OTNS dispatcher.
       dispatcher_port (int): port number of the OTNS dispatcher.
     """
     assert node_id > 0
 
     self.node_id = node_id
-    self.extaddr = extaddr
-    self.rloc16 = 0xfffe
-    self.role = RoleType.DISABLED
-    self.par_id = 0
-
-    self.children = set()
 
     self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     self.source_addr = ("", dispatcher_port + node_id)
     self.dest_addr = (dispatcher_host, dispatcher_port)
     self.sock.bind(self.source_addr)
 
-    self.send_extaddr_event()
-    self.send_rloc16_event()
-    self.send_role_event()
-    self.send_par_id_event()
-
   def close(self):
     """Close the node's socket connection.
     """
     self.sock.close()
-
-  def send_extaddr_event(self):
-    """Send extaddr event.
-    """
-    event = Event.status_event("extaddr={:016x}".format(self.extaddr))
-    self.sock.sendto(event.to_bytes(), self.dest_addr)
-
-  def send_rloc16_event(self):
-    """Send rloc16 event.
-    """
-    event = Event.status_event("rloc16={:05d}".format(self.rloc16))
-    self.sock.sendto(event.to_bytes(), self.dest_addr)
-
-  def send_role_event(self):
-    """Send role event.
-    """
-    event = Event.status_event("role={:1d}".format(self.role.value))
-    self.sock.sendto(event.to_bytes(), self.dest_addr)
-
-  def send_par_id_event(self):
-    """Send par_id event.
-    """
-    event = Event.status_event("parid={:08x}".format(self.par_id))
-    self.sock.sendto(event.to_bytes(), self.dest_addr)
-
-  def send_child_added_event(self, child_addr: int):
-    """Send child added event.
-
-    Args:
-      child_addr (str): extended address of the child
-        that is added to this node.
-    """
-    event = Event.status_event("child_added={:016x}".format(child_addr))
-    self.sock.sendto(event.to_bytes(), self.dest_addr)
-
-  def send_alarm_event(self, delay=1):
-    """Send alarm event.
-
-    Args:
-      delay (int, optional): alarm delay in us. Defaults to 1.
-    """
-    event = Event.alarm_event(delay=delay)
-    self.sock.sendto(event.to_bytes(), self.dest_addr)
 
   def send_event(self, event_packet: bytes):
     """Send event bytes packet.
@@ -295,56 +238,6 @@ class OtnsNode(object):
       event_packet (bytes): pacakged event content in bytes.
     """
     self.sock.sendto(event_packet, self.dest_addr)
-
-  def update_extaddr(self, extaddr: int):
-    """Update the node's extended address.
-
-    Args:
-      extaddr (int): new extended address of the node.
-    """
-    if extaddr != self.extaddr:
-      self.extaddr = extaddr
-      self.send_extaddr_event()
-
-  def update_rloc16(self, rloc16: int):
-    """Update the node's RLOC16.
-
-    Args:
-      rloc16 (int): new RLOC16 of the node.
-    """
-    if rloc16 != self.rloc16:
-      self.rloc16 = rloc16
-      self.send_rloc16_event()
-
-  def update_role(self, role: RoleType):
-    """Update the node's role.
-
-    Args:
-      role (RoleType): new role of the node.
-    """
-    if role != self.role:
-      self.role = role
-      self.send_role_event()
-
-  def update_par_id(self, par_id: int):
-    """Update the node's partition ID.
-
-    Args:
-      par_id (int): new partition ID of the node.
-    """
-    if par_id != self.par_id:
-      self.par_id = par_id
-      self.send_par_id_event()
-
-  def add_child(self, child_addr: int):
-    """Add a node as a child of this node.
-
-    Args:
-      child_addr (int): extended address of the child to add.
-    """
-    if child_addr not in self.children:
-      self.children.add(child_addr)
-      self.send_child_added_event(child_addr)
 
 
 class WpantundOtnsMonitor(signal.Subscriber):
@@ -387,8 +280,9 @@ class OtnsManager(object):
   Attributes:
     dispatcher_host (str): host address of OTNS dispatcher.
     grpc_client (GRpcClient): OTNS gRPC client.
-    nodes (List[ThreadDevBoard]): dev boards managed by this manager.
+    otns_nodes (List[OtnsNode]): OTNS nodes managed my this manager.
     subscribers (List[signal.Subscriber]): wpatund process signal subscribers.
+    logger (Logger): logger for the manager class.
   """
 
   def __init__(self, dispatcher_host: str):
@@ -400,22 +294,70 @@ class OtnsManager(object):
     self.dispatcher_host = dispatcher_host
     self.grpc_client = GRpcClient(
         server_addr="{:s}:{:d}".format(dispatcher_host, GRPC_SERVER_PORT))
-    self.nodes = []
+    self.otns_nodes = []
     self.subscribers = []
 
+    self.logger = logging.getLogger("OTNSManager")
+
   def add_node(self, node: ThreadDevBoard):
-    node.otns_manager = self
-    self.nodes.append(node)
+    """Add a node to OTNS visualization.
+
+    Args:
+        node (ThreadDevBoard): node to add, with dev board properties.
+    """
+    if isinstance(node, HwModule):
+      try:
+        node_id = node.get_otns_vis_node_id()
+        vis_x, vis_y = node.get_otns_vis_location()
+        otns_node = OtnsNode(node_id, self.dispatcher_host, DISPATCHER_PORT)
+
+        self.logger.debug("Adding node {:d} to OTNS".format(node_id))
+        self.grpc_client.add_node(vis_x, vis_y, node_id)
+
+        node.otns_manager = self
+        self.otns_nodes.append(otns_node)
+      except ValueError:
+        self.logger.error("Failed to get node OTNS properties.")
+    else:
+      self.logger.error("Trying to add a non HwModule node to manager.")
 
   def remove_node(self, node: ThreadDevBoard):
-    self.nodes.remove(node)
+    """Remove a node from OTNS visualization.
+
+    Args:
+        node (ThreadDevBoard): node to remove, with dev board properties.
+    """
+    if node.otns_manager is self:
+      node.otns_manager = None
+
+    if isinstance(node, HwModule):
+      for otns_node in self.otns_nodes:
+        try:
+          target_node_id = node.get_otns_vis_node_id()
+          if otns_node.node_id == target_node_id:
+            node_id = otns_node.node_id
+            self.logger.debug("Removing node {:d} from OTNS".format(node_id))
+            self.grpc_client.delete_node(node_id)
+            break
+        except ValueError:
+          self.logger.error("Failed to get node OTNS properties.")
 
   def subscribe_to_node(self, node: ThreadDevBoard):
+    """Create a wpantund OTNS monitor and subscribe it to the node.
+
+    Args:
+        node (ThreadDevBoard): node to subscribe to.
+    """
     wpantund_otns_monitor = WpantundOtnsMonitor(publisher=node.wpantund_process)
     wpantund_otns_monitor.node = node
     self.subscribers.append(wpantund_otns_monitor)
 
   def unsubscribe_from_node(self, node: ThreadDevBoard):
+    """Remove the wpantund OTNS subscriber of the node.
+
+    Args:
+        node (ThreadDevBoard): node to unsubscribe from.
+    """
     for i, subscriber in enumerate(self.subscribers):
       if node is subscriber.node:
         subscriber.unsubscribe()

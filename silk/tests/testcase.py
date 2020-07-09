@@ -53,11 +53,21 @@ DEFAULT_DISPATCHER_HOST = "localhost"
 __stream_verbosity = 1
 __file_handler = None
 __stream_handler = None
+__otns_host = DEFAULT_DISPATCHER_HOST
 
 
 def setOutputDirectory(path):
     """ Set the output directory path for test results. """
     os.environ[OUTPUT_DIRECTORY_KEY] = path
+
+def setOtnsHost(host: str):
+    """Set the OTNS server host for the test case.
+
+    Args:
+        host (str): OTNS server host
+    """
+    global __otns_host
+    __otns_host = host
 
 def setStreamVerbosity(verbosity):
     """ Set the verbose level of console output
@@ -401,7 +411,7 @@ class TestCase(unittest.TestCase):
     """
 
     thread_sniffers = {}
-    otns_manager = OtnsManager(dispatcher_host=DEFAULT_DISPATCHER_HOST)
+    otns_manager = OtnsManager(dispatcher_host=__otns_host)
 
     def wait_for_completion(self, node_list):
         """
