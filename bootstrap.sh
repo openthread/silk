@@ -54,8 +54,7 @@ install_packages()
 
 compile_proto()
 {
-    cd "$abs_top_srcdir"/silk/tools/pb || return 1
-    python3 -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. visualize_grpc.proto
+    python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
 }
 
 main()

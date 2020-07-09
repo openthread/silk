@@ -73,61 +73,76 @@ class GRpcClient:
     logger (Logger): logger for the client class.
   """
 
-  def __init__(self, server_addr: str):
+  def __init__(self, server_addr: str, logger: logging.Logger):
     """Initializes a gRPC client.
 
     Args:
       server_addr (str): the address of the gRPC server.
+      logger (logging.Logger): logger for the class.
     """
+    logger.debug("Starting gRPC client with address {:s}".format(server_addr))
     self.server_addr = server_addr
     self.channel = grpc.insecure_channel(self.server_addr)
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
-    self.logger = logging.getLogger("GRpcClient")
+    self.logger = logger
 
   def add_node(self, x: int, y: int, node_id: int):
-    """Sends an add node request.
+    """Sends an add node request async.
 
     Args:
       x (int): x coordinate of the new node.
       y (int): y coordinate of the new node.
       node_id (int): node ID of the new node.
     """
+    def handle_response(request_future):
+      response = request_future.result()
+      self.logger.info(
+          "Added node {:d} at x={:d}, y={:d}, response: {})".format(
+              node_id, x, y, response))
+
     mode = visualize_grpc_pb2.NodeMode(
         rx_on_when_idle=False,
         secure_data_requests=False,
         full_thread_device=True,
         full_network_data=False)
-    response = self.stub.CtrlAddNode(
+
+    request_future = self.stub.CtrlAddNode.future(
         visualize_grpc_pb2.AddNodeRequest(
-            x=x, y=y, node_id=node_id, is_router=True, mode=mode))
-    self.logger.info(
-        "Added node {:d} at x={:d}, y={:d}, response: {})".format(
-            node_id, x, y, response))
+            x=x, y=y, is_router=True, mode=mode, node_id=node_id))
+    request_future.add_done_callback(handle_response)
 
   def move_node(self, node_id: int, x: int, y: int):
-    """Sends a move node request.
+    """Sends a move node request async.
 
     Args:
       node_id (int): node ID of the node to be moved.
       x (int): new x coordinate of the node.
       y (int): new y coordianate of the node.
     """
-    response = self.stub.CtrlMoveNodeTo(
+    def handle_response(request_future):
+      response = request_future.result()
+      self.logger.info(
+          "Moved node ID={:d} to x={:d}, y={:d}, response: {}".format(
+              node_id, x, y, response))
+
+    request_future = self.stub.CtrlMoveNodeTo.future(
         visualize_grpc_pb2.MoveNodeToRequest(node_id=node_id, x=x, y=y))
-    self.logger.info(
-        "Moved node ID={:d} to x={:d}, y={:d}, response: {}".format(
-            node_id, x, y, response))
+    request_future.add_done_callback(handle_response)
 
   def delete_node(self, node_id: int):
-    """Sends a delete node request.
+    """Sends a delete node request async.
 
     Args:
       node_id (int): node ID of the node to be deleted.
     """
-    response = self.stub.CtrlDeleteNode(
+    def handle_response(request_future):
+      response = request_future.result()
+      self.logger.info(
+          "Deleted node ID={:d}, response: {}".format(node_id, response))
+
+    request_future = self.stub.CtrlDeleteNode.future(
         visualize_grpc_pb2.DeleteNodeRequest(node_id=node_id))
-    self.logger.info(
-        "Deleted node ID={:d}, response: {}".format(node_id, response))
+    request_future.add_done_callback(handle_response)
 
 
 class Event:
@@ -204,18 +219,30 @@ class OtnsNode(object):
 
   Attributes:
     node_id (int): ID of the node.
+    vis_x (int): visualization x coordinate.
+    vis_y (int): visualization y coordinate.
     sock (socket): UDP socket to send message from.
     source_addr (str, int): UDP source address.
-    dest_addr  (str, int): UDP destination address.
+    dest_addr (str, int): UDP destination address.
+    extaddr(int): extended address of the node in network.
+    grpc_client (GRpcClient): gRPC client instance from the manager.
+    logger (logging.Logger): logger for the node.
+    has_created_otns_node (bool): if the node has been reported to OTNS.
   """
 
-  def __init__(self, node_id: int, dispatcher_host: str, dispatcher_port: int):
+  def __init__(self, node_id: int, vis_x: int, vis_y: int,
+               dispatcher_host: str, dispatcher_port: int,
+               grpc_client: GRpcClient, logger: logging.Logger):
     """Initialize a node.
 
     Args:
       node_id (int): ID of the node.
+      vis_x (int): visualization x coordinate.
+      vis_y (int): visualization y coordinate.
       dispatcher_host (str): host address of the OTNS dispatcher.
       dispatcher_port (int): port number of the OTNS dispatcher.
+      grpc_client (GRpcClient): gRPC client instance from the manager.
+      logger (logging.Logger): logger for the node.
     """
     assert node_id > 0
 
@@ -225,6 +252,14 @@ class OtnsNode(object):
     self.source_addr = ("", dispatcher_port + node_id)
     self.dest_addr = (dispatcher_host, dispatcher_port)
     self.sock.bind(self.source_addr)
+    self.logger = logger
+
+    self.vis_x = vis_x
+    self.vis_y = vis_y
+    self.grpc_client = grpc_client
+
+    self.extaddr = 0xffffffffffffffff
+    self.has_created_otns_node = False
 
   def close(self):
     """Close the node's socket connection.
@@ -238,6 +273,34 @@ class OtnsNode(object):
       event_packet (bytes): pacakged event content in bytes.
     """
     self.sock.sendto(event_packet, self.dest_addr)
+
+  def send_extaddr_event(self):
+    """Send extaddr event.
+    """
+    event = Event.status_event("extaddr={:016x}".format(self.extaddr))
+    self.logger.debug(
+        "Node {:d} sending extaddr={:016x}".format(self.node_id, self.extaddr))
+    self.sock.sendto(event.to_bytes(), self.dest_addr)
+
+  def update_extaddr(self, extaddr: int):
+    """Update the node's extended address.
+
+    Args:
+        extaddr (int): new extended address of the node.
+    """
+    if extaddr != self.extaddr:
+      if not self.has_created_otns_node:
+        self.create_otns_node()
+
+      self.extaddr = extaddr
+      self.send_extaddr_event()
+
+  def create_otns_node(self):
+    """Call gRPC client to create a note on server for itself.
+    """
+    self.logger.debug("Adding node {:d} to OTNS".format(self.node_id))
+    self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
+    self.has_created_otns_node = True
 
 
 class WpantundOtnsMonitor(signal.Subscriber):
@@ -255,13 +318,19 @@ class WpantundOtnsMonitor(signal.Subscriber):
     Args:
         line (str): line of log to process.
     """
-    status_match = re.search(RegexType.STATUS_RE.value, line)
+    status_match = re.search(RegexType.STATUS.value, line)
     if status_match:
       message = status_match.group(2)
 
       if self.node is not None:
         event = Event.status_event(message)
         self.node.send_event(event.to_bytes())
+
+    get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, line)
+    if get_extaddr_info_match:
+      extaddr = get_extaddr_info_match.group(1)
+      if self.node is not None:
+        self.node.update_extaddr(int(extaddr, 16))
 
   def subscribeHandle(self, sender, **kwargs):
     """Handle messages from Publisher, a wpantund process.
@@ -281,41 +350,52 @@ class OtnsManager(object):
     dispatcher_host (str): host address of OTNS dispatcher.
     grpc_client (GRpcClient): OTNS gRPC client.
     otns_nodes (List[OtnsNode]): OTNS nodes managed my this manager.
-    subscribers (List[signal.Subscriber]): wpatund process signal subscribers.
+    otns_node_map (Dict[ThreadDevBoard, OtnsNode]): map from device to
+      OTNS node.
+    otns_monitor_map (Dict[ThreadDevBoard, WpantundOtnsMonitor]): map from
+      device to OTNS monitor.
     logger (Logger): logger for the manager class.
   """
 
-  def __init__(self, dispatcher_host: str):
+  def __init__(self, dispatcher_host: str, logger: logging.Logger):
     """Initialize an OTNS manager.
 
     Args:
       dispatcher_host (str): host address of OTNS dispatcher.
+      logger (logging.Logger): logger for the manager.
     """
     self.dispatcher_host = dispatcher_host
     self.grpc_client = GRpcClient(
-        server_addr="{:s}:{:d}".format(dispatcher_host, GRPC_SERVER_PORT))
+        server_addr="{:s}:{:d}".format(dispatcher_host, GRPC_SERVER_PORT),
+        logger=logger.getChild("gRpcClient"))
     self.otns_nodes = []
-    self.subscribers = []
+    self.otns_node_map = {}
+    self.otns_monitor_map = {}
 
-    self.logger = logging.getLogger("OTNSManager")
+    self.logger = logger
 
   def add_node(self, node: ThreadDevBoard):
     """Add a node to OTNS visualization.
 
     Args:
-        node (ThreadDevBoard): node to add, with dev board properties.
+      node (ThreadDevBoard): node to add, with dev board properties.
     """
-    if isinstance(node, HwModule):
+    if isinstance(node.device, HwModule):
       try:
-        node_id = node.get_otns_vis_node_id()
-        vis_x, vis_y = node.get_otns_vis_location()
-        otns_node = OtnsNode(node_id, self.dispatcher_host, DISPATCHER_PORT)
-
-        self.logger.debug("Adding node {:d} to OTNS".format(node_id))
-        self.grpc_client.add_node(vis_x, vis_y, node_id)
+        node_id = node.device.get_otns_vis_node_id()
+        vis_x, vis_y = node.device.get_otns_vis_location()
+        otns_node = OtnsNode(
+            node_id=node_id,
+            vis_x=vis_x,
+            vis_y=vis_y,
+            dispatcher_host=self.dispatcher_host,
+            dispatcher_port=DISPATCHER_PORT,
+            grpc_client=self.grpc_client,
+            logger=self.logger.getChild("otnsNode{:d}".format(node_id)))
 
         node.otns_manager = self
         self.otns_nodes.append(otns_node)
+        self.otns_node_map[node] = otns_node
       except ValueError:
         self.logger.error("Failed to get node OTNS properties.")
     else:
@@ -325,41 +405,56 @@ class OtnsManager(object):
     """Remove a node from OTNS visualization.
 
     Args:
-        node (ThreadDevBoard): node to remove, with dev board properties.
+      node (ThreadDevBoard): node to remove, with dev board properties.
     """
     if node.otns_manager is self:
       node.otns_manager = None
 
-    if isinstance(node, HwModule):
-      for otns_node in self.otns_nodes:
-        try:
-          target_node_id = node.get_otns_vis_node_id()
-          if otns_node.node_id == target_node_id:
-            node_id = otns_node.node_id
-            self.logger.debug("Removing node {:d} from OTNS".format(node_id))
-            self.grpc_client.delete_node(node_id)
-            break
-        except ValueError:
-          self.logger.error("Failed to get node OTNS properties.")
+    if isinstance(node.device, HwModule):
+      if self.otns_node_map.get(node) is not None:
+        otns_node = self.otns_node_map[node]
+        node_id = otns_node.node_id
+        self.logger.debug("Removing node {:d} from OTNS".format(node_id))
+        self.grpc_client.delete_node(node_id)
+    else:
+      self.logger.error("Trying to remove a non HwModule node from manager.")
 
   def subscribe_to_node(self, node: ThreadDevBoard):
     """Create a wpantund OTNS monitor and subscribe it to the node.
 
     Args:
-        node (ThreadDevBoard): node to subscribe to.
+      node (ThreadDevBoard): node to subscribe to.
     """
-    wpantund_otns_monitor = WpantundOtnsMonitor(publisher=node.wpantund_process)
-    wpantund_otns_monitor.node = node
-    self.subscribers.append(wpantund_otns_monitor)
+    if self.otns_node_map.get(node) is not None:
+      wpantund_otns_monitor = WpantundOtnsMonitor(
+          publisher=node.wpantund_process)
+      wpantund_otns_monitor.node = self.otns_node_map[node]
+      self.otns_monitor_map[node] = wpantund_otns_monitor
 
   def unsubscribe_from_node(self, node: ThreadDevBoard):
     """Remove the wpantund OTNS subscriber of the node.
 
     Args:
-        node (ThreadDevBoard): node to unsubscribe from.
+      node (ThreadDevBoard): node to unsubscribe from.
     """
-    for i, subscriber in enumerate(self.subscribers):
-      if node is subscriber.node:
-        subscriber.unsubscribe()
-        del self.subscribers[i]
-        break
+    if self.otns_node_map.get(node) is not None:
+      if self.otns_monitor_map.get(node) is not None:
+        self.otns_monitor_map[node].unsubscribe()
+        del self.otns_monitor_map[node]
+
+  def unsubscribe_from_all_nodes(self):
+    """Unsubscribe the manager from all nodes.
+    """
+    for subscriber in self.otns_monitor_map.values():
+      subscriber.unsubscribe()
+    self.otns_monitor_map.clear()
+
+  def check_for_extaddr_update(self, node: ThreadDevBoard, log_line: str):
+    """Dev board calls this to check for extaddr update messages.
+
+    Args:
+      node (ThreadDevBoard): dev board calling this method.
+      log_line (str): line of log to check.
+    """
+    if self.otns_monitor_map.get(node) is not None:
+      self.otns_monitor_map[node].process_log_line(log_line)

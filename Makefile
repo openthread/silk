@@ -15,7 +15,7 @@
 #    limitations under the License.
 #
 
-PYTHON ?= python
+PYTHON ?= python3
 PYTHON_VERSION ?= $(shell $(PYTHON) -c "import sys; sys.stdout.write(sys.version[:3])")
 SUDO ?= sudo
 MAKE ?= make
@@ -26,11 +26,11 @@ all: install
 
 check-prerequisites:
 	@if `which dpkg >& /dev/null`; then \
-		echo -n "Checking for python-pip..."; \
-		if `dpkg -s python-pip >& /dev/null`; then \
+		echo -n "Checking for python3-pip..."; \
+		if `dpkg -s python3-pip >& /dev/null`; then \
 			echo "ok"; \
 		else \
-			echo "The package python-pip is required and is not installed. Please run 'sudo apt-get install python-pip' to install it."; \
+			echo "The package python3-pip is required and is not installed. Please run 'sudo apt-get install python-pip' to install it."; \
 			exit 1; \
 		fi; \
 		echo -n "Checking for expect..."; \

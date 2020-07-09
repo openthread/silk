@@ -17,7 +17,7 @@ import os
 
 from silk.tests import silk_run
 
-RESULT_LOG_PATH = '/opt/openthread_test/results/'+'silk_run_' + \
+RESULT_LOG_PATH = '/opt/openthread_test/results/' + 'silk_run_' + \
                   datetime.datetime.today().strftime('%m-%d') + '/'
 CONFIG_PATH = '/opt/openthread_test/'
 

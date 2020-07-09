@@ -241,6 +241,10 @@ def setup_class_decorator(func):
 
         cls.results[cls.current_test_class][SUITE_ID] = curr_suite_id
 
+        cls.otns_manager = OtnsManager(
+                dispatcher_host=DEFAULT_DISPATCHER_HOST,
+                logger=cls.logger.getChild("otnsManager"))
+
         # Call the user's setUpClass
         try:
             func(*args, **kwargs)
@@ -333,6 +337,7 @@ def teardown_class_decorator(func):
         output_file.close()
 
         cls.clear_test_devices()
+        cls.otns_manager.unsubscribe_from_all_nodes()
 
     return wrapper
 
@@ -411,7 +416,6 @@ class TestCase(unittest.TestCase):
     """
 
     thread_sniffers = {}
-    otns_manager = OtnsManager(dispatcher_host=__otns_host)
 
     def wait_for_completion(self, node_list):
         """

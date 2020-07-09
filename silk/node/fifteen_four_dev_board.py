@@ -170,6 +170,9 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
     def log_debug(self, log_line):
         if self.logger is not None:
             self.logger.debug(log_line)
+        
+        if self.otns_manager is not None:
+            self.otns_manager.check_for_extaddr_update(self, log_line)
 
     def log_info(self, log_line):
         if self.logger is not None:
