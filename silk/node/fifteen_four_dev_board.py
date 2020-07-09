@@ -237,6 +237,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         time.sleep(3)
 
         self.__stop_wpantund()
+        if self.otns_manager is not None:
+            self.otns_manager.remove_node(self)
         self.cleanup_netns()
         self.free_device()
         time.sleep(10)

@@ -3,9 +3,12 @@
 *.json
 silk/results/*.*
 silk/tests/results/*.*
-build/*.*
+build/*
 dist/*.*
 testbed.egg-info/*.*
+silk.egg-info/*
 
+*.out
+*.pcap
 *pb2.py
 *pb2_grpc.py
