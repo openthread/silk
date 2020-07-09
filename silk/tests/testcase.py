@@ -18,7 +18,7 @@ Silk testcase class definition.
 All Silk tests should inherit from this class.
 
 """
-from __future__ import print_function
+
 from builtins import range
 from builtins import object
 import collections

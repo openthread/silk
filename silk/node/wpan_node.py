@@ -15,7 +15,7 @@
 """
 Base node profile for 6LowPAN networks (Thread, CIP)
 """
-from __future__ import absolute_import
+
 from builtins import zip
 from builtins import object
 from . import base_node

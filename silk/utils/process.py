@@ -60,7 +60,7 @@ class Process(object):
     def read(self, process):
         while not self.stop_thread.is_set():
             output = process.stdout.readline()
-            # TODO: should add the logic to record the log info here
+            # TODO: should add the logic to record the log info here. This will be addressed by issue ID #33
             print(output.strip())
             if output == '' and self.process.poll() is not None:
                 break

@@ -1,5 +1,3 @@
-from __future__ import print_function
-from __future__ import division
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +13,6 @@ from __future__ import division
 # limitations under the License.
 
 from builtins import str
-from past.utils import old_div
 import logging
 import os
 import re
@@ -137,11 +134,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         logging.debug('Thread Mode: {}'.format(self.thread_mode))
 
-        # TODO: Check what platform Silk is running on.
-        # If it is an ARM device, allow up to 2 minutes for wpantund to start.
-        #if "armv7l" in subprocess.check_output("uname -m", shell=True):
-        #    self.wpantund_start_time = 120  # seconds
-        #else:
+        # TODO: Check what platform Silk is running on. This will be addressed by issue ID #32
         self.wpantund_start_time = 30
 
         if os.geteuid() != 0:
@@ -599,7 +592,7 @@ class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode):
 
     def add_route1(self, prefix, subnet, mac, length):
         ip_addr = silk_ip.assemble(prefix, subnet, mac)
-        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,old_div(length,8)),
+        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,(length//8)),
                            "Route prefix added.", 5)
 
 

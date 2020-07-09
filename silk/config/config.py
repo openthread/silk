@@ -18,7 +18,6 @@ config.py
 This file contains Configuration management classes for use by the silk framework
 
 """
-from __future__ import print_function
 
 from builtins import str
 from builtins import object
