@@ -30,6 +30,7 @@ interfaceSerial = 'InterfaceSerialNumber'
 interfaceNumber = 'USBInterfaceNumber'
 dutSerialNumber = 'DutSerial'
 otnsVisLocation = 'OTNSVisLocation'
+otnsVisNodeId = 'OTNSVisNodeId'
 
 """HW Config Models"""
 
@@ -103,6 +104,9 @@ class HwModule(object):
 
     def get_otns_vis_location(self):
         return self.__get_option_str(otnsVisLocation)
+    
+    def get_otns_vis_node_id(self):
+        return self.__get_option_str(otnsVisNodeId)
 
     def find_device_from_serial(self, device_type, serial, interface_number):
         devname, device = usbdevice.device_find_from_serial(device_type, serial, interface_number)
