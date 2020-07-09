@@ -31,8 +31,10 @@ import unittest
 
 import silk.config.defaults
 import silk.node.base_node
+from silk.node.fifteen_four_dev_board import ThreadDevBoard
 import silk.node.openthread_sniffer as openthread_sniffer
 import silk.node.sniffer_base as sniffer_node
+from silk.tools.otns_manager import OtnsManager
 from silk.hw.hw_resource import HardwareNotFound
 
 import traceback
@@ -45,6 +47,8 @@ CASE_ID = "case_id"
 PING_SENT = "pings_sent"
 PING_RECEIVED = "pings_received"
 PING_ROUND_TRIP_TIME = "ping_rtt"
+
+DEFAULT_DISPATCHER_HOST = "localhost"
 
 __stream_verbosity = 1
 __file_handler = None
@@ -397,6 +401,7 @@ class TestCase(unittest.TestCase):
     """
 
     thread_sniffers = {}
+    otns_manager = OtnsManager(dispatcher_host=DEFAULT_DISPATCHER_HOST)
 
     def wait_for_completion(self, node_list):
         """
@@ -585,12 +590,16 @@ class TestCase(unittest.TestCase):
 
         if device is not None:
             cls.device_list.append(device)
+            if isinstance(device, ThreadDevBoard):
+                cls.otns_manager.add_node(device)
 
     @classmethod
     def clear_test_devices(cls):
         if hasattr(cls, "device_list"):
             while len(cls.device_list) > 0:
-                cls.device_list.pop()
+                device = cls.device_list.pop()
+                if isinstance(device, ThreadDevBoard):
+                    cls.otns_manager.remove_node(device)
 
     @classmethod
     def release_devices(cls):
@@ -599,6 +608,8 @@ class TestCase(unittest.TestCase):
             d = getattr(cls, attr)
             if isinstance(d, silk.node.base_node.BaseNode):
                 d.tear_down()
+            if isinstance(d, ThreadDevBoard):
+                cls.otns_manager.remove_node(device)
 
     @classmethod
     def _testrail_dict_lookup(cls, test_element):

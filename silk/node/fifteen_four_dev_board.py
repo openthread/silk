@@ -119,6 +119,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.sw_version = sw_version
         self.virtual_eth_peer = 'v-eth1'
         self.flash_result = False
+        self.otns_manager = None
 
         self.wpantund_verbose_debug = wpantund_verbose_debug
         local_ip = get_local_ip().strip().split()[1]
@@ -322,6 +323,9 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         # Install signal listeners here
         self.wpantund_monitor = WpantundMonitor(publisher=self.wpantund_process)
 
+        if self.otns_manager is not None:
+            self.otns_manager.subscribe_to_node(self)
+
         if self.wpantund_logger is not None:
             self.wpantund_monitor.logger = self.wpantund_logger
 
@@ -344,6 +348,9 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         if self.wpantund_process is not None:
             self.wpantund_process.stop(1)
+
+            if self.otns_manager is not None:
+                self.otns_manager.unsubscribe_from_node(self)
         else:
             self.log_info("No wpantund process to stop")
 
