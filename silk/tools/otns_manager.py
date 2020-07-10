@@ -249,7 +249,7 @@ class OtnsNode(object):
     self.node_id = node_id
 
     self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    self.source_addr = ("", dispatcher_port + node_id)
+    self.source_addr = (dispatcher_host, dispatcher_port + node_id)
     self.dest_addr = (dispatcher_host, dispatcher_port)
     self.sock.bind(self.source_addr)
     self.logger = logger
