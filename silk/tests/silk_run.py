@@ -17,6 +17,9 @@
 Enables the discovery and running of Silk Tests from the command line.
 """
 
+from builtins import str
+from builtins import range
+from builtins import object
 import argparse
 import sys
 import time
@@ -102,7 +105,7 @@ class SilkTestResult(unittest.TestResult):
         self.printStatLine('Tests failed:', len(self.failures))
 
     def printStatLine(self, name, result):
-        print '{0}{1}'.format(name.ljust(16), result)
+        print('{0}{1}'.format(name.ljust(16), result))
         logging.info('{0}{1}'.format(name.ljust(16), result))
 
     def printTestResults(self):
@@ -112,7 +115,7 @@ class SilkTestResult(unittest.TestResult):
             for t in self.testlist:
                 self.printTestFailure(t)
                 self.printTestSuccess(t)
-            print "=" * self.line_length
+            print("=" * self.line_length)
 
     def printTestFailure(self, t):
         for f in self.failures:
@@ -129,24 +132,24 @@ class SilkTestResult(unittest.TestResult):
         if test.__class__ != self.current_testclass:
             self.current_testclass = test.__class__
             tc = test.__class__
-            print '{0}.{1}'.format(tc.__module__, tc.__name__)
+            print('{0}.{1}'.format(tc.__module__, tc.__name__))
             logging.info('{0}.{1}'.format(tc.__module__, tc.__name__))
 
-        print '    {0}{1}'.format(test._testMethodName.ljust(self.testname_spacing, '.'), result)
+        print('    {0}{1}'.format(test._testMethodName.ljust(self.testname_spacing, '.'), result))
         logging.info('    {0}{1}'.format(test._testMethodName.ljust(self.testname_spacing, '.'), result))
 
     def printTestErrors(self):
         self.printBanner('HARDWARE TEST SET-UP ERRORS')
         for e in self.errors:
-            print str(e[0])
+            print(str(e[0]))
 
     def printBanner(self, title):
-        print '\n'
-        print '=' * self.line_length
+        print('\n')
+        print('=' * self.line_length)
         logging.info('=' * self.line_length)
-        print title.join([' ', ' ']).center(self.line_length, '=')
+        print(title.join([' ', ' ']).center(self.line_length, '='))
         logging.info(title.join([' ', ' ']).center(self.line_length, '='))
-        print '=' * self.line_length
+        print('=' * self.line_length)
         logging.info('=' * self.line_length)
 
 
@@ -160,7 +163,7 @@ class SilkRunner(object):
         self.pattern = args.pattern
         self.results_dir = args.results_dir
         if args.results_dir is not None:
-            print 'Setting results dir to {0}'.format(args.results_dir)
+            print('Setting results dir to {0}'.format(args.results_dir))
             silk.tests.testcase.setOutputDirectory(args.results_dir)
         silk.tests.testcase.setStreamVerbosity(self.verbosity)
         hw_resource.global_instance(args.hw_conf_file)
@@ -178,7 +181,7 @@ class SilkRunner(object):
             metavar='ConfFile',
             help='Name the hardware config file')
         parser.add_argument('-v', '--verbose', '--verbosity', type=int,
-            default=1, choices=range(0, 3), dest='verbosity', metavar='X',
+            default=1, choices=list(range(0, 3)), dest='verbosity', metavar='X',
             help='Set the verbosity level of the console (0=quiet, 1=default, 2=verbose)')
         parser.add_argument('pattern', nargs='+', metavar='P',
             help='test file search pattern')
@@ -188,10 +191,10 @@ class SilkRunner(object):
         self.test_suite = unittest.TestSuite()
         for p in self.pattern:
             self.test_suite.addTest(unittest.defaultTestLoader.discover('./', p))
-        print 'Found {0} test cases.'.format(self.test_suite.countTestCases())
+        print('Found {0} test cases.'.format(self.test_suite.countTestCases()))
 
     def run(self):
-        print 'Running tests...'
+        print('Running tests...')
         tr = SilkTestResult(self.verbosity, self.results_dir)
         self.test_suite.run(tr)
         tr.printTestSummary()

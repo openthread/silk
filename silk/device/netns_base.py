@@ -25,10 +25,7 @@ def createLinkPair(interface_1, interface_2):
     command = "sudo ip link add name %s " % interface_1
     command += "type veth peer name %s"   % interface_2
 
-    print command
-
-    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-
+    proc = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     return proc.communicate()[0]
 
 
@@ -78,7 +75,7 @@ class NetnsController(SystemCallManager):
 
         self.netns = os.path.basename(self.device_path)
         command = "sudo ip netns add %s" % self.netns
-        output = self._make_system_call("netns-add", command, 2)
+        self._make_system_call("netns-add", command, 2)
         return self.netns
 
     def delete_netns(self):
@@ -88,7 +85,7 @@ class NetnsController(SystemCallManager):
         self.log_info("Deleting network namespace for %s" % self.device_path)
 
         command = "sudo ip netns del %s" % self.netns
-        output = self._make_system_call("netns-del", command, 2)
+        self._make_system_call("netns-del", command, 2)
 
     def netns_pids(self):
         """

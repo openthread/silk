@@ -38,7 +38,7 @@ class TestFirmwareUpgrade(testcase.TestCase):
                 break
             else:
                 cls.device_list.append(device)
-        print cls.device_list
+        print(cls.device_list)
 
     @classmethod
     @testcase.setup_class_decorator

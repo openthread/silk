@@ -41,8 +41,8 @@ install_packages_apt()
 install_packages_pip()
 {
     # pip install dependencies
-    sudo python2.7 -m pip install pip --upgrade
-    sudo python2.7 -m pip install -r requirements.txt
+    sudo python -m pip install pip --upgrade
+    sudo python -m pip install -r requirements.txt
 }
 
 install_packages()

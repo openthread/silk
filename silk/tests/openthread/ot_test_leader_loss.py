@@ -20,7 +20,7 @@ from silk.node.wpan_node import WpanCredentials
 import silk.hw.hw_resource as hwr
 import silk.tests.testcase as testcase
 from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, VerifyError, verify_within
+from silk.tools.wpan_util import verify, verify_within
 
 import random
 import unittest
@@ -54,7 +54,6 @@ class TestLeaderLoss(testcase.TestCase):
     # - join r1 to the network, verify r1 becomes router role, r2 or r3 is leader, the other one is router
     #
 
-
     @classmethod
     def hardwareSelect(cls):
         cls.r1 = ffdb.ThreadDevBoard()
@@ -63,7 +62,6 @@ class TestLeaderLoss(testcase.TestCase):
         cls.fed1 = ffdb.ThreadDevBoard()
         cls.fed2 = ffdb.ThreadDevBoard()
         cls.fed3 = ffdb.ThreadDevBoard()
-
 
         cls.all_nodes = [cls.r1, cls.r2, cls.r3, cls.fed1, cls.fed2, cls.fed3]
 
@@ -95,8 +93,8 @@ class TestLeaderLoss(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -116,8 +114,8 @@ class TestLeaderLoss(testcase.TestCase):
                 device.device_path, node_type, expect_role))
             verify(node_type == expect_role)
 
-        # verify device get expected role in 20s
-        return verify_within(check_device_role, 20, delay_time=5)
+        # verify device get expected role in ROLE_WAIT_TIME i.e. 180s
+        return verify_within(check_device_role, ROLE_WAIT_TIME, delay_time=5)
 
     def _verify_devices_roles(self, devices_roles):
         # verify devices only one is leader and rest are routers
@@ -156,7 +154,6 @@ class TestLeaderLoss(testcase.TestCase):
         self.r3.whitelist_node(self.fed3)
         self.fed3.whitelist_node(self.r3)
 
-
         self.r1.form(self.network_data, "router")
         self.r1.permit_join(3600)
         self.wait_for_completion(self.device_list)
@@ -168,12 +165,18 @@ class TestLeaderLoss(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
+
         self.r3.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.fed1.join(self.network_data, "end-node")
-        self.fed2.join(self.network_data, "end-node")
-        self.fed3.join(self.network_data, "end-node")
+        self.wait_for_completion(self.device_list)
 
+        self.fed2.join(self.network_data, "end-node")
+        self.wait_for_completion(self.device_list)
+
+        self.fed3.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
         # print r1, r2, r3 device path here
@@ -197,7 +200,6 @@ class TestLeaderLoss(testcase.TestCase):
         reset r1, verify r2 or r3 becomes leader, the other one stays as router
         """
         self.r1.reset_thread_radio()
-
         self.wait_for_completion(self.device_list)
 
         # verify r2, r3 role, one of them change to be leader
@@ -227,6 +229,7 @@ class TestLeaderLoss(testcase.TestCase):
         self.r1.un_whitelist_node(self.r3)
 
         self.r1.leave()
+        self.wait_for_completion(self.device_list)
         # total wait for minutes (default is 5m) for one router to change to leader,
         # but it will break out if one router changed to leader early
         timeout = time.time() + LEADER_CHANGE_WAIT_TIME
@@ -264,13 +267,16 @@ class TestLeaderLoss(testcase.TestCase):
 
         self.r1.whitelist_node(self.r3)
         self.r3.whitelist_node(self.r1)
-        self.r1.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
+        self.r1.join(self.network_data, 'router')
         self.wait_for_completion(self.device_list)
 
         # verify r1 role is router
         r1_result = self._verify_device_role(self.r1, "router")
         self.assertTrue(r1_result, 'r1 cannot get into router role after {} seconds timeout'.format(ROLE_WAIT_TIME))
+        time.sleep(120)
+
         # verify their children stayed with their parents
         self._verify_children(self.r1, NUM_CHILDREN)
 

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -63,9 +64,9 @@ class TestParentResetChildRecovery(testcase.TestCase):
         for end_node in cls.all_children:
             cls.add_test_device(end_node)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
         cls.network_data = WpanCredentials(
             network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
@@ -78,8 +79,8 @@ class TestParentResetChildRecovery(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -93,9 +94,6 @@ class TestParentResetChildRecovery(testcase.TestCase):
         # Checks the child table includes the expected number of children.
         child_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
         child_table = wpan_table_parser.parse_child_table_result(child_table)
-
-        print child_table
-
         verify(len(child_table) == NUM_CHILDREN)
 
     @testcase.test_method_decorator
@@ -112,19 +110,17 @@ class TestParentResetChildRecovery(testcase.TestCase):
 
         for end_node in self.sleepy_children:
             end_node.join(self.network_data, "sleepy-end-device")
+            self.wait_for_completion(self.device_list)
             end_node.set_sleep_poll_interval(self.poll_interval)
 
         for end_node in self.rx_on_children:
             end_node.join(self.network_data, "end-node")
+            self.wait_for_completion(self.device_list)
 
-        self.wait_for_completion(self.device_list)
-
-        ret = self.router.wpanctl("get", "status", 2)
-        print ret
+        self.router.wpanctl("get", "status", 2)
 
         for end_node in self.all_children:
-            ret = end_node.wpanctl("get", "status", 2)
-            print ret
+            end_node.wpanctl("get", "status", 2)
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):
@@ -137,8 +133,6 @@ class TestParentResetChildRecovery(testcase.TestCase):
         child_num_state_changes = []
         for child in self.all_children:
             child_num_state_changes.append(len(wpan_table_parser.parse_list(child.get("stat:ncp"))))
-
-        print child_num_state_changes
 
         # Reset the parent
         self.router.reset_thread_radio()

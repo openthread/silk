@@ -54,13 +54,13 @@ class WpantundWpanNode(wpan_node.WpanNode):
     _ip6_thread_ula_regex = "[fF][dD][a-fA-F0-9:]+"
     _xpanid_regex = "0x[a-fA-F0-9]{16}"
 
-    def wpanctl(self, command, **kwargs):
+    def wpanctl(self, command, *args, **kwargs):
         """
         Implemented by inheriting class.
         """
         pass
 
-    def wpanctl_async(self, command, **kwargs):
+    def wpanctl_async(self, command, *args, **kwargs):
         """
         Implemented by inheriting class.
         """
@@ -287,7 +287,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
             output = self.wpanctl("scan", "scan -c {}".format(channel), 20)
         else:
             output = self.wpanctl("scan", "scan ", 20)
-        print output
+        print(output)
         return output
 
     def get_energy_scan(self, channel=None):
@@ -324,7 +324,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl('remove-prefix', 'remove-prefix ' + prefix +
                             (' -l {}'.format(prefix_len) if prefix_len is not None else ''), 20)
 
-    def add_route(self, route_prefix, prefix_len=None, priority=None, stable=True):
+    def add_route_prefix(self, route_prefix, prefix_len=None, priority=None, stable=True):
         """route priority [(>0 for high, 0 for medium, <0 for low)]"""
         return self.wpanctl('add-route', 'add-route ' + route_prefix +
                             (' -l {}'.format(prefix_len) if prefix_len is not None else '') +
@@ -336,6 +336,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl('remove-route', 'remove-route ' + route_prefix +
                             (' -l {}'.format(prefix_len) if prefix_len is not None else '') +
                             (' -p {}'.format(priority) if priority is not None else ''))
+
 #################################
 #   Calls into wpanctl for commissioning process in commissioner-joiner model
 #################################
@@ -356,7 +357,6 @@ class WpantundWpanNode(wpan_node.WpanNode):
 #################################
 #   Calls into wpanctl for querying commissioning data
 #################################
-
     def setprop(self, key, value, data=False):
         """
         Make a call into wpanctl setprop to set the desired parameter.
@@ -372,9 +372,6 @@ class WpantundWpanNode(wpan_node.WpanNode):
         Make a call into wpanctl getprop to query the desired parameter.
         """
         prop = self.wpanctl("getprop", "getprop %s" % property_name, 2)
-        if isinstance(prop, unicode):
-            prop = prop.encode('ascii', 'ignore')
-        # Added check if wpantund is not started
         return prop.split("=")[1].strip() if '=' in prop else prop
 
     def get(self, prop_name, value_only=True):

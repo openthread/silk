@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 import select
 import subprocess
 import threading
@@ -42,9 +44,9 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
         try:
             super(SubprocessRunner, self).start()
             self.running = True
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            print "Error in SubprocessRunner start:", str(e)
+            print("Error in SubprocessRunner start:", str(e))
 
     def stop(self, timeout=15):
         """
@@ -57,7 +59,7 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
             self.running = False
             # try joining for 15 seconds, else let the program tear down
             self.join(timeout)
-            if self.isAlive():
+            if self.is_alive():
                 self.warn('SubprocessRunner join timed out')
                 self.proc.kill()
 
@@ -72,18 +74,19 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
 
         command = ' '.join(e for e in command)
 
-        self.proc = subprocess.Popen(command,
+        self.proc = subprocess.Popen(command, bufsize=0,
                                      stdout=subprocess.PIPE,
                                      stderr=subprocess.STDOUT, shell=True)
         try:
             while self.running:
                 for s in select.select([self.proc.stdout], [], [], 1)[0]:
-                    line = self.proc.stdout.readline().rstrip()
+                    line = s.readline().rstrip()
                     if line:
+                        line = line.decode('utf-8')
                         self.emit(line=line)
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            print "Error in SubprocessRunner run:", str(e)
+            print("Error in SubprocessRunner run:", str(e))
         finally:
             self.running = False
             try:

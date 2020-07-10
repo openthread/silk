@@ -31,6 +31,7 @@ This module requires that the OpenThread spinel-cli tools are installed
 This module makes subprocess calls out to sniffer.py to generate packet
 captures.
 """
+from builtins import str
 import os
 import subprocess
 
@@ -72,7 +73,7 @@ class OpenThreadSniffer(SnifferNode):
 
         self.output_path = os.path.join(output_path, "thread_channel_%s.pcap" % channel)
         self.outfile = open(self.output_path, "wb")
-        self.sniffer_process = subprocess.Popen(sniffer_args, stdout = self.outfile)                 
+        self.sniffer_process = subprocess.Popen(sniffer_args, bufsize=0, stdout = self.outfile)
 
     def restart(self):
         if self.sniffer_process is not None:
@@ -84,7 +85,7 @@ class OpenThreadSniffer(SnifferNode):
                             .format(self.fragment_count) + output_name[1], "wb")
 
         sniffer_args = [sniffer_py_path, "-c", str(self.channel), "-u", self.device.port()]
-        self.sniffer_process = subprocess.Popen(sniffer_args, stdout = self.outfile)
+        self.sniffer_process = subprocess.Popen(sniffer_args, bufsize=0, stdout=self.outfile)
 
     def stop(self):
         if self.sniffer_process is not None:

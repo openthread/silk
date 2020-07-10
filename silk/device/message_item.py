@@ -18,8 +18,10 @@ message_item.py
 This module provides a base class for message items processed by the embedded shell and system call manager
 """
 
+from builtins import object
 
-class MessageItemDelegates:
+
+class MessageItemDelegates(object):
 
     # Constructor
     # @param instance Instance object for all of the callables
@@ -55,7 +57,6 @@ class MessageItemBase(object):
 
     def __init__(self):
         self._delegates = None
-        pass
 
     # Set the delegates
     # @param delegates Some delegates

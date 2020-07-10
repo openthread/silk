@@ -67,8 +67,8 @@ class TestMulticastAddresses(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -97,15 +97,14 @@ class TestMulticastAddresses(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.fed.join(self.network_data, 'end-node')
-
-        self.sed.join(self.network_data, "sleepy-end-device")
-
-        self.sed.set_sleep_poll_interval(self.poll_interval)
-
         self.wait_for_completion(self.device_list)
 
+        self.sed.join(self.network_data, "sleepy-end-device")
+        self.wait_for_completion(self.device_list)
+        self.sed.set_sleep_poll_interval(self.poll_interval)
+
         for device in self.device_list:
-            print device.wpanctl("get", "status", 2)
+            print(device.wpanctl("get", "status", 2))
 
     @testcase.test_method_decorator
     def test02_Verify_Multicast_Addresses(self):
@@ -136,7 +135,7 @@ class TestMulticastAddresses(testcase.TestCase):
         self.check_multicast_addresses(self.sed, mcast_addrs)
 
     @testcase.test_method_decorator
-    def test03_Add_Mutilcast_Address(self):
+    def test03_Add_Multicast_Address(self):
 
         for node in self.device_list:
             node.add(wpan.WPAN_IP6_MULTICAST_ADDRESSES, MCAST_ADDR)

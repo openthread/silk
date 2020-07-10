@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +15,7 @@
 # limitations under the License.
 
 from silk.config import wpan_constants as wpan
-import wpan_table_parser
+from . import wpan_table_parser
 import time
 import inspect
 import logging
@@ -68,6 +70,7 @@ def verify_within(condition_checker_func, wait_time, delay_time=0.1):
         if delay_time != 0:
             time.sleep(delay_time)
     _is_in_verify_within = old_is_in_verify_within
+    return True
 
 
 def verify_address(node_list, prefix):

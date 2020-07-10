@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 from silk.tools.wpan_util import verify, verify_within
 from silk.tools import wpan_util
@@ -58,8 +59,8 @@ class TestAddIPV6Address(testcase.TestCase):
     # - Verify that all prefixes are present in network data with correct configuration flags (on all nodes).
     # - Verify that `sed2`'s address is present in `r2` (its parent) "Thread:ChildTable:Addresses".
     # - Verify that addresses/prefixes are retained by wpantund over NCP reset.
-    # - Verify that when an IPv6 address is removed from network interface, its corresponding prefix is also removed from
-    #   all nodes.
+    # - Verify that when an IPv6 address is removed from network interface, its corresponding prefix
+    #   is also removed from all nodes.
 
     poll_interval = 1500
 
@@ -99,8 +100,8 @@ class TestAddIPV6Address(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -118,17 +119,17 @@ class TestAddIPV6Address(testcase.TestCase):
 
         for node in self.all_nodes:
             node_on_mesh_prefixes = node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES)
-            print node
-            print node_on_mesh_prefixes
+            print(node)
+            print(node_on_mesh_prefixes)
 
-        print '#'*30
+        print('#'*30)
         # Verify that all prefixes are present in network data on all nodes (with correct flags).
         for prefix in [IP6_PREFIX_1, IP6_PREFIX_2, IP6_PREFIX_3]:
             for node in self.all_nodes:
                 node_on_mesh_prefixes = node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES)
-                print node_on_mesh_prefixes
+                print(node_on_mesh_prefixes)
                 prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node_on_mesh_prefixes)
-                print prefixes
+                print(prefixes)
                 for p in prefixes:
                     if p.prefix == prefix:
                         verify(p.prefix_len == '64')
@@ -172,20 +173,21 @@ class TestAddIPV6Address(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.fed1.join(self.network_data, "end-node")
-        self.sed2.join(self.network_data, "sleepy-end-device")
-
-        self.sed2.set_sleep_poll_interval(self.poll_interval)
-
         self.wait_for_completion(self.device_list)
+
+        self.sed2.join(self.network_data, "sleepy-end-device")
+        self.wait_for_completion(self.device_list)
+        self.sed2.set_sleep_poll_interval(self.poll_interval)
 
         for _ in range(18):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print node_type == 'router'
+            print(node_type == 'router')
 
             if node_type == 'router':
-                print 'Matched!!!!!!!!!!!!!'
+                print('Matched!!!!!!!!!!!!!')
                 break
             time.sleep(10)
         else:

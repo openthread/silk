@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -36,7 +37,7 @@ prefix3 = 'fd00:3::'
 prefix4 = 'fd00:4::'
 
 
-class ChildAttachWithMultipleIpAddresses(testcase.TestCase):
+class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
     # -----------------------------------------------------------------------------------------------------------------------
     # Test description:
     #

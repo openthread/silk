@@ -15,9 +15,10 @@
 """
 Implements publisher/subscriber classes for passing messages.
 """
+from builtins import object
 import logging
 
-import dispatch
+from django.dispatch import Signal
 
 from silk.utils import decorator
 
@@ -139,7 +140,7 @@ class Publisher(SignalLogger):
         Setups signaling object.
         """
         super(Publisher, self).__init__()
-        self._signal = dispatch.Signal()
+        self._signal = Signal()
 
     def subscribe(self, handle):
         """

@@ -28,7 +28,7 @@ WAIT_TIME = 2  # seconds
 PSKd = '123456'
 
 
-class MeshcopJoinerCommissioner(testcase.TestCase):
+class TestMeshcopJoinerCommissioner(testcase.TestCase):
     # -----------------------------------------------------------------------------------------------------------------------
     # Test description: Test MeshCop Joiner and Commissioner behavior
     #
@@ -81,7 +81,7 @@ class MeshcopJoinerCommissioner(testcase.TestCase):
         pass
 
     @testcase.test_method_decorator
-    def test01_form_network(self):
+    def test01_form_network_on_commissioner(self):
         self.network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff))
         cmd = "form {}".format(self.network_name)
         self.commissioner.wpanctl_async('form', cmd, "Successfully formed!", 20)

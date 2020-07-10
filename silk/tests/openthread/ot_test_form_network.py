@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
@@ -41,7 +42,7 @@ class TestFormNetwork(testcase.TestCase):
                 break
             else:
                 cls.joiner_list.append(device)
-        print cls.joiner_list
+        print(cls.joiner_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -56,9 +57,9 @@ class TestFormNetwork(testcase.TestCase):
         for end_node in cls.joiner_list:
             cls.add_test_device(end_node)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
         cls.network_data = WpanCredentials(
             network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
@@ -72,8 +73,8 @@ class TestFormNetwork(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -85,7 +86,7 @@ class TestFormNetwork(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        # whilte listing between leader and other nodes
+        # whitelisting between leader and other nodes
         for end_node in self.joiner_list:
             end_node.whitelist_node(self.router)
             self.router.whitelist_node(end_node)
@@ -127,11 +128,11 @@ class TestFormNetwork(testcase.TestCase):
             for e in self.joiner_list[-2:]:
                 sed_list.append(e.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1])
 
-            print router_list
-            print sed_list
+            print(router_list)
+            print(sed_list)
 
             if all(e == 'router' for e in router_list) and all(e == 'sleepy-end-device' for e in sed_list):
-                print 'All End-node moved up to  Router.'
+                print('All End-node moved up to  Router.')
                 break
             time.sleep(8)
         else:

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 from silk.tools.wpan_util import verify, verify_within
 from silk.tools import wpan_util
@@ -55,10 +56,8 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
         cls.hardwareSelect()
 
         for device in cls.all_nodes:
-
             device.set_logger(cls.logger)
             cls.add_test_device(device)
-
             device.set_up()
 
         cls.network_data = WpanCredentials(
@@ -72,8 +71,8 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -115,19 +114,18 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.sed2.join(self.network_data, "sleepy-end-device")
-
-        self.sed2.set_sleep_poll_interval(self.poll_interval)
-
         self.wait_for_completion(self.device_list)
+        self.sed2.set_sleep_poll_interval(self.poll_interval)
 
         for _ in range(12):
             node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print node_type == 'router'
+            print(node_type == 'router')
 
             if node_type == 'router':
-                print 'End-node moved up to a Router.'
+                print('End-node moved up to a Router.')
                 break
             time.sleep(5)
         else:
@@ -150,6 +148,8 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
     def test03_Add_same_Prefix(self):
         # After prefix is seen on r1, add an address with same prefix on r1.
         self.r1.add_ip6_address_on_interface(IP6_ADDR_1, prefix_len=64)
+        self.wait_for_completion(self.device_list)
+        time.sleep(30)
 
         # Verify that the prefix is still seen on both nodes.
         verify_within(self.check_prefix, 5)
@@ -162,7 +162,7 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
             prefixes_len_before_remove[node] = len(
                 wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES)))
 
-        print prefixes_len_before_remove
+        print(prefixes_len_before_remove)
 
         # Remove the address from r2 which should remove the corresponding the prefix as well
         # After this since r1 still has the address, the prefix should be present on both nodes.
@@ -181,7 +181,7 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
         def check_empty_prefix_list():
             for node in [self.r1, self.r2]:
                 prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
-                print len(prefixes), prefixes_len_before_remove[node]
+                print(len(prefixes), prefixes_len_before_remove[node])
                 verify(len(prefixes) == prefixes_len_before_remove[node] - 3)
 
         verify_within(check_empty_prefix_list, 5)

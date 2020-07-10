@@ -1,6 +1,7 @@
 ## Overview
 Silk is a fully automated test platform for validating OpenThread function, feature and system performance with real 
-devices. The initial supported device is Nordic nRF52840 Development board.
+devices. This codebase is python3 compatible.
+The initial supported device is Nordic nRF52840 Development board.
 
 Silk runs on a Raspberry Pi or an ubuntu Linux PC. 
  
@@ -69,18 +70,28 @@ optional arguments:
 
 There is an example of test run script silk_run_test.py under unit_tests folder.
 
-## Build OpenThread image and wpantund
+## Build Wpantund image
 
-Please follow the link below.
+```shell
+git clone https://github.com/openthread/wpantund.git
+cd silk/silk/shell
+./flash_wpantund.sh
+```
 
-https://codelabs.developers.google.com/codelabs/openthread-hardware/
+## Build OpenThread image
 
-Please note that the openthread image should have child-supervision, mac-filter and cert_log enabled.
+```shell
+git clone https://github.com/openthread/openthread.git
+```
 
-### Build Openthread image from script build_nrf52840.sh
+Please note that the openthread image should have child-supervision, mac-filter and log-output enabled (listed in detail in script build_nrf52840.sh).
 
-To build openthread image for testbed devices and sniffer you can make use of script build_nrf52840.sh present at 
-silk/silk/shell.
+### To build openthread image for testbed devices and sniffer you can make use of script build_nrf52840.sh
+
+```shell
+cd silk/silk/shell
+./build_nrf52840.sh
+```
 
 With build_nrf52840.sh an openthread image ot-ncp-ftd.hex will be created and copied to location /opt/openthread_test/
 nrf52840_image/

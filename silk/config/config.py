@@ -19,6 +19,8 @@ This file contains Configuration management classes for use by the silk framewor
 
 """
 
+from builtins import str
+from builtins import object
 import json
 
 BLACKLIST_KEY = "blacklist"
@@ -27,7 +29,7 @@ PORT_MAPPING = "port_mapping"
 CONFIG_FILENAME_DEFAULT = "hwconfig.ini"
 
 
-class Config:
+class Config(object):
     """
     Class that encapsulates configuration parameters
     """
@@ -52,7 +54,7 @@ class Config:
                 try:
                     raw_dict = json.load(fd)
                 except ValueError:
-                    print "Writing new configuration file %s" % self.config_file
+                    print("Writing new configuration file %s" % self.config_file)
                     raw_dict = {}
                     self.store()
 
@@ -80,7 +82,7 @@ class Config:
         """
         Update the port mapping with the specified device
         """
-        print "Adding device %s to %s to port mapping" % (device_serial, port)
+        print("Adding device %s to %s to port mapping" % (device_serial, port))
         self.port_mapping[device_serial] = port
 
         self.store()
@@ -166,7 +168,7 @@ class Config:
                 current_mapped = self._check_blacklist_serial(blacklisted_serial)
 
                 if not current_mapped:
-                    print "Device %s not in port mapping" % blacklisted_serial
+                    print("Device %s not in port mapping" % blacklisted_serial)
 
                 mapped &= current_mapped
 

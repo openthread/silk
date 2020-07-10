@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
 from silk.config import wpan_constants as wpan
 from silk.tools.wpan_util import verify
 from silk.tools import wpan_table_parser
@@ -53,8 +54,6 @@ class TestPartitionMerge(testcase.TestCase):
     # - Partitions merging into one once r1 and r2 can talk again
     # - Adding on-mesh prefixes on each partition and ensuring after
     #   merge the info in combined.
-    #
-
 
     @classmethod
     def hardwareSelect(cls):
@@ -93,8 +92,8 @@ class TestPartitionMerge(testcase.TestCase):
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -123,7 +122,7 @@ class TestPartitionMerge(testcase.TestCase):
             return False
 
     @testcase.test_method_decorator
-    def test01_Pairing(self):
+    def test01_pairing(self):
         self.r1.whitelist_node(self.r2)
         self.r2.whitelist_node(self.r1)
 
@@ -144,10 +143,12 @@ class TestPartitionMerge(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.fed1.join(self.network_data, "end-node")
-        self.fed2.join(self.network_data, "end-node")
+        self.wait_for_completion(self.device_list)
 
+        self.fed2.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
         # verify r1 role is leader
@@ -218,7 +219,8 @@ class TestPartitionMerge(testcase.TestCase):
         verify_prefix(self.all_nodes, prefix1, stable=True, on_mesh=True, slaac=True)
         verify_address(self.all_nodes, prefix1)
         # Verify that the prefix1 and its corresponding address are present on all nodes
-        verify_prefix(self.all_nodes, prefix2, stable=True, on_mesh=True, slaac=True)
+        verify_prefix(self.all_nodes, prefix2, stable=True, on_mesh=True, slaac=True,
+                      default_route=True, priority='high')
         verify_address(self.all_nodes, prefix2)
 
         # verify r1, r2 role, one of them is leader

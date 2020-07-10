@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
 import logging
 import os
 import re
-import subprocess
 import time
 import datetime
 import traceback
@@ -26,7 +26,6 @@ import silk.config.defaults
 from silk.device.netns_base import createLinkPair
 from silk.device.netns_base import NetnsController
 from silk.device.netns_base import StandaloneNetworkNamespace
-from silk.node import wpan_node
 from silk.node.wpantund_base import role_is_thread
 from silk.node.wpantund_base import WpantundWpanNode
 from silk.utils import signal, subprocess_runner
@@ -36,7 +35,6 @@ from silk.config import wpan_constants as wpan
 
 from silk.utils.directorypath import DirectoryPath
 from silk.utils.process import Process
-from silk.utils.process_cleanup import ps_cleanup
 from silk.postprocessing import ip as silk_ip
 from silk.utils.jsonfile import JsonFile
 
@@ -47,6 +45,7 @@ RETRY = 3
 
 
 IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
+
 
 def get_local_ip():
     for ip_interface in IP_INTERFACES:
@@ -135,12 +134,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         logging.debug('Thread Mode: {}'.format(self.thread_mode))
 
-        # Check what platform Silk is running on.  If it is an ARM device,
-        # allow up to 2 minutes for wpantund to start.
-        if "armv7l" in subprocess.check_output("uname -m", shell=True):
-            self.wpantund_start_time = 120  # seconds
-        else:
-            self.wpantund_start_time = 30
+        # TODO: Check what platform Silk is running on. This will be addressed by issue ID #32
+        self.wpantund_start_time = 30
 
         if os.geteuid() != 0:
             logging.error('ERROR: {0} requires "sudo" access'.format(type(self).__name__))
@@ -150,22 +145,13 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.device = None
         self.device_path = None
         self.get_device(sw_version=sw_version)
-        super(wpan_node.WpanNode, self).__init__(self.device.name())
+        super(FifteenFourDevBoardNode, self).__init__(self.device.name())
 
         self.logger.info('Device interface: {}'.format(self.device.interface_serial()))
         self.log_info('Device Path: {}'.format(self.device_path))
 
         # Setup netns
         NetnsController.__init__(self)
-
-    def get_device(self, name=None, sw_version=None):
-        """
-        Find an unused dev board, or other hardware.
-        """
-        self.device = silk.hw.hw_resource.global_instance().get_hw_module(self.hwModel,
-                                                                          name=name,
-                                                                          sw_version=sw_version)
-        self.device_path = self.device.port()
 
 #################################
 #   Logging functions
@@ -309,7 +295,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
             _OT_NCP_FTD_POSIX_APP = POSIX_PATH + '/ot-ncp'
 
-            ncp_socket_path = 'system:{} {} 115200'.format(_OT_NCP_FTD_POSIX_APP, self.device_path)
+            ncp_socket_path = 'system:{} spinel+hdlc+uart://{}?uart-baudrate=115200'.format(_OT_NCP_FTD_POSIX_APP, self.device_path)
 
             command += ' -o Config:NCP:SocketPath \"{}\"'.format(str(ncp_socket_path))
             command += ' -o Config:TUN:InterfaceName {} '.format(self.netns)
@@ -329,8 +315,9 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
         try:
             self.wpantund_process = subprocess_runner.SubprocessRunner(command)
+
         except Exception:
-            print traceback.format_exc()
+            print(traceback.format_exc())
 
         # Install signal listeners here
         self.wpantund_monitor = WpantundMonitor(publisher=self.wpantund_process)
@@ -398,8 +385,11 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
                     self.logger.debug(line)
 
             # Bring up the virtual interfaces in both network namespaces
-            self.link_set(router_if)
-            self.virtual_link_peer.link_set(netns_if)
+            # self.link_set(router_if)
+            # self.virtual_link_peer.link_set(netns_if)
+            # TODO: check this link_set mapping later
+            self.link_set(router_if, self.virtual_eth_peer)
+            self.virtual_link_peer.link_set(netns_if, self.virtual_eth_peer)
 
             # Add addresses specified by the route_data
             self.add_ip6_addr(route_data.fabric_id,
@@ -600,9 +590,9 @@ class FifteenFourDevBoardThreadNode(FifteenFourDevBoardNode):
         self.wpanctl_async("config-gateway", "config-gateway -d %s" % prefix,
                             search_str_output, 1)
 
-    def add_route(self, prefix, subnet, mac, length):
+    def add_route1(self, prefix, subnet, mac, length):
         ip_addr = silk_ip.assemble(prefix, subnet, mac)
-        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,length/8),
+        self.wpanctl_async("add-route", "add-route {0} -l {1}".format(ip_addr,(length//8)),
                            "Route prefix added.", 5)
 
 

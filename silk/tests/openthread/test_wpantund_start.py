@@ -38,7 +38,7 @@ class TestWpantundStart(testcase.TestCase):
                 break
             else:
                 cls.joiner_list.append(device)
-        print cls.joiner_list
+        print(cls.joiner_list)
 
     @classmethod
     @testcase.setup_class_decorator

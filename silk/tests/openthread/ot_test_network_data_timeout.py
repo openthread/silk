@@ -121,10 +121,10 @@ class TestNetworkDataTimeout(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         self.r2.join(self.network_data, 'router')
+        self.wait_for_completion(self.device_list)
 
         self.sed1.join(self.network_data, "sleepy-end-device")
         self.sed1.set_sleep_poll_interval(self.poll_interval)
-
         self.wait_for_completion(self.device_list)
 
         for _ in range(10):
