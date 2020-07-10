@@ -31,7 +31,9 @@ HwModel: Nrf52840
 HwRev: 1.0
 InterfaceSerialNumber: E1A5012E8A7D
 USBInterfaceNumber: 1
-DutSerial: 683536778   
+DutSerial: 683536778
+OTNSVisLocation: 200, 200
+OTNSVisNodeId: 1
 
 [Dev-6489]
 HwModel: NordicSniffer

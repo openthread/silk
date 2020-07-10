@@ -39,7 +39,7 @@ DISPATCHER_PORT = 9000
 class RegexType(enum.Enum):
   START_WPANTUND_REQ = r"Starting wpantund .* ip netns exec (ttyACM\d+)"
   START_WPANTUND_RES = r"wpantund\[(\d+)\]: Starting wpantund"
-  STOP_WPANTUND_REQ = r"sudo ip netns exec (ttyACM\d+) kill -SIGINT (\d+)"
+  STOP_WPANTUND_REQ = r"sudo ip netns del (ttyACM\d+)"
   GET_EXTADDR_REQ = r"(ttyACM\d+) getprop -v NCP:ExtendedAddress"
   GET_EXTADDR_RES = r"\[stdout\] \[([A-Fa-f0-9]{16})\]"
   STATUS = r"wpantund\[(\d+)\]: NCP => .*\[OTNS\] ([\w\d]+=[A-Fa-f0-9,]+)"
