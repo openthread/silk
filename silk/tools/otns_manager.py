@@ -413,9 +413,13 @@ class OtnsManager(object):
     if isinstance(node.device, HwModule):
       if self.otns_node_map.get(node) is not None:
         otns_node = self.otns_node_map[node]
+        otns_node.close()
+
         node_id = otns_node.node_id
         self.logger.debug("Removing node {:d} from OTNS".format(node_id))
         self.grpc_client.delete_node(node_id)
+
+        del self.otns_node_map[node]
     else:
       self.logger.error("Trying to remove a non HwModule node from manager.")
 
