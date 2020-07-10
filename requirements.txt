@@ -2,7 +2,7 @@ BeautifulSoup4==4.9.0
 dispatcher==1.0
 dispatch==0.7.7
 pexpect==4.8.0
-psutil==5.4.1
+psutil==5.6.6
 pycrypto==2.6.1
 pyserial==3.4
 usbinfo==1.1.1
