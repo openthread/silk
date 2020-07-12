@@ -46,8 +46,8 @@ if [[ $output == *"Already"* ]]; then
     LOG_OUTPUT=APP \
     MAC_FILTER=1 \
     REFERENCE_DEVICE=1 \
-    COMMISSIONER=1\
-    JOINER=1\
+    COMMISSIONER=1 \
+    JOINER=1 \
     USB=1 \
     # OTNS=1
 
