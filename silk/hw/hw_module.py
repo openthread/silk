@@ -107,7 +107,7 @@ class HwModule(object):
         parts = coord_str.split(",")
         if len(parts) != 2:
             raise ValueError(
-                "Node location must have x and y coords. Provided: %s" % coord_str)
+                "Node location must have x and y coordinates. Provided: %s" % coord_str)
 
         return int(parts[0]), int(parts[1])
     

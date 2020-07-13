@@ -30,7 +30,7 @@ check-prerequisites:
 		if `dpkg -s python3-pip >& /dev/null`; then \
 			echo "ok"; \
 		else \
-			echo "The package python3-pip is required and is not installed. Please run 'sudo apt-get install python-pip' to install it."; \
+			echo "The package python3-pip is required and is not installed. Please run 'sudo apt-get install python3-pip' to install it."; \
 			exit 1; \
 		fi; \
 		echo -n "Checking for expect..."; \
