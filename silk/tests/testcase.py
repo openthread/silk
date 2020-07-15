@@ -30,6 +30,7 @@ import time
 import unittest
 
 import silk.config.defaults
+from silk.config import wpan_constants as wpan
 import silk.node.base_node
 from silk.node.fifteen_four_dev_board import ThreadDevBoard
 import silk.node.openthread_sniffer as openthread_sniffer
@@ -48,12 +49,10 @@ PING_SENT = "pings_sent"
 PING_RECEIVED = "pings_received"
 PING_ROUND_TRIP_TIME = "ping_rtt"
 
-DEFAULT_OTNS_HOST = "localhost"
-
 __stream_verbosity = 1
 __file_handler = None
 __stream_handler = None
-__otns_host = DEFAULT_OTNS_HOST
+__otns_host = None
 
 
 def setOutputDirectory(path):
@@ -241,9 +240,10 @@ def setup_class_decorator(func):
 
         cls.results[cls.current_test_class][SUITE_ID] = curr_suite_id
 
-        cls.otns_manager = OtnsManager(
-                dispatcher_host=__otns_host,
-                logger=cls.logger.getChild("otnsManager"))
+        if __otns_host:
+            cls.otns_manager = OtnsManager(
+                    dispatcher_host=__otns_host,
+                    logger=cls.logger.getChild("otnsManager"))
 
         # Call the user's setUpClass
         try:
@@ -251,6 +251,10 @@ def setup_class_decorator(func):
 
             # If the user's setUpClass call succeeded, try to Thread sniffers
             cls.thread_sniffer_start_all()
+
+            if __otns_host:
+                for device in cls.device_list:
+                    cls.get_device_extaddr(device)
         except HardwareNotFound as e:
             cls.results[cls.current_test_class]['setupClass'] = False
 
@@ -604,15 +608,22 @@ class TestCase(unittest.TestCase):
 
         if device is not None:
             cls.device_list.append(device)
-            if isinstance(device, ThreadDevBoard):
+            if cls.otns_manager and isinstance(device, ThreadDevBoard):
                 cls.otns_manager.add_node(device)
+
+    @classmethod
+    def get_device_extaddr(cls, device):
+        if cls.otns_manager and isinstance(device, ThreadDevBoard):
+            cls.otns_manager.update_extaddr(
+                    device,
+                    int(device.get(wpan.WPAN_EXT_ADDRESS)[1:-1], 16))
 
     @classmethod
     def clear_test_devices(cls):
         if hasattr(cls, "device_list"):
             while len(cls.device_list) > 0:
                 device = cls.device_list.pop()
-                if isinstance(device, ThreadDevBoard):
+                if cls.otns_manager and isinstance(device, ThreadDevBoard):
                     cls.otns_manager.remove_node(device)
 
     @classmethod
@@ -622,7 +633,7 @@ class TestCase(unittest.TestCase):
             d = getattr(cls, attr)
             if isinstance(d, silk.node.base_node.BaseNode):
                 d.tear_down()
-            if isinstance(d, ThreadDevBoard):
+            if cls.otns_manager and isinstance(d, ThreadDevBoard):
                 cls.otns_manager.remove_node(device)
 
     @classmethod
