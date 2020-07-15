@@ -49,7 +49,7 @@ if [[ $output == *"Already"* ]]; then
     COMMISSIONER=1 \
     JOINER=1 \
     USB=1 \
-    # OTNS=1
+    OTNS=1
 
   echo "Completed building, change to output/nrf52840/bin"
   cd output/nrf52840/bin/

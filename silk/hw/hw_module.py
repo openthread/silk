@@ -29,7 +29,7 @@ hwMacPortOption = 'MacSerialPort'
 interfaceSerial = 'InterfaceSerialNumber'
 interfaceNumber = 'USBInterfaceNumber'
 dutSerialNumber = 'DutSerial'
-otnsVisLocation = 'OTNSVisLocation'
+otnsVisPosition = 'OTNSVisPosition'
 
 """HW Config Models"""
 
@@ -48,7 +48,7 @@ class HwModule(object):
     Maintains usage of a hardware resource
     """
 
-    def __init__(self, name, parser, node_id=1, model=None, interface_serial=None,
+    def __init__(self, name, parser, node_id, model=None, interface_serial=None,
                  interface_number=None, port=None, dut_serial=None, jlink_serial=None):
         self._name = name
         self._parser = parser
@@ -102,12 +102,12 @@ class HwModule(object):
     def get_dut_serial(self):
         return self.__get_option_str(dutSerialNumber)
 
-    def get_otns_vis_location(self):
-        coord_str = self.__get_option_str(otnsVisLocation)
+    def get_otns_vis_position(self):
+        coord_str = self.__get_option_str(otnsVisPosition)
         parts = coord_str.split(",")
         if len(parts) != 2:
             raise ValueError(
-                "Node location must have x and y coordinates. Provided: %s" % coord_str)
+                "Node position must have x and y coordinates. Provided: %s" % coord_str)
 
         return int(parts[0]), int(parts[1])
     

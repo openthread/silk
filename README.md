@@ -37,7 +37,7 @@ HwRev: 1.0
 InterfaceSerialNumber: E1A5012E8A7D
 USBInterfaceNumber: 1
 DutSerial: 683536778
-OTNSVisLocation: 200, 200
+OTNSVisPosition: 200, 200
 
 [Dev-6489]
 HwModel: NordicSniffer
@@ -95,7 +95,7 @@ Then follow these steps to use Silk with OTNS:
 
 1. Configure `ClusterID` for the cluster and `OTNSVisLocation` for each node in `hwconfig.ini`.
 2. Flash each board with the images compiled with OpenThread `OTNS=1` flag turned on.
-3. Run OTNS in real mode using `otns -raw -real -ot-cli $(which otns-silk-proxy)`.
+3. Run OTNS in real mode using `otns -raw -real -ot-cli otns-slik-proxy`.
 4. Run Silk with `silk_run.py`, supplying `-o OtnsServer` argument. If the server is running on the same machine, use `localhost`.
 
 ## Build Wpantund image

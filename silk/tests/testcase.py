@@ -48,12 +48,12 @@ PING_SENT = "pings_sent"
 PING_RECEIVED = "pings_received"
 PING_ROUND_TRIP_TIME = "ping_rtt"
 
-DEFAULT_DISPATCHER_HOST = "localhost"
+DEFAULT_OTNS_HOST = "localhost"
 
 __stream_verbosity = 1
 __file_handler = None
 __stream_handler = None
-__otns_host = DEFAULT_DISPATCHER_HOST
+__otns_host = DEFAULT_OTNS_HOST
 
 
 def setOutputDirectory(path):
@@ -242,7 +242,7 @@ def setup_class_decorator(func):
         cls.results[cls.current_test_class][SUITE_ID] = curr_suite_id
 
         cls.otns_manager = OtnsManager(
-                dispatcher_host=DEFAULT_DISPATCHER_HOST,
+                dispatcher_host=__otns_host,
                 logger=cls.logger.getChild("otnsManager"))
 
         # Call the user's setUpClass

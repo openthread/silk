@@ -59,7 +59,7 @@ class Process(object):
 
     def read(self, process):
         while not self.stop_thread.is_set():
-            output = process.stdout.readline()
+            output = process.stdout.readline().decode('UTF-8')
             # TODO: should add the logic to record the log info here. This will be addressed by issue ID #33
             print(output.strip())
             if output == '' and self.process.poll() is not None:
@@ -70,7 +70,7 @@ class Process(object):
 
     def get_process_result(self):
         self.process_cmd()
-        return self.process.communicate()[0]
+        return self.process.communicate()[0].decode('UTF-8')
 
     def get_process_list(self):
         self.process_cmd()
