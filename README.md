@@ -93,7 +93,7 @@ cd otns
 
 Then follow these steps to use Silk with OTNS:
 
-1. Configure `ClusterID` for the cluster and `OTNSVisLocation` for each node in `hwconfig.ini`.
+1. Configure `ClusterID` for the cluster and `OTNSVisPosition` for each node in `hwconfig.ini`.
 2. Flash each board with the images compiled with OpenThread `OTNS=1` flag turned on.
 3. Run OTNS in real mode using `otns -raw -real -ot-cli otns-silk-proxy`.
 4. Run Silk with `silk_run.py`, supplying `-o OtnsServer` argument. If the server is running on the same machine, use `localhost`.
