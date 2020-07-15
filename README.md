@@ -72,7 +72,7 @@ optional arguments:
   -v X, --verbose X, --verbosity X
                         Set the verbosity level of the console (0=quiet,
                         1=default, 2=verbose)
-  -o OtnsServer, --otns OtnsServer,
+  --otns OtnsServer,
                         Set the OTNS server address to send OTNS messages to
 ```
 
