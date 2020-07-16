@@ -169,6 +169,7 @@ class SilkRunner(object):
         if args.otns_server is not None:
             print('Setting OTNS server host to {0}'.format(args.otns_server))
             silk.tests.testcase.setOtnsHost(args.otns_server)
+            silk.tests.testcase.setOtnsAutoLayout(args.otns_auto_layout)
         silk.tests.testcase.setStreamVerbosity(self.verbosity)
         hw_resource.global_instance(args.hw_conf_file)
 
@@ -192,6 +193,9 @@ class SilkRunner(object):
         parser.add_argument('-s', '--otns', dest='otns_server',
             metavar='OtnsServer',
             help='OTNS server address')
+        parser.add_argument('--otns-auto-layout', dest='otns_auto_layout',
+            action="store_true",
+            help='If OTNS should use auto layout')
         return parser.parse_args(argv[1:])
 
     def discover(self):

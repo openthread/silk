@@ -30,6 +30,8 @@ CLUSTER_LIMIT = 20
 
 """HW Config file options"""
 clusterID = 'ClusterID'
+layoutCenter = 'LayoutCenter'
+layoutRadius = 'LayoutRadius'
 
 
 class HardwareNotFound(Exception):
@@ -62,6 +64,8 @@ class HwResource(object):
             raise RuntimeError("Failed to load objects from %s. Result %s" % (self._filename, str(filenames)))
         
         self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "1")) % CLUSTER_LIMIT
+        self._layout_center = self._parser["DEFAULT"].get(layoutCenter, "200, 200")
+        self._layout_radius = int(self._parser["DEFAULT"].get(layoutRadius, "1"))
         print('Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
         print('Located {0} Physical Resources...'.format(len(self._hw_modules)))
@@ -126,9 +130,11 @@ class HwResource(object):
                 try:
                     self._add_hw_module(
                             hw_module.HwModule(
-                                    name=device_name,
+                                    name=s,
                                     parser=self._parser,
-                                    node_id=node_id))
+                                    node_id=node_id,
+                                    layout_center=self._layout_center,
+                                    layout_radius=self._layout_radius))
                 except RuntimeError as e:
                     print("Failed to add %s" % device_name)
 

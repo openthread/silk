@@ -20,6 +20,7 @@ dispatcher, for visualization purposes.
 
 import enum
 import logging
+import math
 import re
 import socket
 import struct
@@ -44,6 +45,9 @@ class RegexType(enum.Enum):
   GET_EXTADDR_RES = r"\[stdout\] \[([A-Fa-f0-9]{16})\]"
   STATUS = r"wpantund\[(\d+)\]: NCP => .*\[OTNS\] ([\w\d]+=[A-Fa-f0-9,]+)"
   EXTADDR_STATUS = r"extaddr=([A-Fa-f0-9]{16})"
+  ROLE_STATUS = r"role=([0-4])"
+  CHILD_ADDED_STATUS = r"child_added=([A-Fa-f0-9]{16})"
+  CHILD_REMOVED_STATUS = r"child_removed=([A-Fa-f0-9]{16})"
 
 
 class EventType(enum.Enum):
@@ -237,13 +241,16 @@ class OtnsNode(object):
     source_addr (str, int): UDP source address.
     dest_addr (str, int): UDP destination address.
 
-    extaddr(int): extended address of the node in network.
     rx_on_when_idle (bool): if device is receiving when idling.
     full_thread_device (bool): if device is a full Thread device.
 
     grpc_client (GRpcClient): gRPC client instance from the manager.
     logger (logging.Logger): logger for the node.
     node_on_otns (bool): if the node has been reported to OTNS.
+
+    extaddr(int): extended address of the node in network.
+    role(RoleType): role of the node in network.
+    children (List[int]): extended addresses of children.
   """
 
   def __init__(self, node_id: int, vis_x: int, vis_y: int,
@@ -288,6 +295,8 @@ class OtnsNode(object):
     self.extaddr = node_id
     self.rx_on_when_idle = rx_on_when_idle
     self.full_thread_device = full_thread_device
+    self.role = RoleType.DISABLED
+    self.children = set()
 
     self.node_on_otns = False
 
@@ -317,6 +326,34 @@ class OtnsNode(object):
         "Node {:d} sending extaddr={:016x}".format(self.node_id, self.extaddr))
     self.send_event(event.to_bytes())
 
+  def send_role_event(self):
+    """Send role event.
+    """
+    event = Event.status_event("role={:1d}".format(self.role.value))
+    self.logger.debug(
+        "Node {:d} sending role={:1d}".format(self.node_id, self.role.value))
+    self.send_event(event.to_bytes())
+
+  def send_child_added_event(self, child_addr: int):
+    """Send child added event.
+
+    Args:
+        child_addr (str): extended address of the child
+          that is added to this node.
+    """
+    event = Event.status_event("child_added={:016x}".format(child_addr))
+    self.send_event(event.to_bytes())
+
+  def send_child_removed_event(self, child_addr: int):
+    """Send child added event.
+
+    Args:
+        child_addr (str): extended address of the child
+          that is removed from this node.
+    """
+    event = Event.status_event("child_removed={:016x}".format(child_addr))
+    self.send_event(event.to_bytes())
+
   def update_extaddr(self, extaddr: int):
     """Update the node's extended address.
 
@@ -326,6 +363,36 @@ class OtnsNode(object):
     if extaddr != self.extaddr:
       self.extaddr = extaddr
       self.send_extaddr_event()
+
+  def update_role(self, role: RoleType):
+    """Update the node's role.
+
+    Args:
+        role (RoleType): new role of the node.
+    """
+    if role != self.role:
+      self.role = role
+      self.send_role_event()
+
+  def add_child(self, child_addr: int):
+    """Add a node as a child of this node.
+
+    Args:
+        child_addr (int): extended address of the child to add.
+    """
+    if child_addr not in self.children:
+      self.children.add(child_addr)
+      self.send_child_added_event(child_addr)
+
+  def remove_child(self, child_addr: int):
+    """Remove a child node of this node.
+
+    Args:
+        child_addr (int): extended address of the child to remove.
+    """
+    if child_addr in self.children:
+      self.children.remove(child_addr)
+      self.send_child_removed_event(child_addr)
 
   def create_otns_node(self):
     """Call gRPC client to create a node on server for itself.
@@ -353,13 +420,19 @@ class OtnsNode(object):
     self.grpc_client.delete_node(self.node_id)
     self.node_on_otns = False
 
-  def update_vis_position(self):
+  def update_otns_vis_position(self):
     """Call gRPC client to update the node's visualization position.
     """
     self.logger.debug(
         "moving node {:d} to OTNS at ({:d},{:d})".format(
             self.node_id, self.vis_x, self.vis_y))
-    self.grpc_client.move_node(self.vis_x, self.vis_y, self.node_id)
+    self.grpc_client.move_node(self.node_id, self.vis_x, self.vis_y)
+
+  def update_vis_position(self, x: int, y: int):
+    if x != self.vis_x or y != self.vis_y:
+      self.vis_x = x
+      self.vis_y = y
+      self.update_otns_vis_position()
 
 
 class WpantundOtnsMonitor(signal.Subscriber):
@@ -367,9 +440,12 @@ class WpantundOtnsMonitor(signal.Subscriber):
 
   Attributes:
     node (OtnsNode): OTNS node instance that handles UDP messaging.
+    otns_manager (OtnsManager): OTNS manager instance the monitor was
+      created from.
   """
 
   node = None
+  otns_manager = None
 
   def process_log_line(self, line: str):
     """Process a single line of wpantund log.
@@ -377,14 +453,30 @@ class WpantundOtnsMonitor(signal.Subscriber):
     Args:
         line (str): line of log to process.
     """
+    needs_layout_update = False
     status_match = re.search(RegexType.STATUS.value, line)
     if status_match:
       message = status_match.group(2)
 
-      if self.node is not None:
+      if self.node:
         extaddr_match = re.search(RegexType.EXTADDR_STATUS.value, message)
+        role_match = re.search(RegexType.ROLE_STATUS.value, message)
+        child_added_match = re.search(RegexType.CHILD_ADDED_STATUS.value,
+                                      message)
+        child_removed_match = re.search(RegexType.CHILD_REMOVED_STATUS.value,
+                                        message)
         if extaddr_match:
           self.node.update_extaddr(int(extaddr_match.group(1), 16))
+          needs_layout_update = True
+        elif role_match:
+          self.node.update_role(RoleType(int(role_match.group(1))))
+          needs_layout_update = True
+        elif child_added_match:
+          self.node.add_child(int(child_added_match.group(1), 16))
+          needs_layout_update = True
+        elif child_removed_match:
+          self.node.remove_child(int(child_removed_match.group(1), 16))
+          needs_layout_update = True
         else:
           event = Event.status_event(message)
           self.node.send_event(event.to_bytes())
@@ -392,8 +484,11 @@ class WpantundOtnsMonitor(signal.Subscriber):
     get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, line)
     if get_extaddr_info_match:
       extaddr = get_extaddr_info_match.group(1)
-      if self.node is not None:
+      if self.node:
         self.node.update_extaddr(int(extaddr, 16))
+
+    if needs_layout_update and self.otns_manager:
+      self.otns_manager.update_layout()
 
   def subscribeHandle(self, sender, **kwargs):
     """Handle messages from Publisher, a wpantund process.
@@ -418,14 +513,17 @@ class OtnsManager(object):
       device to OTNS monitor.
     local_host (str): host of this local machine.
     logger (Logger): logger for the manager class.
+    auto_layout (bool): if manager should auto layout node positions.
   """
 
-  def __init__(self, server_host: str, logger: logging.Logger):
+  def __init__(self, server_host: str,
+               logger: logging.Logger, auto_layout: bool):
     """Initialize an OTNS manager.
 
     Args:
       server_host (str): host address of OTNS dispatcher.
       logger (logging.Logger): logger for the manager.
+      auto_layout (bool): if manager should auto layout node positions.
     """
     self.server_host = server_host
     self.grpc_client = GRpcClient(
@@ -433,6 +531,8 @@ class OtnsManager(object):
         logger=logger.getChild("gRPCClient"))
     self.otns_node_map = {}
     self.otns_monitor_map = {}
+
+    self.auto_layout = auto_layout
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
@@ -463,7 +563,10 @@ class OtnsManager(object):
     try:
       if node not in self.otns_node_map:
         node_id = node.device.get_otns_vis_node_id()
-        vis_x, vis_y = node.device.get_otns_vis_position()
+        if self.auto_layout:
+          vis_x, vis_y = node.device.get_otns_vis_layout_center()
+        else:
+          vis_x, vis_y = node.device.get_otns_vis_position()
         otns_node = OtnsNode(
             node_id=node_id,
             vis_x=vis_x,
@@ -484,6 +587,7 @@ class OtnsManager(object):
         self.logger.debug("Adding existing node {:d} to OTNS".format(node_id))
         node.otns_manager = self
         self.otns_node_map[node].create_otns_node()
+      self.update_layout()
     except ValueError as e:
       self.logger.error("Failed to get node OTNS properties.", str(e))
 
@@ -509,6 +613,8 @@ class OtnsManager(object):
 
         del self.otns_node_map[node]
 
+        self.update_layout()
+
   def update_extaddr(self, node: ThreadDevBoard, extaddr: int):
     """Report a node's extended address to OTNS manager.
 
@@ -518,6 +624,7 @@ class OtnsManager(object):
     """
     if node in self.otns_node_map:
       self.otns_node_map[node].update_extaddr(extaddr)
+      self.update_layout()
 
   def subscribe_to_node(self, node: ThreadDevBoard):
     """Create a wpantund OTNS monitor and subscribe it to the node.
@@ -531,6 +638,7 @@ class OtnsManager(object):
       wpantund_otns_monitor = WpantundOtnsMonitor(
           publisher=node.wpantund_process)
       wpantund_otns_monitor.node = self.otns_node_map[node]
+      wpantund_otns_monitor.otns_manager = self
       self.otns_monitor_map[node] = wpantund_otns_monitor
 
   def unsubscribe_from_node(self, node: ThreadDevBoard):
@@ -544,6 +652,7 @@ class OtnsManager(object):
           "Unsubscribing from node {:d}".format(
               self.otns_node_map[node].node_id))
       self.otns_monitor_map[node].unsubscribe()
+      self.otns_monitor_map[node].otns_manager = None
       del self.otns_monitor_map[node]
 
   def unsubscribe_from_all_nodes(self):
@@ -553,3 +662,71 @@ class OtnsManager(object):
     for subscriber in self.otns_monitor_map.values():
       subscriber.unsubscribe()
     self.otns_monitor_map.clear()
+
+  def update_layout(self):
+    """Update layout of nodes in auto layout mode.
+    """
+    if not self.auto_layout or not self.otns_node_map:
+      return
+
+    self.logger.debug("Updating nodes layout")
+    first_node = next(iter(self.otns_node_map))
+    center_x, center_y = first_node.device.get_otns_vis_layout_center()
+    radius = first_node.device.get_otns_vis_layout_radius()
+
+    leader_router = set()
+    children = set()
+    disabled_detached = set()
+    extaddr_to_node_map = {}
+
+    for node in self.otns_node_map.values():
+      extaddr_to_node_map[node.extaddr] = node
+      if node.role == RoleType.DISABLED or node.role == RoleType.DETACHED:
+        disabled_detached.add(node)
+      elif node.role == RoleType.CHILD:
+        children.add(node)
+      elif node.role == RoleType.ROUTER or node.role == RoleType.LEADER:
+        leader_router.add(node)
+
+    # filter out empty groups
+    groups = [leader_router, children, disabled_detached]
+    groups = [g for g in groups if g]
+
+    if not groups:
+      return
+
+    # order children near their parents
+    ordered_groups = []
+    for group in groups:
+      if group is leader_router:
+        leader_router_list = list(group)
+        ordered_groups.append(leader_router_list)
+
+        children_list = []
+        for r_l in leader_router_list:
+          for child in r_l.children:
+            children_list.append(extaddr_to_node_map[child])
+            children.remove(extaddr_to_node_map[child])
+        ordered_groups.append(children_list)
+      elif group is children:
+        if not group:
+          continue
+        else:
+          ordered_groups[-1].extend(list(group))
+      elif group is disabled_detached:
+        ordered_groups.append(list(group))
+
+    ordered_groups = [g for g in ordered_groups if g]
+    ratio = len(ordered_groups)
+    for i, group in enumerate(ordered_groups):
+      n = len(group)
+      if n == 1 and i == 0:
+        group[0].update_vis_position(center_x, center_y)
+      else:
+        angle_step = math.radians(360 / n)
+        group_radius = radius / ratio
+        for j, node in enumerate(group):
+          x = center_x + group_radius * math.cos(angle_step * j)
+          y = center_y + group_radius * math.sin(angle_step * j)
+          node.update_vis_position(int(x), int(y))
+      ratio -= 1
