@@ -58,7 +58,7 @@ An example of `clusters.conf` is in `silk/config` folder.
 ## Run test
 
 ``` shell
-usage: silk_run.py [-h] [-d ResPath] [-c ConfFile] [-v X] [-o OtnsServer] P [P ...]
+usage: silk_run.py [-h] [-d ResPath] [-c ConfFile] [-v X] [--otns OtnsServer] P [P ...]
 
 Run a suite of Silk Tests
 positional arguments:
