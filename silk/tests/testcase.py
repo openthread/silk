@@ -242,7 +242,7 @@ def setup_class_decorator(func):
 
         if __otns_host:
             cls.otns_manager = OtnsManager(
-                    dispatcher_host=__otns_host,
+                    server_host=__otns_host,
                     logger=cls.logger.getChild("otnsManager"))
 
         # Call the user's setUpClass

@@ -388,7 +388,7 @@ class OtnsManager(object):
   """OTNS communication manager for a test case.
 
   Attributes:
-    dispatcher_host (str): host address of OTNS dispatcher.
+    server_host (str): host address of OTNS dispatcher.
     grpc_client (GRpcClient): OTNS gRPC client.
     otns_node_map (Dict[ThreadDevBoard, OtnsNode]): map from device to
       OTNS node.
@@ -398,16 +398,16 @@ class OtnsManager(object):
     logger (Logger): logger for the manager class.
   """
 
-  def __init__(self, dispatcher_host: str, logger: logging.Logger):
+  def __init__(self, server_host: str, logger: logging.Logger):
     """Initialize an OTNS manager.
 
     Args:
-      dispatcher_host (str): host address of OTNS dispatcher.
+      server_host (str): host address of OTNS dispatcher.
       logger (logging.Logger): logger for the manager.
     """
-    self.dispatcher_host = dispatcher_host
+    self.server_host = server_host
     self.grpc_client = GRpcClient(
-        server_addr="{:s}:{:d}".format(dispatcher_host, GRPC_SERVER_PORT),
+        server_addr="{:s}:{:d}".format(server_host, GRPC_SERVER_PORT),
         logger=logger.getChild("gRPCClient"))
     self.otns_node_map = {}
     self.otns_monitor_map = {}
@@ -419,7 +419,7 @@ class OtnsManager(object):
     self.logger = logger
     self.logger.info(
         "OTNS manager created, connecting from {:s} to {:s}.".format(
-            self.local_host, dispatcher_host))
+            self.local_host, server_host))
 
   def add_node(self, node: ThreadDevBoard):
     """Add a node to OTNS visualization.
@@ -439,7 +439,7 @@ class OtnsManager(object):
             vis_x=vis_x,
             vis_y=vis_y,
             local_host=self.local_host,
-            server_host=self.dispatcher_host,
+            server_host=self.server_host,
             server_port=DISPATCHER_PORT,
             grpc_client=self.grpc_client,
             logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
