@@ -90,7 +90,7 @@ class GRpcClient:
 
   def add_node(self, x: int, y: int, node_id: int, ftd=True,
                rx_on_when_idle=False):
-    """Sends an add node request async.
+    """Sends an add node request.
 
     Args:
       x (int): x coordinate of the new node.
@@ -99,22 +99,18 @@ class GRpcClient:
       ftd (bool): if the node is a full Thread device.
       rx_on_when_idle (bool): if rx is on when device is idle.
     """
-    def handle_response(request_future):
-      response = request_future.result()
-      self.logger.info(
-          "Added node {:d} at x={:d}, y={:d}, response: {}".format(
-              node_id, x, y, response))
-
     mode = visualize_grpc_pb2.NodeMode(
         rx_on_when_idle=rx_on_when_idle,
         secure_data_requests=False,
         full_thread_device=ftd,
         full_network_data=False)
 
-    request_future = self.stub.CtrlAddNode.future(
+    response = self.stub.CtrlAddNode(
         visualize_grpc_pb2.AddNodeRequest(
             x=x, y=y, is_router=True, mode=mode, node_id=node_id))
-    request_future.add_done_callback(handle_response)
+    self.logger.info(
+        "Added node {:d} at x={:d}, y={:d}, response: {}".format(
+            node_id, x, y, response))
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request async.
@@ -135,19 +131,15 @@ class GRpcClient:
     request_future.add_done_callback(handle_response)
 
   def delete_node(self, node_id: int):
-    """Sends a delete node request async.
+    """Sends a delete node request.
 
     Args:
       node_id (int): node ID of the node to be deleted.
     """
-    def handle_response(request_future):
-      response = request_future.result()
-      self.logger.info(
-          "Deleted node ID={:d}, response: {}".format(node_id, response))
-
-    request_future = self.stub.CtrlDeleteNode.future(
+    response = self.stub.CtrlDeleteNode(
         visualize_grpc_pb2.DeleteNodeRequest(node_id=node_id))
-    request_future.add_done_callback(handle_response)
+    self.logger.info(
+        "Deleted node ID={:d}, response: {}".format(node_id, response))
 
 
 class Event:
