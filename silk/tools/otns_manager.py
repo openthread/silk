@@ -23,7 +23,6 @@ import logging
 import re
 import socket
 import struct
-import time
 
 import grpc
 
@@ -313,10 +312,6 @@ class OtnsNode(object):
         "Adding node {:d} to OTNS at ({:d},{:d})".format(
             self.node_id, self.vis_x, self.vis_y))
     self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
-    # Temporary measure to prevent most cases of race conditions,
-    # and will be fixed once OTNS decouples gRPC add node command
-    # with extaddr reporting
-    time.sleep(1 if self.source_addr[0] == self.dest_addr[0] else 2)
     self.send_extaddr_event()
     self.node_on_otns = True
 
