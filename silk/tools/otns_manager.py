@@ -88,7 +88,8 @@ class GRpcClient:
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
     self.logger = logger
 
-  def add_node(self, x: int, y: int, node_id: int, ftd=True):
+  def add_node(self, x: int, y: int, node_id: int, ftd=True,
+               rx_on_when_idle=False):
     """Sends an add node request async.
 
     Args:
@@ -96,6 +97,7 @@ class GRpcClient:
       y (int): y coordinate of the new node.
       node_id (int): node ID of the new node.
       ftd (bool): if the node is a full Thread device.
+      rx_on_when_idle (bool): if rx is on when device is idle.
     """
     def handle_response(request_future):
       response = request_future.result()
@@ -104,7 +106,7 @@ class GRpcClient:
               node_id, x, y, response))
 
     mode = visualize_grpc_pb2.NodeMode(
-        rx_on_when_idle=False,
+        rx_on_when_idle=rx_on_when_idle,
         secure_data_requests=False,
         full_thread_device=ftd,
         full_network_data=False)

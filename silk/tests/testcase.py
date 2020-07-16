@@ -630,10 +630,10 @@ class TestCase(unittest.TestCase):
     def release_devices(cls):
         # Release any claimed hardware
         for attr in dir(cls):
-            d = getattr(cls, attr)
-            if isinstance(d, silk.node.base_node.BaseNode):
+            device = getattr(cls, attr)
+            if isinstance(device, silk.node.base_node.BaseNode):
                 d.tear_down()
-            if cls.otns_manager and isinstance(d, ThreadDevBoard):
+            if cls.otns_manager and isinstance(device, ThreadDevBoard):
                 cls.otns_manager.remove_node(device)
 
     @classmethod
