@@ -632,7 +632,7 @@ class TestCase(unittest.TestCase):
         for attr in dir(cls):
             device = getattr(cls, attr)
             if isinstance(device, silk.node.base_node.BaseNode):
-                d.tear_down()
+                device.tear_down()
             if cls.otns_manager and isinstance(device, ThreadDevBoard):
                 cls.otns_manager.remove_node(device)
 
