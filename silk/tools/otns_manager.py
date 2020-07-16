@@ -38,6 +38,8 @@ SERVER_PORT = 9000
 
 
 class RegexType(enum.Enum):
+  """Regular expression collections.
+  """
   START_WPANTUND_REQ = r"Starting wpantund .* ip netns exec"
   START_WPANTUND_RES = r"wpantund\[(\d+)\]: Starting wpantund"
   STOP_WPANTUND_REQ = r"sudo ip netns del"
@@ -700,33 +702,38 @@ class OtnsManager(object):
     for group in groups:
       if group is leader_router:
         leader_router_list = list(group)
+        leader_router_list.sort(key=lambda x: x.node_id)
         ordered_groups.append(leader_router_list)
 
         children_list = []
         for r_l in leader_router_list:
           for child in r_l.children:
-            children_list.append(extaddr_to_node_map[child])
-            children.remove(extaddr_to_node_map[child])
+            if child in extaddr_to_node_map:
+              children_list.append(extaddr_to_node_map[child])
+              children.discard(extaddr_to_node_map[child])
         ordered_groups.append(children_list)
       elif group is children:
-        if not group:
-          continue
+        children_list = list(group)
+        children_list.sort(key=lambda x: x.node_id)
+        if len(ordered_groups) >= 2:
+          ordered_groups[-1].extend(children_list)
         else:
-          ordered_groups[-1].extend(list(group))
+          ordered_groups.append(children_list)
       elif group is disabled_detached:
-        ordered_groups.append(list(group))
+        disabled_detached_list = list(group)
+        disabled_detached_list.sort(key=lambda x: x.node_id)
+        ordered_groups.append(disabled_detached_list)
 
     ordered_groups = [g for g in ordered_groups if g]
-    ratio = len(ordered_groups)
+    groups_count = len(ordered_groups)
     for i, group in enumerate(ordered_groups):
       n = len(group)
       if n == 1 and i == 0:
         group[0].update_vis_position(center_x, center_y)
       else:
         angle_step = math.radians(360 / n)
-        group_radius = radius / ratio
+        group_radius = radius * (i + 1) / groups_count
         for j, node in enumerate(group):
           x = center_x + group_radius * math.cos(angle_step * j)
           y = center_y + group_radius * math.sin(angle_step * j)
           node.update_vis_position(int(x), int(y))
-      ratio -= 1
