@@ -33,7 +33,7 @@ from silk.tools.pb import visualize_grpc_pb2_grpc
 from silk.utils import signal
 
 GRPC_SERVER_PORT = 8999
-DISPATCHER_PORT = 9000
+SERVER_PORT = 9000
 
 
 class RegexType(enum.Enum):
@@ -88,7 +88,7 @@ class GRpcClient:
     self.logger = logger
 
   def add_node(self, x: int, y: int, node_id: int, ftd=True,
-               rx_on_when_idle=False):
+               rx_on_when_idle=True):
     """Sends an add node request.
 
     Args:
@@ -220,7 +220,11 @@ class OtnsNode(object):
     sock (socket): UDP socket to send message from.
     source_addr (str, int): UDP source address.
     dest_addr (str, int): UDP destination address.
+
     extaddr(int): extended address of the node in network.
+    rx_on_when_idle (bool): if device is receiving when idling.
+    full_thread_device (bool): if device is a full Thread device.
+
     grpc_client (GRpcClient): gRPC client instance from the manager.
     logger (logging.Logger): logger for the node.
     node_on_otns (bool): if the node has been reported to OTNS.
@@ -228,6 +232,7 @@ class OtnsNode(object):
 
   def __init__(self, node_id: int, vis_x: int, vis_y: int,
                local_host: str, server_host: str, server_port: int,
+               rx_on_when_idle: bool, full_thread_device: bool,
                grpc_client: GRpcClient, logger: logging.Logger):
     """Initialize a node.
 
@@ -238,6 +243,8 @@ class OtnsNode(object):
       local_host (str): host address of this machine.
       server_host (str): host address of the OTNS dispatcher.
       server_port (int): port number of the OTNS dispatcher.
+      rx_on_when_idle (bool): if device is receiving when idling.
+      full_thread_device (bool): if device is a full Thread device.
       grpc_client (GRpcClient): gRPC client instance from the manager.
       logger (logging.Logger): logger for the node.
     """
@@ -263,6 +270,8 @@ class OtnsNode(object):
     self.grpc_client = grpc_client
 
     self.extaddr = node_id
+    self.rx_on_when_idle = rx_on_when_idle
+    self.full_thread_device = full_thread_device
 
     self.node_on_otns = False
 
@@ -311,7 +320,9 @@ class OtnsNode(object):
     self.logger.debug(
         "Adding node {:d} to OTNS at ({:d},{:d})".format(
             self.node_id, self.vis_x, self.vis_y))
-    self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
+    self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id,
+                              ftd=self.full_thread_device,
+                              rx_on_when_idle=self.rx_on_when_idle)
     self.send_extaddr_event()
     self.node_on_otns = True
 
@@ -435,7 +446,9 @@ class OtnsManager(object):
             vis_y=vis_y,
             local_host=self.local_host,
             server_host=self.server_host,
-            server_port=DISPATCHER_PORT,
+            server_port=SERVER_PORT,
+            rx_on_when_idle=node.rx_on_when_idle,
+            full_thread_device=node.full_thread_device,
             grpc_client=self.grpc_client,
             logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
 

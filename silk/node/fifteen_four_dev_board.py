@@ -120,6 +120,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.virtual_eth_peer = 'v-eth1'
         self.flash_result = False
         self.otns_manager = None
+        self.rx_on_when_idle = True
+        self.full_thread_device = True
 
         self.wpantund_verbose_debug = wpantund_verbose_debug
         local_ip = get_local_ip().strip().split()[1]
