@@ -319,12 +319,15 @@ class OtnsNode(object):
         "Adding node {:d} to OTNS at ({:d},{:d})".format(
             self.node_id, self.vis_x, self.vis_y))
     self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
-    time.sleep(0.5)
+    # Temporary measure to prevent most cases of race conditions,
+    # and will be fixed once OTNS decouples gRPC add node command
+    # with extaddr reporting
+    time.sleep(1 if self.source_addr[0] == self.dest_addr[0] else 2)
     self.send_extaddr_event()
     self.node_on_otns = True
 
   def delete_otns_node(self):
-    """Call gRPC client to remove the note on server for itself.
+    """Call gRPC client to remove the node on server for itself.
     """
     if not self.node_on_otns:
       self.logger.debug("Node {:d} not on OTNS while trying to delete")
