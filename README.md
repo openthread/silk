@@ -58,7 +58,7 @@ An example of `clusters.conf` is in `silk/config` folder.
 ## Run test
 
 ``` shell
-usage: silk_run.py [-h] [-d ResPath] [-c ConfFile] [-v X] [--otns OtnsServer] P [P ...]
+usage: silk_run.py [-h] [-d ResPath] [-c ConfFile] [-v X] [-s OtnsServer] P [P ...]
 
 Run a suite of Silk Tests
 positional arguments:
@@ -72,7 +72,7 @@ optional arguments:
   -v X, --verbose X, --verbosity X
                         Set the verbosity level of the console (0=quiet,
                         1=default, 2=verbose)
-  --otns OtnsServer,
+  -s OtnsServer, --otns OtnsServer,
                         Set the OTNS server address to send OTNS messages to
 ```
 
@@ -97,7 +97,7 @@ Then follow these steps to use Silk with OTNS:
    monitor on which OTNS runs, so usually a 50px distance is clear enough.
 2. Flash each board with the images compiled with OpenThread `OTNS=1` flag turned on.
 3. Run OTNS in real mode using `otns -raw -real -ot-cli otns-silk-proxy`.
-4. Run Silk with `silk_run.py`, supplying `--otns OtnsServer` argument. If the server is running on the same machine, use `localhost`.
+4. Run Silk with `silk_run.py`, supplying `-s OtnsServer` argument. If the server is running on the same machine, use `localhost`.
 
 ## Build Wpantund image
 

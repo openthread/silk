@@ -189,7 +189,7 @@ class SilkRunner(object):
             help='Set the verbosity level of the console (0=quiet, 1=default, 2=verbose)')
         parser.add_argument('pattern', nargs='+', metavar='P',
             help='test file search pattern')
-        parser.add_argument('--otns', dest='otns_server',
+        parser.add_argument('-s', '--otns', dest='otns_server',
             metavar='OtnsServer',
             help='OTNS server address')
         return parser.parse_args(argv[1:])
