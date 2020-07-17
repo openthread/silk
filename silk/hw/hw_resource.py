@@ -130,7 +130,7 @@ class HwResource(object):
                 try:
                     self._add_hw_module(
                             hw_module.HwModule(
-                                    name=s,
+                                    name=device_name,
                                     parser=self._parser,
                                     node_id=node_id,
                                     layout_center=self._layout_center,
