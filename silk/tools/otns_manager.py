@@ -103,13 +103,15 @@ class GRpcClient:
         secure_data_requests=False,
         full_thread_device=ftd,
         full_network_data=False)
+    is_router = ftd and rx_on_when_idle
 
     response = self.stub.CtrlAddNode(
         visualize_grpc_pb2.AddNodeRequest(
-            x=x, y=y, is_router=True, mode=mode, node_id=node_id))
+            x=x, y=y, is_router=is_router, mode=mode, node_id=node_id))
     self.logger.info(
-        "Added node {:d} at x={:d}, y={:d}, response: {}".format(
-            node_id, x, y, response))
+        ("Added node {:d} at x={:d}, y={:d}, sleepy: {}, FTD: {}, "
+         "response: {}").format(
+             node_id, x, y, not rx_on_when_idle, ftd, response))
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request async.
