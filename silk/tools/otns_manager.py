@@ -711,6 +711,7 @@ class OtnsManager(object):
             if child in extaddr_to_node_map:
               children_list.append(extaddr_to_node_map[child])
               children.discard(extaddr_to_node_map[child])
+        children_list.sort(key=lambda x: x.node_id)
         ordered_groups.append(children_list)
       elif group is children:
         children_list = list(group)
