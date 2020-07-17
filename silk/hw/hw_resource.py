@@ -120,17 +120,17 @@ class HwResource(object):
         return None
 
     def _update_hw_modules(self):
-        for i, s in enumerate(self._parser.sections()):
-            if not self._find_hw_module_by_name(s):
+        for i, device_name in enumerate(self._parser.sections()):
+            if not self._find_hw_module_by_name(device_name):
                 node_id = i + 1 + self._cluster_id * CLUSTER_NODE_LIMIT
                 try:
                     self._add_hw_module(
                             hw_module.HwModule(
-                                    s,
+                                    name=device_name,
                                     parser=self._parser,
                                     node_id=node_id))
                 except RuntimeError as e:
-                    print("Failed to add %s" % s)
+                    print("Failed to add %s" % device_name)
 
     def _add_hw_module(self, module):
         self._hw_modules.append(module)
