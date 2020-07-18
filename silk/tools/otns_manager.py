@@ -727,6 +727,8 @@ class OtnsManager(object):
 
     ordered_groups = [g for g in ordered_groups if g]
     groups_count = len(ordered_groups)
+    # adding a shift to prevent overlapping
+    shift = 15
     for i, group in enumerate(ordered_groups):
       n = len(group)
       if n == 1 and i == 0:
@@ -735,6 +737,7 @@ class OtnsManager(object):
         angle_step = math.radians(360 / n)
         group_radius = radius * (i + 1) / groups_count
         for j, node in enumerate(group):
-          x = center_x + group_radius * math.cos(angle_step * j)
-          y = center_y + group_radius * math.sin(angle_step * j)
+          angle = shift * i + angle_step * j
+          x = center_x + group_radius * math.cos(angle)
+          y = center_y + group_radius * math.sin(angle)
           node.update_vis_position(int(x), int(y))
