@@ -53,7 +53,6 @@ __stream_verbosity = 1
 __file_handler = None
 __stream_handler = None
 __otns_host = None
-__otns_auto_layout = False
 
 
 def setOutputDirectory(path):
@@ -68,15 +67,6 @@ def setOtnsHost(host: str):
     """
     global __otns_host
     __otns_host = host
-
-def setOtnsAutoLayout(enabled: bool):
-    """Set the OTNS manager's use auto layout flag.
-
-    Args:
-        enabled (bool): desired toggle.
-    """
-    global __otns_auto_layout
-    __otns_auto_layout = enabled
 
 def setStreamVerbosity(verbosity):
     """ Set the verbose level of console output
@@ -253,8 +243,7 @@ def setup_class_decorator(func):
         if __otns_host:
             cls.otns_manager = OtnsManager(
                     server_host=__otns_host,
-                    logger=cls.logger.getChild("otnsManager"),
-                    auto_layout=__otns_auto_layout)
+                    logger=cls.logger.getChild("otnsManager"))
             cls.otns_manager.set_test_title(cls.__name__)
 
         # Call the user's setUpClass

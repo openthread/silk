@@ -32,8 +32,7 @@ argv = [
     '-v2',
     '-c', CONFIG_PATH + 'hwconfig.ini',
     '-d', run_log_path, 'ot_test_*.py',
-    '-s', 'localhost',
-    '--otns-auto-layout'
+    '-s', 'localhost'
 ]
 
 silk_run.SilkRunner(argv=argv)

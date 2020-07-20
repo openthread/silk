@@ -76,8 +76,6 @@ optional arguments:
                         1=default, 2=verbose)
   -s OtnsServer, --otns OtnsServer,
                         Set the OTNS server address to send OTNS messages to
-  --otns-auto-layout,
-                        Set if the OTNS manager automatically calculates node positions.
 ```
 
 There is an example of test run script `silk_run_test.py` under unit_tests folder.
@@ -100,8 +98,10 @@ Then follow these steps to use Silk with OTNS:
 1. Configure `ClusterID` for the cluster. There are two ways to lay out nodes for the cluster:
    1. Specify `OTNSVisPosition` for each node in `hwconfig.ini`. Canvas is the same size in pixel as the
       monitor on which OTNS runs, so usually a 50px distance is clear enough.
-   2. Specify `LayoutCenter` and `LayoutRadius` for the cluster in `hwconfig.ini` and turn on `--otns-auto-layout` flag. This will
+   2. Specify `LayoutCenter` and `LayoutRadius` for the cluster in `hwconfig.ini` and not `OTNSVisPosition`. This will
       tell OTNS Manager to calculate each node's position dynamically based on their roles in the network.
+   3. OTNS Manager will default to not using auto layout if all node's visualization positions have been set. Otherwise,
+      it turns to auto layout.
 2. Flash each board with the images compiled with OpenThread `OTNS=1` flag turned on.
 3. Run OTNS in real mode using `otns -raw -real -ot-cli otns-silk-proxy`.
 4. Run Silk with `silk_run.py`, supplying `-s OtnsServer` argument. If the server is running on the same machine, use `localhost`.

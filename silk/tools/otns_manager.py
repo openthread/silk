@@ -518,14 +518,12 @@ class OtnsManager(object):
     auto_layout (bool): if manager should auto layout node positions.
   """
 
-  def __init__(self, server_host: str,
-               logger: logging.Logger, auto_layout: bool):
+  def __init__(self, server_host: str, logger: logging.Logger):
     """Initialize an OTNS manager.
 
     Args:
       server_host (str): host address of OTNS dispatcher.
       logger (logging.Logger): logger for the manager.
-      auto_layout (bool): if manager should auto layout node positions.
     """
     self.server_host = server_host
     self.grpc_client = GRpcClient(
@@ -534,7 +532,7 @@ class OtnsManager(object):
     self.otns_node_map = {}
     self.otns_monitor_map = {}
 
-    self.auto_layout = auto_layout
+    self.auto_layout = False
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
@@ -563,35 +561,34 @@ class OtnsManager(object):
         "Adding non HwModule node to OTNS manager.")
 
     try:
-      if node not in self.otns_node_map:
-        node_id = node.device.get_otns_vis_node_id()
-        if self.auto_layout:
-          vis_x, vis_y = node.device.get_otns_vis_layout_center()
-        else:
-          vis_x, vis_y = node.device.get_otns_vis_position()
-        otns_node = OtnsNode(
-            node_id=node_id,
-            vis_x=vis_x,
-            vis_y=vis_y,
-            local_host=self.local_host,
-            server_host=self.server_host,
-            server_port=SERVER_PORT,
-            rx_on_when_idle=node.rx_on_when_idle,
-            full_thread_device=node.full_thread_device,
-            grpc_client=self.grpc_client,
-            logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
+      vis_x, vis_y = node.device.get_otns_vis_position()
+    except ValueError:
+      vis_x, vis_y = node.device.get_otns_vis_layout_center()
+      self.auto_layout = True
 
-        self.logger.debug("Adding new node {:d} to OTNS".format(node_id))
-        otns_node.create_otns_node()
-        node.otns_manager = self
-        self.otns_node_map[node] = otns_node
-      else:
-        self.logger.debug("Adding existing node {:d} to OTNS".format(node_id))
-        node.otns_manager = self
-        self.otns_node_map[node].create_otns_node()
-      self.update_layout()
-    except ValueError as e:
-      self.logger.error("Failed to get node OTNS properties.", str(e))
+    if node not in self.otns_node_map:
+      node_id = node.device.get_otns_vis_node_id()
+      otns_node = OtnsNode(
+          node_id=node_id,
+          vis_x=vis_x,
+          vis_y=vis_y,
+          local_host=self.local_host,
+          server_host=self.server_host,
+          server_port=SERVER_PORT,
+          rx_on_when_idle=node.rx_on_when_idle,
+          full_thread_device=node.full_thread_device,
+          grpc_client=self.grpc_client,
+          logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
+
+      self.logger.debug("Adding new node {:d} to OTNS".format(node_id))
+      otns_node.create_otns_node()
+      node.otns_manager = self
+      self.otns_node_map[node] = otns_node
+    else:
+      self.logger.debug("Adding existing node {:d} to OTNS".format(node_id))
+      node.otns_manager = self
+      self.otns_node_map[node].create_otns_node()
+    self.update_layout()
 
   def remove_node(self, node: ThreadDevBoard):
     """Remove a node from OTNS visualization.
@@ -676,60 +673,47 @@ class OtnsManager(object):
     center_x, center_y = first_node.device.get_otns_vis_layout_center()
     radius = first_node.device.get_otns_vis_layout_radius()
 
-    leader_router = set()
+    routers = set()
     children = set()
-    disabled_detached = set()
+    detached = set()
     extaddr_to_node_map = {}
 
     for node in self.otns_node_map.values():
       extaddr_to_node_map[node.extaddr] = node
       if node.role == RoleType.DISABLED or node.role == RoleType.DETACHED:
-        disabled_detached.add(node)
+        detached.add(node)
       elif node.role == RoleType.CHILD:
         children.add(node)
       elif node.role == RoleType.ROUTER or node.role == RoleType.LEADER:
-        leader_router.add(node)
+        routers.add(node)
 
-    # filter out empty groups
-    groups = [leader_router, children, disabled_detached]
-    groups = [g for g in groups if g]
-
-    if not groups:
+    if not routers and not children and not detached:
       return
 
     # order children near their parents
-    ordered_groups = []
-    for group in groups:
-      if group == leader_router:
-        leader_router_list = list(group)
-        leader_router_list.sort(key=lambda x: x.node_id)
-        ordered_groups.append(leader_router_list)
+    router_list = list(routers)
+    router_list.sort(key=lambda x: x.node_id)
 
-        children_list = []
-        for r_l in leader_router_list:
-          for child in r_l.children:
-            if child in extaddr_to_node_map:
-              children_list.append(extaddr_to_node_map[child])
-              children.discard(extaddr_to_node_map[child])
-        children_list.sort(key=lambda x: x.node_id)
-        ordered_groups.append(children_list)
-      elif group == children:
-        children_list = list(group)
-        children_list.sort(key=lambda x: x.node_id)
-        if len(ordered_groups) >= 2:
-          ordered_groups[-1].extend(children_list)
-        else:
-          ordered_groups.append(children_list)
-      elif group == disabled_detached:
-        disabled_detached_list = list(group)
-        disabled_detached_list.sort(key=lambda x: x.node_id)
-        ordered_groups.append(disabled_detached_list)
+    children_list = []
+    for router in router_list:
+      for child in router.children:
+        if child in extaddr_to_node_map:
+          children_list.append(extaddr_to_node_map[child])
+          children.discard(extaddr_to_node_map[child])
+    children_list.sort(key=lambda x: x.node_id)
 
-    ordered_groups = [g for g in ordered_groups if g]
-    groups_count = len(ordered_groups)
+    non_attached_children_list = list(children)
+    non_attached_children_list.sort(key=lambda x: x.node_id)
+    children_list.extend(non_attached_children_list)
+
+    detached_list = list(detached)
+    detached_list.sort(key=lambda x: x.node_id)
+
+    groups = [g for g in [router_list, children_list, detached_list] if g]
+    groups_count = len(groups)
     # adding a shift to prevent overlapping
     shift = 15
-    for i, group in enumerate(ordered_groups):
+    for i, group in enumerate(groups):
       n = len(group)
       if n == 1 and i == 0:
         group[0].update_vis_position(center_x, center_y)

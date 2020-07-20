@@ -63,9 +63,12 @@ class HwResource(object):
         if len(filenames) == 0:
             raise RuntimeError("Failed to load objects from %s. Result %s" % (self._filename, str(filenames)))
         
-        self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "1")) % CLUSTER_LIMIT
-        self._layout_center = self._parser["DEFAULT"].get(layoutCenter, "200, 200")
-        self._layout_radius = int(self._parser["DEFAULT"].get(layoutRadius, "1"))
+        self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "0")) % CLUSTER_LIMIT
+        default_center_x = (self._cluster_id % 3 + 1) * 200
+        default_center_y = (self._cluster_id // 3 + 1) * 200
+        default_center = "{:d}, {:d}".format(default_center_x, default_center_y)
+        self._layout_center = self._parser["DEFAULT"].get(layoutCenter, default_center)
+        self._layout_radius = int(self._parser["DEFAULT"].get(layoutRadius, "100"))
         print('Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
         print('Located {0} Physical Resources...'.format(len(self._hw_modules)))
