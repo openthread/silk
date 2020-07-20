@@ -244,6 +244,7 @@ def setup_class_decorator(func):
             cls.otns_manager = OtnsManager(
                     server_host=__otns_host,
                     logger=cls.logger.getChild("otnsManager"))
+            cls.otns_manager.set_test_title(cls.__name__)
 
         # Call the user's setUpClass
         try:
