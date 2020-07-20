@@ -700,7 +700,7 @@ class OtnsManager(object):
     # order children near their parents
     ordered_groups = []
     for group in groups:
-      if group is leader_router:
+      if group == leader_router:
         leader_router_list = list(group)
         leader_router_list.sort(key=lambda x: x.node_id)
         ordered_groups.append(leader_router_list)
@@ -713,14 +713,14 @@ class OtnsManager(object):
               children.discard(extaddr_to_node_map[child])
         children_list.sort(key=lambda x: x.node_id)
         ordered_groups.append(children_list)
-      elif group is children:
+      elif group == children:
         children_list = list(group)
         children_list.sort(key=lambda x: x.node_id)
         if len(ordered_groups) >= 2:
           ordered_groups[-1].extend(children_list)
         else:
           ordered_groups.append(children_list)
-      elif group is disabled_detached:
+      elif group == disabled_detached:
         disabled_detached_list = list(group)
         disabled_detached_list.sort(key=lambda x: x.node_id)
         ordered_groups.append(disabled_detached_list)
