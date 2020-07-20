@@ -29,6 +29,7 @@ hwMacPortOption = 'MacSerialPort'
 interfaceSerial = 'InterfaceSerialNumber'
 interfaceNumber = 'USBInterfaceNumber'
 dutSerialNumber = 'DutSerial'
+otnsVisPosition = 'OTNSVisPosition'
 
 """HW Config Models"""
 
@@ -47,7 +48,7 @@ class HwModule(object):
     Maintains usage of a hardware resource
     """
 
-    def __init__(self, name, parser, model=None, interface_serial=None,
+    def __init__(self, name, parser, node_id, model=None, interface_serial=None,
                  interface_number=None, port=None, dut_serial=None, jlink_serial=None):
         self._name = name
         self._parser = parser
@@ -55,6 +56,7 @@ class HwModule(object):
         self._port = port
         self._model = model
         self._dut_serial = dut_serial
+        self._node_id = node_id
 
         if model and interface_serial and interface_number:
             if port is None:
@@ -99,6 +101,18 @@ class HwModule(object):
 
     def get_dut_serial(self):
         return self.__get_option_str(dutSerialNumber)
+
+    def get_otns_vis_position(self):
+        coord_str = self.__get_option_str(otnsVisPosition)
+        parts = coord_str.split(",")
+        if len(parts) != 2:
+            raise ValueError(
+                "Node position must have x and y coordinates. Provided: %s" % coord_str)
+
+        return int(parts[0]), int(parts[1])
+    
+    def get_otns_vis_node_id(self):
+        return self._node_id
 
     def find_device_from_serial(self, device_type, serial, interface_number):
         devname, device = usbdevice.device_find_from_serial(device_type, serial, interface_number)

@@ -30,9 +30,12 @@ import time
 import unittest
 
 import silk.config.defaults
+from silk.config import wpan_constants as wpan
 import silk.node.base_node
+from silk.node.fifteen_four_dev_board import ThreadDevBoard
 import silk.node.openthread_sniffer as openthread_sniffer
 import silk.node.sniffer_base as sniffer_node
+from silk.tools.otns_manager import OtnsManager
 from silk.hw.hw_resource import HardwareNotFound
 
 import traceback
@@ -49,11 +52,21 @@ PING_ROUND_TRIP_TIME = "ping_rtt"
 __stream_verbosity = 1
 __file_handler = None
 __stream_handler = None
+__otns_host = None
 
 
 def setOutputDirectory(path):
     """ Set the output directory path for test results. """
     os.environ[OUTPUT_DIRECTORY_KEY] = path
+
+def setOtnsHost(host: str):
+    """Set the OTNS server host for the test case.
+
+    Args:
+        host (str): OTNS server host
+    """
+    global __otns_host
+    __otns_host = host
 
 def setStreamVerbosity(verbosity):
     """ Set the verbose level of console output
@@ -227,12 +240,21 @@ def setup_class_decorator(func):
 
         cls.results[cls.current_test_class][SUITE_ID] = curr_suite_id
 
+        if __otns_host:
+            cls.otns_manager = OtnsManager(
+                    server_host=__otns_host,
+                    logger=cls.logger.getChild("otnsManager"))
+
         # Call the user's setUpClass
         try:
             func(*args, **kwargs)
 
             # If the user's setUpClass call succeeded, try to Thread sniffers
             cls.thread_sniffer_start_all()
+
+            if __otns_host:
+                for device in cls.device_list:
+                    cls.get_device_extaddr(device)
         except HardwareNotFound as e:
             cls.results[cls.current_test_class]['setupClass'] = False
 
@@ -319,6 +341,7 @@ def teardown_class_decorator(func):
         output_file.close()
 
         cls.clear_test_devices()
+        cls.otns_manager.unsubscribe_from_all_nodes()
 
     return wrapper
 
@@ -585,20 +608,33 @@ class TestCase(unittest.TestCase):
 
         if device is not None:
             cls.device_list.append(device)
+            if cls.otns_manager and isinstance(device, ThreadDevBoard):
+                cls.otns_manager.add_node(device)
+
+    @classmethod
+    def get_device_extaddr(cls, device):
+        if cls.otns_manager and isinstance(device, ThreadDevBoard):
+            cls.otns_manager.update_extaddr(
+                    device,
+                    int(device.get(wpan.WPAN_EXT_ADDRESS)[1:-1], 16))
 
     @classmethod
     def clear_test_devices(cls):
         if hasattr(cls, "device_list"):
             while len(cls.device_list) > 0:
-                cls.device_list.pop()
+                device = cls.device_list.pop()
+                if cls.otns_manager and isinstance(device, ThreadDevBoard):
+                    cls.otns_manager.remove_node(device)
 
     @classmethod
     def release_devices(cls):
         # Release any claimed hardware
         for attr in dir(cls):
-            d = getattr(cls, attr)
-            if isinstance(d, silk.node.base_node.BaseNode):
-                d.tear_down()
+            device = getattr(cls, attr)
+            if isinstance(device, silk.node.base_node.BaseNode):
+                device.tear_down()
+            if cls.otns_manager and isinstance(device, ThreadDevBoard):
+                cls.otns_manager.remove_node(device)
 
     @classmethod
     def _testrail_dict_lookup(cls, test_element):

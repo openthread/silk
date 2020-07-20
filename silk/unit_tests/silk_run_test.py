@@ -12,24 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.tests import silk_run
-import os
 import datetime
+import os
 
-RESULT_LOG_PATH = '/opt/openthread_test/results/'+'silk_run_' + \
-                  datetime.datetime.today().strftime("%m-%d") + '/'
+from silk.tests import silk_run
+
+RESULT_LOG_PATH = '/opt/openthread_test/results/' + 'silk_run_' + \
+                  datetime.datetime.today().strftime('%m-%d') + '/'
 CONFIG_PATH = '/opt/openthread_test/'
 
 os.chdir('/home/pi/silk/silk/tests/')
 
-timestamp = datetime.datetime.today().strftime("%m-%d-%H:%M")
+timestamp = datetime.datetime.today().strftime('%m-%d-%H:%M')
 
 run_log_path = RESULT_LOG_PATH + 'test_run_on_' + timestamp + '/'
 
-argv = ['tests/silk_run.py', '-v2', '-c', CONFIG_PATH+'hwconfig.ini', '-d', run_log_path, 'ot_test_*.py']
+argv = [
+    'tests/silk_run.py',
+    '-v2',
+    '-c', CONFIG_PATH + 'hwconfig.ini',
+    '-d', run_log_path, 'ot_test_*.py',
+    '-s', 'localhost'
+]
 
 silk_run.SilkRunner(argv=argv)
-
-
-
-

@@ -142,6 +142,7 @@ class SilkTestResult(unittest.TestResult):
         self.printBanner('HARDWARE TEST SET-UP ERRORS')
         for e in self.errors:
             print(str(e[0]))
+            print(str(e[1]))
 
     def printBanner(self, title):
         print('\n')
@@ -165,6 +166,9 @@ class SilkRunner(object):
         if args.results_dir is not None:
             print('Setting results dir to {0}'.format(args.results_dir))
             silk.tests.testcase.setOutputDirectory(args.results_dir)
+        if args.otns_server is not None:
+            print('Setting OTNS server host to {0}'.format(args.otns_server))
+            silk.tests.testcase.setOtnsHost(args.otns_server)
         silk.tests.testcase.setStreamVerbosity(self.verbosity)
         hw_resource.global_instance(args.hw_conf_file)
 
@@ -185,6 +189,9 @@ class SilkRunner(object):
             help='Set the verbosity level of the console (0=quiet, 1=default, 2=verbose)')
         parser.add_argument('pattern', nargs='+', metavar='P',
             help='test file search pattern')
+        parser.add_argument('-s', '--otns', dest='otns_server',
+            metavar='OtnsServer',
+            help='OTNS server address')
         return parser.parse_args(argv[1:])
 
     def discover(self):

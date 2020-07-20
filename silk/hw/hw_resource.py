@@ -25,6 +25,12 @@ import silk.tests
 
 DEFAULT_CONFIG_PATH = os.path.join(silk.tests.__path__[0], "hwconfig.ini")
 
+CLUSTER_NODE_LIMIT = 50
+CLUSTER_LIMIT = 20
+
+"""HW Config file options"""
+clusterID = 'ClusterID'
+
 
 class HardwareNotFound(Exception):
     def __init__(self, model, name):
@@ -44,6 +50,8 @@ class HwResource(object):
         self._create = create
         if not os.path.isfile(self._filename):
             print('ERROR: No hw config file found at {0}'.format(self._filename))
+        
+        self._cluster_id = 1
 
     def load_config(self):
         """Returns a Config object from a given INI file"""
@@ -52,7 +60,8 @@ class HwResource(object):
         filenames = self._parser.read(self._filename)
         if len(filenames) == 0:
             raise RuntimeError("Failed to load objects from %s. Result %s" % (self._filename, str(filenames)))
-
+        
+        self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "1")) % CLUSTER_LIMIT
         print('Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
         print('Located {0} Physical Resources...'.format(len(self._hw_modules)))
@@ -111,12 +120,17 @@ class HwResource(object):
         return None
 
     def _update_hw_modules(self):
-        for s in self._parser.sections():
-            if not self._find_hw_module_by_name(s):
+        for i, device_name in enumerate(self._parser.sections()):
+            if not self._find_hw_module_by_name(device_name):
+                node_id = i + 1 + self._cluster_id * CLUSTER_NODE_LIMIT
                 try:
-                    self._add_hw_module(hw_module.HwModule(s, self._parser))
+                    self._add_hw_module(
+                            hw_module.HwModule(
+                                    name=device_name,
+                                    parser=self._parser,
+                                    node_id=node_id))
                 except RuntimeError as e:
-                    print("Failed to add %s" % s)
+                    print("Failed to add %s" % device_name)
 
     def _add_hw_module(self, module):
         self._hw_modules.append(module)

@@ -30,15 +30,14 @@ def ps_cleanup(usb_port='ALL', logname=LOG_FILE):
 
         logging.info('#'*10 + 'Kill all wpantund processes if any ' +  '#'*10)
         output_str = output.decode('utf-8')
-        # for line in output.split('\n'):
         for line in output_str:
             if 'sbin/wpantund' in line and (usb_port.upper() == 'ALL' or line.split()[-1] == usb_port):
                 pid = line.split()[1]
                 logging.info(pid)
                 cmd = 'sudo kill -9 ' + pid
-                logging.info(subprocess.check_output(cmd, shell=True))
+                logging.info(subprocess.check_output(cmd, shell=True).decode('utf-8'))
 
-        output = subprocess.check_output('ps -ef | grep ttyACM', shell=True)
+        output = subprocess.check_output('ps -ef | grep ttyACM', shell=True).decode('utf-8')
         logging.info(output)
 
 
