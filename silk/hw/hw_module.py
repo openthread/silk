@@ -58,8 +58,6 @@ class HwModule(object):
         self._model = model
         self._dut_serial = dut_serial
         self._node_id = node_id
-        self._layout_center = layout_center
-        self._layout_radius = layout_radius
 
         if model and interface_serial and interface_number:
             if port is None:
@@ -70,6 +68,10 @@ class HwModule(object):
 
         if self._port is None:
             self.set_port()
+        
+        assert (layout_center is None) == (layout_radius is None)
+        self._layout_center = layout_center
+        self._layout_radius = layout_radius
 
     def is_claimed(self):
         return self._claimed
@@ -118,12 +120,7 @@ class HwModule(object):
         return self._node_id
 
     def get_otns_vis_layout_center(self):
-        parts = self._layout_center.split(",")
-        if len(parts) != 2:
-            raise ValueError(
-                "Center position must have x and y coordinates. Provided: %s" % coord_str)
-
-        return int(parts[0]), int(parts[1])
+        return self._layout_center
 
     def get_otns_vis_layout_radius(self):
         return self._layout_radius
