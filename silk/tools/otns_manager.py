@@ -87,14 +87,18 @@ class GRpcClient:
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
     self.logger = logger
 
-  def send_title(self, title: str):
+  def set_title(self, title: str, x=0, y=20, font_size=20):
     """Send test title to OTNS.
 
     Args:
-        title (str): test title.
+      title (str): test title.
+      x (int): x position of title.
+      y (int): y position of title.
+      font_size (int): font size of title.
     """
     response = self.stub.CtrlSetTitle(
-        visualize_grpc_pb2.SetTitleEvent(title=title))
+        visualize_grpc_pb2.SetTitleEvent(
+            title=title, x=x, y=y, font_size=font_size))
     self.logger.info("Sent title {:s}, response: {}".format(title, response))
 
   def add_node(self, x: int, y: int, node_id: int, ftd=True,
@@ -445,7 +449,7 @@ class OtnsManager(object):
     Args:
         title (str): title of the test case.
     """
-    self.grpc_client.send_title(title)
+    self.grpc_client.set_title(title)
 
   def add_node(self, node: ThreadDevBoard):
     """Add a node to OTNS visualization.
