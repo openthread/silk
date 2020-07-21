@@ -709,19 +709,18 @@ class OtnsManager(object):
     detached_list = list(detached)
     detached_list.sort(key=lambda x: x.node_id)
 
-    groups = [g for g in [router_list, children_list, detached_list] if g]
+    groups = [router_list, children_list, detached_list]
     groups_count = len(groups)
     # adding a shift to prevent overlapping
     shift = 15
     for i, group in enumerate(groups):
       n = len(group)
-      if n == 1 and i == 0:
-        group[0].update_vis_position(center_x, center_y)
-      else:
-        angle_step = math.radians(360 / n)
-        group_radius = radius * (i + 1) / groups_count
-        for j, node in enumerate(group):
-          angle = shift * i + angle_step * j
-          x = center_x + group_radius * math.cos(angle)
-          y = center_y + group_radius * math.sin(angle)
-          node.update_vis_position(int(x), int(y))
+      if n == 0:
+        continue
+      angle_step = math.radians(360 / n)
+      group_radius = radius * (i + 1) / groups_count
+      for j, node in enumerate(group):
+        angle = shift * i + angle_step * j
+        x = center_x + group_radius * math.cos(angle)
+        y = center_y + group_radius * math.sin(angle)
+        node.update_vis_position(int(x), int(y))
