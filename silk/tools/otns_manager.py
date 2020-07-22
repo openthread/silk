@@ -674,42 +674,24 @@ class OtnsManager(object):
     radius = first_node.device.get_otns_vis_layout_radius()
 
     routers = set()
-    children = set()
-    detached = set()
-    extaddr_to_node_map = {}
+    others = set()
 
     for node in self.otns_node_map.values():
-      extaddr_to_node_map[node.extaddr] = node
-      if node.role == RoleType.DISABLED or node.role == RoleType.DETACHED:
-        detached.add(node)
-      elif node.role == RoleType.CHILD:
-        children.add(node)
-      elif node.role == RoleType.ROUTER or node.role == RoleType.LEADER:
+      if node.role == RoleType.ROUTER or node.role == RoleType.LEADER:
         routers.add(node)
+      else:
+        others.add(node)
 
-    if not routers and not children and not detached:
+    if not routers and not others:
       return
 
     # order children near their parents
     router_list = list(routers)
+    other_list = list(others)
     router_list.sort(key=lambda x: x.node_id)
+    other_list.sort(key=lambda x: x.node_id)
 
-    children_list = []
-    for router in router_list:
-      for child in router.children:
-        if child in extaddr_to_node_map:
-          children_list.append(extaddr_to_node_map[child])
-          children.discard(extaddr_to_node_map[child])
-    children_list.sort(key=lambda x: x.node_id)
-
-    non_attached_children_list = list(children)
-    non_attached_children_list.sort(key=lambda x: x.node_id)
-    children_list.extend(non_attached_children_list)
-
-    detached_list = list(detached)
-    detached_list.sort(key=lambda x: x.node_id)
-
-    groups = [router_list, children_list, detached_list]
+    groups = [router_list, other_list]
     groups_count = len(groups)
     # adding a shift to prevent overlapping
     shift = 15

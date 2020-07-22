@@ -95,8 +95,8 @@ class TestFormNetwork(testcase.TestCase):
             end_node.whitelist_node(self.router)
             self.router.whitelist_node(end_node)
         
-        # whitelisting nodes 1 - 6 for full mesh
-        mesh_nodes = self.device_list[:6]
+        # whitelisting nodes for full mesh
+        mesh_nodes = self.device_list[:-2]
         for node in mesh_nodes:
             for other_node in mesh_nodes:
                 if other_node is not node:
