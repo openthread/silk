@@ -691,18 +691,30 @@ class OtnsManager(object):
     router_list.sort(key=lambda x: x.node_id)
     other_list.sort(key=lambda x: x.node_id)
 
-    groups = [router_list, other_list]
-    groups_count = len(groups)
-    # adding a shift to prevent overlapping
-    shift = 15
-    for i, group in enumerate(groups):
-      n = len(group)
-      if n == 0:
-        continue
-      angle_step = math.radians(360 / n)
-      group_radius = radius * (i + 1) / groups_count
-      for j, node in enumerate(group):
-        angle = shift * i + angle_step * j
-        x = center_x + group_radius * math.cos(angle)
-        y = center_y + group_radius * math.sin(angle)
-        node.update_vis_position(int(x), int(y))
+    if router_list:
+      router_angle_step = math.radians(360 / len(router_list))
+      for i, node in enumerate(router_list):
+        angle = router_angle_step * i
+        self.layout_node(node, center_x, center_y, radius / 2, angle)
+    if other_list:
+      # adding a shift to prevent overlapping
+      shift = 10
+      other_angle_step = math.radians(360 / len(self.otns_node_map.values()))
+      for i, node in enumerate(other_list):
+        angle = shift + other_angle_step * node.node_id
+        self.layout_node(node, center_x, center_y, radius, angle)
+
+  def layout_node(self, node: OtnsNode, center_x: int, center_y: int,
+                  radius: float, angle: float):
+    """Update a single node's visualization position.
+
+    Args:
+        node (OtnsNode): node to update visualization.
+        center_x (int): layout circle center x coordinate.
+        center_y (int): layout circle center y coordinate.
+        radius (float): layout circle radius.
+        angle (float): angle of node on the circle.
+    """
+    x = center_x + radius * math.cos(angle)
+    y = center_y + radius * math.sin(angle)
+    node.update_vis_position(int(x), int(y))
