@@ -630,6 +630,6 @@ class ThreadDevBoard(FifteenFourDevBoardThreadNode):
                                                                                   sw_version=sw_version)
                 self.hwModel = silk.hw.hw_module.hwEfr32
             except:
-                self.log_critical('Cannot find nRF52840 or efr32 Dev. board!! ')
+                self.log_critical('Cannot find nRF52840 or efr32 Dev. board!!')
 
         self.device_path = self.device.port()

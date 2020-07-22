@@ -30,6 +30,8 @@ Attaching clusters with the same ID to the OTNS service could result in conflict
 ``` shell
 [DEFAULT]
 ClusterID: 0
+LayoutCenter: 300, 300
+LayoutRadius: 100
 
 [Dev-8A7D]
 HwModel: Nrf52840
@@ -93,8 +95,13 @@ cd otns
 
 Then follow these steps to use Silk with OTNS:
 
-1. Configure `ClusterID` for the cluster and `OTNSVisPosition` for each node in `hwconfig.ini`. Canvas is the same size in pixel as the
-   monitor on which OTNS runs, so usually a 50px distance is clear enough.
+1. Configure `ClusterID` for the cluster. There are two ways to lay out nodes for the cluster:
+   1. Specify `OTNSVisPosition` for each node in `hwconfig.ini`. Canvas is the same size in pixel as the
+      monitor on which OTNS runs, so usually a 50px distance is clear enough.
+   2. Specify `LayoutCenter` and `LayoutRadius` for the cluster in `hwconfig.ini` and not `OTNSVisPosition`. This will
+      tell OTNS Manager to calculate each node's position dynamically based on their roles in the network.
+   3. OTNS Manager will default to not using auto layout if all node's visualization positions have been set. Otherwise,
+      it turns to auto layout.
 2. Flash each board with the images compiled with OpenThread `OTNS=1` flag turned on.
 3. Run OTNS in real mode using `otns -raw -real -ot-cli otns-silk-proxy`.
 4. Run Silk with `silk_run.py`, supplying `-s OtnsServer` argument. If the server is running on the same machine, use `localhost`.

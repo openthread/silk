@@ -94,6 +94,13 @@ class TestFormNetwork(testcase.TestCase):
         for end_node in self.joiner_list:
             end_node.whitelist_node(self.router)
             self.router.whitelist_node(end_node)
+        
+        # whitelisting nodes for full mesh
+        mesh_nodes = self.device_list[:-2]
+        for node in mesh_nodes:
+            for other_node in mesh_nodes:
+                if other_node is not node:
+                    node.whitelist_node(other_node)
 
         self.router.form(self.network_data, 'router')
         self.router.permit_join(60*len(self.joiner_list))

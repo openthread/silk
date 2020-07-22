@@ -48,8 +48,9 @@ class HwModule(object):
     Maintains usage of a hardware resource
     """
 
-    def __init__(self, name, parser, node_id, model=None, interface_serial=None,
-                 interface_number=None, port=None, dut_serial=None, jlink_serial=None):
+    def __init__(self, name, parser, node_id, layout_center=None, layout_radius=None,
+                 model=None, interface_serial=None, interface_number=None, port=None,
+                 dut_serial=None, jlink_serial=None):
         self._name = name
         self._parser = parser
         self._claimed = False
@@ -67,6 +68,10 @@ class HwModule(object):
 
         if self._port is None:
             self.set_port()
+        
+        assert (layout_center is None) == (layout_radius is None)
+        self._layout_center = layout_center
+        self._layout_radius = layout_radius
 
     def is_claimed(self):
         return self._claimed
@@ -113,6 +118,12 @@ class HwModule(object):
     
     def get_otns_vis_node_id(self):
         return self._node_id
+
+    def get_otns_vis_layout_center(self):
+        return self._layout_center
+
+    def get_otns_vis_layout_radius(self):
+        return self._layout_radius
 
     def find_device_from_serial(self, device_type, serial, interface_number):
         devname, device = usbdevice.device_find_from_serial(device_type, serial, interface_number)

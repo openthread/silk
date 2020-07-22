@@ -31,8 +31,9 @@ argv = [
     'tests/silk_run.py',
     '-v2',
     '-c', CONFIG_PATH + 'hwconfig.ini',
-    '-d', run_log_path, 'ot_test_*.py',
-    '-s', 'localhost'
+    '-d', run_log_path,
+    '-s', 'localhost',
+    'ot_test_*.py'
 ]
 
 silk_run.SilkRunner(argv=argv)

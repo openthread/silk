@@ -30,6 +30,8 @@ CLUSTER_LIMIT = 20
 
 """HW Config file options"""
 clusterID = 'ClusterID'
+layoutCenter = 'LayoutCenter'
+layoutRadius = 'LayoutRadius'
 
 
 class HardwareNotFound(Exception):
@@ -61,7 +63,20 @@ class HwResource(object):
         if len(filenames) == 0:
             raise RuntimeError("Failed to load objects from %s. Result %s" % (self._filename, str(filenames)))
         
-        self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "1")) % CLUSTER_LIMIT
+        self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "0")) % CLUSTER_LIMIT
+
+        default_center_x = (self._cluster_id % 3 + 1) * 200
+        default_center_y = (self._cluster_id // 3 + 1) * 200
+        default_center = "{:d}, {:d}".format(default_center_x, default_center_y)
+        layout_center_string = self._parser["DEFAULT"].get(layoutCenter, default_center)
+        layout_center_parts = layout_center_string.split(",")
+        if len(layout_center_parts) != 2:
+            raise ValueError(
+                "Center position must have x and y coordinates. Provided: %s" % layout_center_string)
+
+        self._layout_center = int(layout_center_parts[0]), int(layout_center_parts[1])
+        self._layout_radius = int(self._parser["DEFAULT"].get(layoutRadius, "100"))
+
         print('Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
         print('Located {0} Physical Resources...'.format(len(self._hw_modules)))
@@ -128,7 +143,9 @@ class HwResource(object):
                             hw_module.HwModule(
                                     name=device_name,
                                     parser=self._parser,
-                                    node_id=node_id))
+                                    node_id=node_id,
+                                    layout_center=self._layout_center,
+                                    layout_radius=self._layout_radius))
                 except RuntimeError as e:
                     print("Failed to add %s" % device_name)
 
