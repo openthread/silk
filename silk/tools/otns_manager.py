@@ -670,7 +670,8 @@ class OtnsManager(object):
   def update_layout(self):
     """Update layout of nodes in auto layout mode.
     """
-    if not self.auto_layout or not self.otns_node_map:
+    no_nodes = not self.otns_node_map or self.max_node_count == 0
+    if not self.auto_layout or no_nodes:
       return
 
     self.logger.debug("Updating nodes layout")
@@ -696,19 +697,12 @@ class OtnsManager(object):
     router_list.sort(key=lambda x: x.node_id)
     other_list.sort(key=lambda x: x.node_id)
 
-    if router_list:
-      router_angle_step = math.radians(360 / len(router_list))
-      for i, node in enumerate(router_list):
-        angle = router_angle_step * i
-        self.layout_node(node, center_x, center_y, radius / 2, angle)
-    if other_list:
-      # adding a shift to prevent overlapping
-      shift = 10
-      # keep outer layer stationary
-      other_angle_step = math.radians(360 / self.max_node_count)
-      for i, node in enumerate(other_list):
-        angle = shift + other_angle_step * node.node_id
-        self.layout_node(node, center_x, center_y, radius, angle)
+    angle_step = math.radians(360 / self.max_node_count)
+    for i, group in enumerate([other_list, router_list]):
+      group_radius = radius / (i + 1)
+      for node in group:
+        angle = angle_step * node.node_id
+        self.layout_node(node, center_x, center_y, group_radius, angle)
 
   def layout_node(self, node: OtnsNode, center_x: int, center_y: int,
                   radius: float, angle: float):
