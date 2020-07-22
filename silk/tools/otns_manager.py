@@ -516,6 +516,8 @@ class OtnsManager(object):
     local_host (str): host of this local machine.
     logger (Logger): logger for the manager class.
     auto_layout (bool): if manager should auto layout node positions.
+    max_node_count (int): the maximum number of nodes ever managed by
+      this manager.
   """
 
   def __init__(self, server_host: str, logger: logging.Logger):
@@ -533,6 +535,7 @@ class OtnsManager(object):
     self.otns_monitor_map = {}
 
     self.auto_layout = False
+    self.max_node_count = 0
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
@@ -588,6 +591,8 @@ class OtnsManager(object):
       self.logger.debug("Adding existing node {:d} to OTNS".format(node_id))
       node.otns_manager = self
       self.otns_node_map[node].create_otns_node()
+
+    self.max_node_count = max(self.max_node_count, len(self.otns_node_map))
     self.update_layout()
 
   def remove_node(self, node: ThreadDevBoard):
@@ -699,7 +704,8 @@ class OtnsManager(object):
     if other_list:
       # adding a shift to prevent overlapping
       shift = 10
-      other_angle_step = math.radians(360 / len(self.otns_node_map.values()))
+      # keep outer layer stationary
+      other_angle_step = math.radians(360 / self.max_node_count)
       for i, node in enumerate(other_list):
         angle = shift + other_angle_step * node.node_id
         self.layout_node(node, center_x, center_y, radius, angle)
