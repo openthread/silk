@@ -670,7 +670,8 @@ class OtnsManager(object):
   def update_layout(self):
     """Update layout of nodes in auto layout mode.
     """
-    if not self.auto_layout or self.max_node_count == 0:
+    no_nodes = not self.otns_node_map or self.max_node_count == 0
+    if not self.auto_layout or no_nodes:
       return
 
     self.logger.debug("Updating nodes layout")
