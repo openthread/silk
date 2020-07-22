@@ -24,10 +24,12 @@ import sys
 import silk.hw.hw_resource as hw_resource
 from silk.hw.hw_resource import HardwareNotFoundError
 import silk.node.fifteen_four_dev_board as ffdb
-from silk.tools.otns_manager import OtnsManager
+from silk.tools.otns_manager import OtnsManager, RegexType
 
 DATE_FORMAT = "%Y-%m-%d_%H.%M.%S"
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
+# regex that matches the four components above as groups
+LOG_LINE_REGEX = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
 
 
 class SilkReplayer(object):
