@@ -18,15 +18,17 @@ Enables replaying Silk log with OTNS enabled through OTNS visualization.
 """
 
 import argparse
+import datetime
 import logging
+import re
+import sched
 import sys
+import time
 
 import silk.hw.hw_resource as hw_resource
-from silk.hw.hw_resource import HardwareNotFoundError
-import silk.node.fifteen_four_dev_board as ffdb
 from silk.tools.otns_manager import OtnsManager, RegexType
 
-DATE_FORMAT = "%Y-%m-%d_%H.%M.%S"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
 # regex that matches the four components above as groups
 LOG_LINE_REGEX = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
@@ -36,13 +38,16 @@ class SilkReplayer(object):
   """Replay topology changes and transmissions from a Silk log.
 
   Attributes:
-    speed (float): speed ratio for the replay.
+    speed (float): speed ratio for the replay. 2.0 means speeding up to 2x.
     verbosity (int): terminal log verbosity.
     input_path (str): input Silk log file path.
     logger (logging.Logger): logger for the replayer.
 
-    devices (List[ThreadDevBoard]): hardware modules from hwconfig.ini file.
+    devices (List[str]): name of hardware modules from hwconfig.ini file.
     otns_manager (OtnsManager): manager for OTNS communications.
+
+    scheduler (sched.scheduler): scheduler of events to send from logs.
+    start_time (datetime.datetime): the starting timestamp of the log.
   """
 
   def __init__(self, argv=None):
@@ -54,7 +59,7 @@ class SilkReplayer(object):
     args = self.parse_args(argv)
     self.verbosity = args.verbosity
     self.input_path = args.path
-    self.speed = args.playback_speed
+    self.speed = float(args.playback_speed)
 
     self.set_up_logger(args.result_path)
 
@@ -64,6 +69,10 @@ class SilkReplayer(object):
     self.otns_manager = OtnsManager(
         server_host=args.otns_server,
         logger=self.logger.getChild("otnsManager"))
+
+    self.scheduler = sched.scheduler(time.time, time.sleep)
+    self.start_time = None
+    self.run()
 
   def set_up_logger(self, result_path: str):
     """Set up logger for the replayer.
@@ -119,27 +128,45 @@ class SilkReplayer(object):
     parser.add_argument("-p", "--speed", dest="playback_speed",
                         metavar="PlaybackSpeed",
                         help="Speed of log replay")
-    parser.add_argument("path", nargs="+", metavar="P",
+    parser.add_argument("path", metavar="P",
                         help="log file path")
     return parser.parse_args(argv[1:])
 
   def acquire_devices(self):
     """Acquire devices from hwconfig.ini file.
     """
-    while True:
-      try:
-        device = ffdb.ThreadDevBoard()
-      except HardwareNotFoundError:
-        break
-      else:
-        self.devices.append(device)
+    self.devices = hw_resource.global_instance().get_hw_module_names()
+
+  def execute_message(self, entity_name: str, message: str):
+    """Execute the intended action represented by the message.
+
+    Args:
+        entity_name (str): name of the entity carrying out the action.
+        message (str): message content of the action.
+    """
+    self.logger.debug(entity_name, message)
 
   def run(self):
     """Run the Silk log replayer.
     """
     with open(file=self.input_path, mode="r") as file:
       for line in file:
-        print(line)
+        line_match = re.search(LOG_LINE_REGEX, line)
+        if line_match:
+          timestamp = datetime.datetime.strptime(
+              line_match.group(1), DATE_FORMAT)
+          if not self.start_time:
+            self.start_time = timestamp
+          time_diff = timestamp - self.start_time
+          delay = time_diff.total_seconds() / self.speed
+
+          entity_name = line_match.group(2)
+          message = line_match.group(4)
+          self.scheduler.enter(delay, 1, self.execute_message,
+                               argument=(entity_name, message))
+
+    self.scheduler.run()
+
 
 if __name__ == "__main__":
   SilkReplayer(argv=sys.argv)

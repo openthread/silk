@@ -34,7 +34,7 @@ layoutCenter = 'LayoutCenter'
 layoutRadius = 'LayoutRadius'
 
 
-class HardwareNotFoundError(Exception):
+class HardwareNotFound(Exception):
     def __init__(self, model, name):
         self.model = model
         self.name = name
@@ -101,7 +101,7 @@ class HwResource(object):
             m = self._find_hw_module_unclaimed_by_model(model)
 
         if not m:
-            raise HardwareNotFoundError(model, name)
+            raise HardwareNotFound(model, name)
         m.claim()
 
         return m
@@ -170,7 +170,14 @@ class HwResource(object):
                 retval = m
 
         return retval
+    
+    def get_hw_module_names(self):
+        """Get the list of names of hardware modules.
 
+        Returns:
+            List[str]: list of hardware module names.
+        """
+        return [module.name for module in self._hw_modules]
 
 _global_instance = None
 

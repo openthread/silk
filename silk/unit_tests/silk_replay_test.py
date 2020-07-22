@@ -22,7 +22,7 @@ LOG_PATH = '/opt/openthread_test/results/'
 
 timestamp = datetime.datetime.today().strftime('%m-%d-%H:%M')
 
-run_log_path = LOG_PATH + 'silk_replay_on_{}.log' % timestamp
+run_log_path = LOG_PATH + 'silk_replay_on_{}.log'.format(timestamp)
 
 argv = [
     'tests/silk_replay.py',
