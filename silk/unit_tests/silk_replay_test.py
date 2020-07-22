@@ -12,19 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import datetime
+
 from silk.tests import silk_replay
 
 CONFIG_PATH = '/opt/openthread_test/'
 
-RESULT_LOG_PATH = '/opt/openthread_test/results/'
+LOG_PATH = '/opt/openthread_test/results/'
+
+timestamp = datetime.datetime.today().strftime('%m-%d-%H:%M')
+
+run_log_path = LOG_PATH + 'silk_replay_on_{}.log' % timestamp
 
 argv = [
     'tests/silk_replay.py',
+    '-r', run_log_path,
     '-v2',
     '-c', CONFIG_PATH + 'hwconfig.ini',
     '-s', 'localhost',
     '-p', '20',
-    RESULT_LOG_PATH + 'test_summary.log'
+    LOG_PATH + 'silk.log'
 ]
 
 silk_replay.SilkReplayer(argv=argv)
