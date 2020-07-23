@@ -440,42 +440,8 @@ class WpantundOtnsMonitor(signal.Subscriber):
     Args:
         line (str): line of log to process.
     """
-    needs_layout_update = False
-    status_match = re.search(RegexType.STATUS.value, line)
-    if status_match:
-      message = status_match.group(2)
-
-      if self.node:
-        extaddr_match = re.search(RegexType.EXTADDR_STATUS.value, message)
-        role_match = re.search(RegexType.ROLE_STATUS.value, message)
-        child_added_match = re.search(RegexType.CHILD_ADDED_STATUS.value,
-                                      message)
-        child_removed_match = re.search(RegexType.CHILD_REMOVED_STATUS.value,
-                                        message)
-        if extaddr_match:
-          self.node.update_extaddr(int(extaddr_match.group(1), 16))
-          needs_layout_update = True
-        elif role_match:
-          self.node.update_role(RoleType(int(role_match.group(1))))
-          needs_layout_update = True
-        elif child_added_match:
-          self.node.add_child(int(child_added_match.group(1), 16))
-          needs_layout_update = True
-        elif child_removed_match:
-          self.node.remove_child(int(child_removed_match.group(1), 16))
-          needs_layout_update = True
-        else:
-          event = Event.status_event(message)
-          self.node.send_event(event.to_bytes())
-
-    get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, line)
-    if get_extaddr_info_match:
-      extaddr = get_extaddr_info_match.group(1)
-      if self.node:
-        self.node.update_extaddr(int(extaddr, 16))
-
-    if needs_layout_update and self.otns_manager:
-      self.otns_manager.update_layout()
+    if self.otns_manager:
+      self.otns_manager.update_status(self.node, line)
 
   def subscribeHandle(self, sender, **kwargs):
     """Handle messages from Publisher, a wpantund process.
@@ -613,6 +579,50 @@ class OtnsManager(object):
         del self.otns_node_map[node]
 
         self.update_layout()
+
+  def process_node_status_
+  def update_status(self, node: OtnsNode, message: str):
+    """Manually update node status with a status message.
+
+    Args:
+        node (OtnsNode): OTNS node.
+        message (str): status message.
+    """
+    needs_layout_update = False
+    status_match = re.search(RegexType.STATUS.value, message)
+    if status_match:
+      message = status_match.group(2)
+
+      extaddr_match = re.search(RegexType.EXTADDR_STATUS.value, message)
+      role_match = re.search(RegexType.ROLE_STATUS.value, message)
+      child_added_match = re.search(RegexType.CHILD_ADDED_STATUS.value,
+                                    message)
+      child_removed_match = re.search(RegexType.CHILD_REMOVED_STATUS.value,
+                                      message)
+      if extaddr_match:
+        node.update_extaddr(int(extaddr_match.group(1), 16))
+        needs_layout_update = True
+      elif role_match:
+        node.update_role(RoleType(int(role_match.group(1))))
+        needs_layout_update = True
+      elif child_added_match:
+        node.add_child(int(child_added_match.group(1), 16))
+        needs_layout_update = True
+      elif child_removed_match:
+        node.remove_child(int(child_removed_match.group(1), 16))
+        needs_layout_update = True
+      else:
+        event = Event.status_event(message)
+        node.send_event(event.to_bytes())
+
+    get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, line)
+    if get_extaddr_info_match:
+      extaddr = get_extaddr_info_match.group(1)
+      if node:
+        node.update_extaddr(int(extaddr, 16))
+
+    if needs_layout_update:
+      self.update_layout()
 
   def update_extaddr(self, node: ThreadDevBoard, extaddr: int):
     """Report a node's extended address to OTNS manager.

@@ -22,7 +22,6 @@ import datetime
 import enum
 import logging
 import re
-import sched
 import sys
 import time
 
@@ -33,13 +32,12 @@ from silk.tools.otns_manager import RegexType as OtnsRegexType
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
-# regex that matches the four components above as groups
-LOG_LINE_REGEX = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
-
 
 class RegexType(enum.Enum):
   """Regular expression collections.
   """
+  # regex that matches the four components above as groups
+  LOG_LINE = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
   SET_UP = r"SET UP CLASS (\w+)"
 
 class SilkReplayer(object):
@@ -56,8 +54,7 @@ class SilkReplayer(object):
       ThreadDevBoard instance.
     otns_manager (OtnsManager): manager for OTNS communications.
 
-    scheduler (sched.scheduler): scheduler of events to send from logs.
-    start_time (datetime.datetime): the starting timestamp of the log.
+    last_time (datetime.datetime): timestamp of the last line of log processed.
   """
 
   def __init__(self, argv=None):
@@ -80,8 +77,7 @@ class SilkReplayer(object):
         server_host=args.otns_server,
         logger=self.logger.getChild("otnsManager"))
 
-    self.scheduler = sched.scheduler(time.time, time.sleep)
-    self.start_time = None
+    self.last_time = None
     self.run()
 
   def set_up_logger(self, result_path: str):
@@ -173,28 +169,41 @@ class SilkReplayer(object):
     else:
       device = self.device_name_map[device_name]
 
-    self.logger.debug(entity_name, message)
+    start_match = re.match(OtnsRegexType.START_WPANTUND_RES.value, message)
+    if start_match:
+      self.otns_manager.add_node(device)
+      return
+
+    stop_match = re.match(OtnsRegexType.STOP_WPANTUND_REQ.value, message)
+    if stop_match:
+      self.otns_manager.remove_node(device)
+      return
+
+    status_match = re.match(OtnsRegexType.STATUS.value, message)
+    if status_match:
+      self.
 
   def run(self):
     """Run the Silk log replayer.
     """
     with open(file=self.input_path, mode="r") as file:
       for line in file:
-        line_match = re.search(LOG_LINE_REGEX, line)
+        line_match = re.search(RegexType.LOG_LINE.value, line)
         if line_match:
           timestamp = datetime.datetime.strptime(
               line_match.group(1), DATE_FORMAT)
-          if not self.start_time:
-            self.start_time = timestamp
-          time_diff = timestamp - self.start_time
+          if not self.last_time:
+            self.last_time = timestamp
+          time_diff = timestamp - self.last_time
           delay = time_diff.total_seconds() / self.speed
+          self.last_time = timestamp
 
           entity_name = line_match.group(2)
           message = line_match.group(4)
-          self.scheduler.enter(delay, 1, self.execute_message,
-                               argument=(entity_name, message))
 
-    self.scheduler.run()
+          # delay for the time difference between two log lines
+          time.sleep(delay)
+          self.execute_message(entity_name, message)
 
 
 if __name__ == "__main__":
