@@ -19,6 +19,7 @@ Enables replaying Silk log with OTNS enabled through OTNS visualization.
 
 import argparse
 import datetime
+import enum
 import logging
 import re
 import sched
@@ -26,13 +27,20 @@ import sys
 import time
 
 import silk.hw.hw_resource as hw_resource
-from silk.tools.otns_manager import OtnsManager, RegexType
+import silk.node.fifteen_four_dev_board as ffdb
+from silk.tools.otns_manager import OtnsManager
+from silk.tools.otns_manager import RegexType as OtnsRegexType
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
 # regex that matches the four components above as groups
 LOG_LINE_REGEX = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
 
+
+class RegexType(enum.Enum):
+  """Regular expression collections.
+  """
+  SET_UP = r"SET UP CLASS (\w+)"
 
 class SilkReplayer(object):
   """Replay topology changes and transmissions from a Silk log.
@@ -43,7 +51,9 @@ class SilkReplayer(object):
     input_path (str): input Silk log file path.
     logger (logging.Logger): logger for the replayer.
 
-    devices (List[str]): name of hardware modules from hwconfig.ini file.
+    device_names (Set[str]): name of hardware modules from hwconfig.ini file.
+    device_name_map (Dict[str, ThreadDevBoard]): map from device name to
+      ThreadDevBoard instance.
     otns_manager (OtnsManager): manager for OTNS communications.
 
     scheduler (sched.scheduler): scheduler of events to send from logs.
@@ -135,7 +145,8 @@ class SilkReplayer(object):
   def acquire_devices(self):
     """Acquire devices from hwconfig.ini file.
     """
-    self.devices = hw_resource.global_instance().get_hw_module_names()
+    self.device_names = set(
+        hw_resource.global_instance().get_hw_module_names())
 
   def execute_message(self, entity_name: str, message: str):
     """Execute the intended action represented by the message.
@@ -144,6 +155,24 @@ class SilkReplayer(object):
         entity_name (str): name of the entity carrying out the action.
         message (str): message content of the action.
     """
+    parts = entity_name.split(".")
+    if len(parts) == 1 and parts[0] == "silk":
+      set_up_match = re.match(RegexType.SET_UP.value, message)
+      if set_up_match:
+        self.otns_manager.set_test_title(set_up_match.group(1))
+    elif len(parts) < 2 or parts[0] != "silk" or parts[1] == "otnsManager":
+      return
+
+    device_name = parts[1]
+    if device_name not in self.device_names:
+      return
+
+    if device_name not in self.device_name_map:
+      device = ffdb.ThreadDevBoard(virtual=True, virtual_name=device_name)
+      self.device_name_map[device_name] = device
+    else:
+      device = self.device_name_map[device_name]
+
     self.logger.debug(entity_name, message)
 
   def run(self):

@@ -31,7 +31,7 @@ argv = [
     '-c', CONFIG_PATH + 'hwconfig.ini',
     '-s', 'localhost',
     '-p', '20',
-    LOG_PATH + 'silk.log'
+    '/home/pi/Documents/silk.log'
 ]
 
 silk_replay.SilkReplayer(argv=argv)

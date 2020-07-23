@@ -109,7 +109,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
     All inheriting classes require sudo.
     """
 
-    def __init__(self, wpantund_verbose_debug=False, sw_version=None):
+    def __init__(self, wpantund_verbose_debug=False, sw_version=None,
+                 virtual=False, virtual_name=''):
         self.logger = None
         self.wpantund_logger = None
         self.netns = None
@@ -120,8 +121,6 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.virtual_eth_peer = 'v-eth1'
         self.flash_result = False
         self.otns_manager = None
-        self.rx_on_when_idle = True
-        self.full_thread_device = True
 
         self.wpantund_verbose_debug = wpantund_verbose_debug
         local_ip = get_local_ip().strip().split()[1]
@@ -147,11 +146,15 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         # Acquire necessary hardware
         self.device = None
         self.device_path = None
-        self.get_device(sw_version=sw_version)
+        if not virtual:
+            self.get_device(sw_version=sw_version)
+        else:
+            self.get_unclaimed_device(virtual_name)
         super(FifteenFourDevBoardNode, self).__init__(self.device.name())
 
         self.logger.info('Device interface: {}'.format(self.device.interface_serial()))
-        self.log_info('Device Path: {}'.format(self.device_path))
+        if not virtual:
+            self.log_info('Device Path: {}'.format(self.device_path))
 
         # Setup netns
         NetnsController.__init__(self)
@@ -633,3 +636,12 @@ class ThreadDevBoard(FifteenFourDevBoardThreadNode):
                 self.log_critical('Cannot find nRF52840 or efr32 Dev. board!!')
 
         self.device_path = self.device.port()
+    
+    def get_unclaimed_device(self, name):
+        """Get an unclaimed device by name.
+
+        Args:
+            name (str): name of the device to create.
+        """
+        self.device = silk.hw.hw_resource.global_instance().find_hw_module_by_name(name)
+        self.hwModel = silk.hw.hw_module.hwNrf52840

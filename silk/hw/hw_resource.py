@@ -136,7 +136,7 @@ class HwResource(object):
 
     def _update_hw_modules(self):
         for i, device_name in enumerate(self._parser.sections()):
-            if not self._find_hw_module_by_name(device_name):
+            if not self.find_hw_module_by_name(device_name):
                 node_id = i + 1 + self._cluster_id * CLUSTER_NODE_LIMIT
                 try:
                     self._add_hw_module(
@@ -162,7 +162,7 @@ class HwResource(object):
 
         return None
 
-    def _find_hw_module_by_name(self, name):
+    def find_hw_module_by_name(self, name):
         retval = None
 
         for m in self._hw_modules:
