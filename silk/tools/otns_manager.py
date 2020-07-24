@@ -45,7 +45,7 @@ class RegexType(enum.Enum):
   STOP_WPANTUND_REQ = r"sudo ip netns del"
   GET_EXTADDR_REQ = r"getprop -v NCP:ExtendedAddress"
   GET_EXTADDR_RES = r"\[stdout\] \[([A-Fa-f0-9]{16})\]"
-  STATUS = r"wpantund\[(\d+)\]: NCP => .*\[OTNS\] ([\w\d]+=[A-Fa-f0-9,]+)"
+  STATUS = r"wpantund\[(\d+)\]: NCP => .*\[OTNS\] ([\w\d]+=[A-Fa-f0-9,rsdn]+)"
   EXTADDR_STATUS = r"extaddr=([A-Fa-f0-9]{16})"
   ROLE_STATUS = r"role=([0-4])"
   CHILD_ADDED_STATUS = r"child_added=([A-Fa-f0-9]{16})"
@@ -580,14 +580,24 @@ class OtnsManager(object):
 
         self.update_layout()
 
-  def process_node_status_
+  def process_node_status(self, node: ThreadDevBoard, message: str):
+    """Manually process a ThreadDevBoard status message.
+
+    Args:
+      node (ThreadDevBoard): ThreadDevBoard node.
+      message (str): status message.
+    """
+    if node in self.otns_node_map:
+      self.update_status(self.otns_node_map[node], message)
+
   def update_status(self, node: OtnsNode, message: str):
     """Manually update node status with a status message.
 
     Args:
-        node (OtnsNode): OTNS node.
-        message (str): status message.
+      node (OtnsNode): OTNS node.
+      message (str): status message.
     """
+    self.logger.debug("Update status with message {}".format(message))
     needs_layout_update = False
     status_match = re.search(RegexType.STATUS.value, message)
     if status_match:
@@ -615,7 +625,7 @@ class OtnsManager(object):
         event = Event.status_event(message)
         node.send_event(event.to_bytes())
 
-    get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, line)
+    get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, message)
     if get_extaddr_info_match:
       extaddr = get_extaddr_info_match.group(1)
       if node:

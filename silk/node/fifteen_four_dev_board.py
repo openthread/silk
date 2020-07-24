@@ -156,8 +156,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         if not virtual:
             self.log_info('Device Path: {}'.format(self.device_path))
 
-        # Setup netns
-        NetnsController.__init__(self)
+            # Setup netns
+            NetnsController.__init__(self)
 
 #################################
 #   Logging functions

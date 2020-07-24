@@ -33,12 +33,14 @@ from silk.tools.otns_manager import RegexType as OtnsRegexType
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
 
+
 class RegexType(enum.Enum):
   """Regular expression collections.
   """
   # regex that matches the four components above as groups
   LOG_LINE = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
   SET_UP = r"SET UP CLASS (\w+)"
+
 
 class SilkReplayer(object):
   """Replay topology changes and transmissions from a Silk log.
@@ -69,9 +71,7 @@ class SilkReplayer(object):
     self.speed = float(args.playback_speed)
 
     self.set_up_logger(args.result_path)
-
-    hw_resource.global_instance(args.hw_conf_file)
-    self.acquire_devices()
+    self.acquire_devices(args.hw_conf_file)
 
     self.otns_manager = OtnsManager(
         server_host=args.otns_server,
@@ -135,28 +135,35 @@ class SilkReplayer(object):
                         metavar="PlaybackSpeed",
                         help="Speed of log replay")
     parser.add_argument("path", metavar="P",
-                        help="log file path")
+                        help="Log file path")
     return parser.parse_args(argv[1:])
 
-  def acquire_devices(self):
+  def acquire_devices(self, config_file: str):
     """Acquire devices from hwconfig.ini file.
+
+    Args:
+      config_file (str): path to hwconfig.ini file.
     """
+    hw_resource.global_instance(config_file, virtual=True)
+    hw_resource.global_instance().load_config()
     self.device_names = set(
         hw_resource.global_instance().get_hw_module_names())
+    self.device_name_map = dict()
+    self.logger.debug("Loaded devices %s", self.device_names)
 
   def execute_message(self, entity_name: str, message: str):
     """Execute the intended action represented by the message.
 
     Args:
-        entity_name (str): name of the entity carrying out the action.
-        message (str): message content of the action.
+      entity_name (str): name of the entity carrying out the action.
+      message (str): message content of the action.
     """
     parts = entity_name.split(".")
     if len(parts) == 1 and parts[0] == "silk":
       set_up_match = re.match(RegexType.SET_UP.value, message)
       if set_up_match:
         self.otns_manager.set_test_title(set_up_match.group(1))
-    elif len(parts) < 2 or parts[0] != "silk" or parts[1] == "otnsManager":
+    if len(parts) < 2 or parts[0] != "silk" or parts[1] == "otnsManager":
       return
 
     device_name = parts[1]
@@ -179,9 +186,14 @@ class SilkReplayer(object):
       self.otns_manager.remove_node(device)
       return
 
+    extaddr_match = re.search(OtnsRegexType.GET_EXTADDR_RES.value, message)
+    if extaddr_match:
+      self.otns_manager.update_extaddr(device, int(extaddr_match.group(1), 16))
+      return
+
     status_match = re.match(OtnsRegexType.STATUS.value, message)
     if status_match:
-      self.
+      self.otns_manager.process_node_status(device, message)
 
   def run(self):
     """Run the Silk log replayer.

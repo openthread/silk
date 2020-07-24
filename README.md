@@ -78,7 +78,7 @@ optional arguments:
                         Set the OTNS server address to send OTNS messages to
 ```
 
-There is an example of test run script `silk_run_test.py` under unit_tests folder.
+There is an example of test run script `silk_run_test.py` under `unit_tests` folder.
 
 ### Using OTNS
 [OpenThread Network Simulator](https://github.com/openthread/ot-ns) is a Thread network visualization and management tool.
@@ -105,6 +105,33 @@ Then follow these steps to use Silk with OTNS:
 2. Flash each board with the images compiled with OpenThread `OTNS=1` flag turned on.
 3. Run OTNS in real mode using `otns -raw -real -ot-cli otns-silk-proxy`.
 4. Run Silk with `silk_run.py`, supplying `-s OtnsServer` argument. If the server is running on the same machine, use `localhost`.
+
+### Using Replayer
+The `SilkReplayer` allows offline playback of Silk log file for visualization on OTNS platform. The playback speed can be controlled
+via command line arguments. Usage:
+
+``` shell
+usage: silk_replay.py [-h] [-d ResPath] [-c ConfFile] [-v X] [-s OtnsServer] P
+
+Run a suite of Silk Tests
+positional arguments:
+  P                     Log file path
+optional arguments:
+  -h, --help            show this help message and exit
+  -r ResPath, --results_dir ResPath
+                        Set the path for run results
+  -c ConfFile, --hwconfig ConfFile
+                        Name the hardware config file
+  -v X, --verbose X, --verbosity X
+                        Set the verbosity level of the console (0=quiet,
+                        1=default, 2=verbose)
+  -s OtnsServer, --otns OtnsServer,
+                        Set the OTNS server address to send OTNS messages to
+  -p PlaybackSpeed, --speed PlaybackSpeed,
+                        Speed of log replay
+```
+
+There is an example of test run script `silk_replay_test.py` under `unit_tests` folder.
 
 ## Build Wpantund image
 

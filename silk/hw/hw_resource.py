@@ -44,7 +44,7 @@ class HardwareNotFound(Exception):
 
 
 class HwResource(object):
-    def __init__(self, filename=None, create=False):
+    def __init__(self, filename=None, virtual=False, create=False):
         self._hw_modules = []
         self._thread_sniffer_pool = []
         self._parser = configparser.SafeConfigParser()
@@ -54,6 +54,7 @@ class HwResource(object):
             print('ERROR: No hw config file found at {0}'.format(self._filename))
         
         self._cluster_id = 1
+        self._virtual = virtual
 
     def load_config(self):
         """Returns a Config object from a given INI file"""
@@ -145,7 +146,8 @@ class HwResource(object):
                                     parser=self._parser,
                                     node_id=node_id,
                                     layout_center=self._layout_center,
-                                    layout_radius=self._layout_radius))
+                                    layout_radius=self._layout_radius,
+                                    virtual=self._virtual))
                 except RuntimeError as e:
                     print("Failed to add %s" % device_name)
 
@@ -177,17 +179,17 @@ class HwResource(object):
         Returns:
             List[str]: list of hardware module names.
         """
-        return [module.name for module in self._hw_modules]
+        return [module.name() for module in self._hw_modules]
 
 _global_instance = None
 
 
-def global_instance(filename=None):
+def global_instance(filename=None, virtual=False):
     """ Get the common global instance """
     global _global_instance
 
     if _global_instance is None:
-        _global_instance = HwResource(filename)
+        _global_instance = HwResource(filename, virtual)
 
     return _global_instance
 

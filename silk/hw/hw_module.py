@@ -50,7 +50,7 @@ class HwModule(object):
 
     def __init__(self, name, parser, node_id, layout_center=None, layout_radius=None,
                  model=None, interface_serial=None, interface_number=None, port=None,
-                 dut_serial=None, jlink_serial=None):
+                 dut_serial=None, jlink_serial=None, virtual=False):
         self._name = name
         self._parser = parser
         self._claimed = False
@@ -59,15 +59,16 @@ class HwModule(object):
         self._dut_serial = dut_serial
         self._node_id = node_id
 
-        if model and interface_serial and interface_number:
-            if port is None:
-                self.__set_options(model, interface_serial, int(interface_number))
-        elif model or interface_serial or interface_number:
-            raise ValueError("You must specify either all of model, interface_serial and interface_number or none. "
-                             "Provided: %s" % ([model, interface_serial, interface_number]))
+        if not virtual:
+            if model and interface_serial and interface_number:
+                if port is None:
+                    self.__set_options(model, interface_serial, int(interface_number))
+            elif model or interface_serial or interface_number:
+                raise ValueError("You must specify either all of model, interface_serial and interface_number or none. "
+                                "Provided: %s" % ([model, interface_serial, interface_number]))
 
-        if self._port is None:
-            self.set_port()
+            if self._port is None:
+                self.set_port()
         
         assert (layout_center is None) == (layout_radius is None)
         self._layout_center = layout_center
