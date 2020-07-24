@@ -50,6 +50,8 @@ class RegexType(enum.Enum):
   ROLE_STATUS = r"role=([0-4])"
   CHILD_ADDED_STATUS = r"child_added=([A-Fa-f0-9]{16})"
   CHILD_REMOVED_STATUS = r"child_removed=([A-Fa-f0-9]{16})"
+  ROUTER_ADDED_STATUS = r"router_added=([A-Fa-f0-9]{16})"
+  ROUTER_REMOVED_STATUS = r"router_removed=([A-Fa-f0-9]{16})"
 
 
 class EventType(enum.Enum):
@@ -245,6 +247,7 @@ class OtnsNode(object):
     extaddr(int): extended address of the node in network.
     role(RoleType): role of the node in network.
     children (List[int]): extended addresses of children.
+    neighbors (List[int]): extended addresses of neighbors.
   """
 
   def __init__(self, node_id: int, vis_x: int, vis_y: int,
@@ -286,6 +289,7 @@ class OtnsNode(object):
     self.extaddr = node_id
     self.role = RoleType.DISABLED
     self.children = set()
+    self.neighbors = set()
 
     self.node_on_otns = False
 
@@ -327,27 +331,47 @@ class OtnsNode(object):
     """Send child added event.
 
     Args:
-        child_addr (str): extended address of the child
-          that is added to this node.
+      child_addr (str): extended address of the child
+        that is added to this node.
     """
     event = Event.status_event("child_added={:016x}".format(child_addr))
     self.send_event(event.to_bytes())
 
   def send_child_removed_event(self, child_addr: int):
-    """Send child added event.
+    """Send child removed event.
 
     Args:
-        child_addr (str): extended address of the child
-          that is removed from this node.
+      child_addr (str): extended address of the child
+        that is removed from this node.
     """
     event = Event.status_event("child_removed={:016x}".format(child_addr))
+    self.send_event(event.to_bytes())
+
+  def send_router_added_event(self, router_addr: int):
+    """Send router added event.
+
+    Args:
+      router_addr (str): extended address of the router
+        that is added to  the neighbor list of this node.
+    """
+    event = Event.status_event("router_added={:016x}".format(router_addr))
+    self.send_event(event.to_bytes())
+
+  def send_router_removed_event(self, router_addr: int):
+    """Send router removed event.
+
+    Args:
+      router_addr (str): extended address of the router
+        that is removed from the neighbor list of this node.
+    """
+    event = Event.status_event("router_removed={:016x}".format(router_addr))
     self.send_event(event.to_bytes())
 
   def update_extaddr(self, extaddr: int):
     """Update the node's extended address.
 
     Args:
-        extaddr (int): new extended address of the node.
+      extaddr (int): new extended address of the node.
     """
     if extaddr != self.extaddr:
       self.extaddr = extaddr
@@ -367,7 +391,7 @@ class OtnsNode(object):
     """Add a node as a child of this node.
 
     Args:
-        child_addr (int): extended address of the child to add.
+      child_addr (int): extended address of the child to add.
     """
     if child_addr not in self.children:
       self.children.add(child_addr)
@@ -377,11 +401,31 @@ class OtnsNode(object):
     """Remove a child node of this node.
 
     Args:
-        child_addr (int): extended address of the child to remove.
+      child_addr (int): extended address of the child to remove.
     """
     if child_addr in self.children:
       self.children.remove(child_addr)
       self.send_child_removed_event(child_addr)
+
+  def add_router(self, router_addr: int):
+    """Add a router node as a neighbor of this node.
+
+    Args:
+      router_addr (int): extended address of the router to add.
+    """
+    if router_addr not in self.neighbors:
+      self.neighbors.add(router_addr)
+      self.send_router_added_event(router_addr)
+
+  def remove_router(self, router_addr: int):
+    """Remove a child node of this node.
+
+    Args:
+      router_addr (int): extended address of the router to remove.
+    """
+    if router_addr in self.neighbors:
+      self.neighbors.remove(router_addr)
+      self.send_router_removed_event(router_addr)
 
   def create_otns_node(self):
     """Call gRPC client to create a node on server for itself.
@@ -597,42 +641,64 @@ class OtnsManager(object):
       node (OtnsNode): OTNS node.
       message (str): status message.
     """
-    self.logger.debug("Update status with message {}".format(message))
-    needs_layout_update = False
     status_match = re.search(RegexType.STATUS.value, message)
     if status_match:
       message = status_match.group(2)
 
       extaddr_match = re.search(RegexType.EXTADDR_STATUS.value, message)
-      role_match = re.search(RegexType.ROLE_STATUS.value, message)
-      child_added_match = re.search(RegexType.CHILD_ADDED_STATUS.value,
-                                    message)
-      child_removed_match = re.search(RegexType.CHILD_REMOVED_STATUS.value,
-                                      message)
       if extaddr_match:
         node.update_extaddr(int(extaddr_match.group(1), 16))
-        needs_layout_update = True
-      elif role_match:
-        node.update_role(RoleType(int(role_match.group(1))))
-        needs_layout_update = True
-      elif child_added_match:
+        return
+
+      role_match = re.search(RegexType.ROLE_STATUS.value, message)
+      if role_match:
+        role = RoleType(int(role_match.group(1)))
+        node.update_role(role)
+        self.update_layout()
+
+        if role == RoleType.DISABLED or role == RoleType.DETACHED:
+          for child in list(node.neighbors):
+            node.remove_router(child)
+            for neighbor in self.otns_node_map.values():
+              if neighbor.extaddr == child:
+                neighbor.remove_router(node.extaddr)
+                break
+          for child in list(node.children):
+            node.remove_child(child)
+        return
+
+      child_added_match = re.search(RegexType.CHILD_ADDED_STATUS.value,
+                                    message)
+      if child_added_match:
         node.add_child(int(child_added_match.group(1), 16))
-        needs_layout_update = True
-      elif child_removed_match:
+        return
+
+      child_removed_match = re.search(RegexType.CHILD_REMOVED_STATUS.value,
+                                      message)
+      if child_removed_match:
         node.remove_child(int(child_removed_match.group(1), 16))
-        needs_layout_update = True
-      else:
-        event = Event.status_event(message)
-        node.send_event(event.to_bytes())
+        return
+
+      router_added_match = re.search(RegexType.ROUTER_ADDED_STATUS.value,
+                                     message)
+      if router_added_match:
+        node.add_router(int(router_added_match.group(1), 16))
+        return
+
+      router_removed_match = re.search(RegexType.ROUTER_REMOVED_STATUS.value,
+                                       message)
+      if router_removed_match:
+        node.remove_router(int(router_removed_match.group(1), 16))
+        return
+
+      event = Event.status_event(message)
+      node.send_event(event.to_bytes())
+      return
 
     get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, message)
     if get_extaddr_info_match:
       extaddr = get_extaddr_info_match.group(1)
-      if node:
-        node.update_extaddr(int(extaddr, 16))
-
-    if needs_layout_update:
-      self.update_layout()
+      node.update_extaddr(int(extaddr, 16))
 
   def update_extaddr(self, node: ThreadDevBoard, extaddr: int):
     """Report a node's extended address to OTNS manager.
