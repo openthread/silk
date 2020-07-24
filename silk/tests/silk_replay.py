@@ -132,6 +132,7 @@ class SilkReplayer(object):
                         metavar="OtnsServer",
                         help="OTNS server address")
     parser.add_argument("-p", "--speed", dest="playback_speed",
+                        type=float, default=1.0,
                         metavar="PlaybackSpeed",
                         help="Speed of log replay")
     parser.add_argument("path", metavar="P",
