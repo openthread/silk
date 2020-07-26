@@ -40,6 +40,9 @@ hwNordicSniffer = "NordicSniffer"
 # Silabs Dev Board EFR32
 hwEfr32 = "Efr32"
 
+# Generic Virtual Device (for log replay purpose)
+hwGeneric = "Generic"
+
 dev_devices = [hwNrf52840, hwEfr32, hwNordicSniffer]
 
 

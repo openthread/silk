@@ -111,7 +111,7 @@ The `SilkReplayer` allows offline playback of Silk log file for visualization on
 via command line arguments. Usage:
 
 ``` shell
-usage: silk_replay.py [-h] [-d ResPath] [-c ConfFile] [-v X] [-s OtnsServer] P
+usage: silk_replay.py [-h] [-d ResPath] [-c ConfFile] [-v X] [-s OtnsServer] [-p PlaybackSpeed] P
 
 Run a suite of Silk Tests
 positional arguments:
@@ -119,16 +119,16 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -r ResPath, --results_dir ResPath
-                        Set the path for run results
+                        Set the path for run results. Defaults to current folder.
   -c ConfFile, --hwconfig ConfFile
-                        Name the hardware config file
+                        Name the hardware config file. Defaults to `/opt/openthread_test/hwconfig.ini`.
   -v X, --verbose X, --verbosity X
                         Set the verbosity level of the console (0=quiet,
                         1=default, 2=verbose)
   -s OtnsServer, --otns OtnsServer,
-                        Set the OTNS server address to send OTNS messages to
+                        Set the OTNS server address to send OTNS messages to. Defaults to `localhost`.
   -p PlaybackSpeed, --speed PlaybackSpeed,
-                        Speed of log replay
+                        Speed of log replay. e.g. 20 means speeding up to 20x. 1.0 by default.
 ```
 
 There is an example of test run script `silk_replay_test.py` under `unit_tests` folder.

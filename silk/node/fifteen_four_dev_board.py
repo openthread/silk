@@ -644,4 +644,4 @@ class ThreadDevBoard(FifteenFourDevBoardThreadNode):
             name (str): name of the device to create.
         """
         self.device = silk.hw.hw_resource.global_instance().find_hw_module_by_name(name)
-        self.hwModel = silk.hw.hw_module.hwNrf52840
+        self.hwModel = silk.hw.hw_module.hwGeneric

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Silk Test Log Replayer.
+"""Silk Test Log Visualization Replayer.
 
 Enables replaying Silk log with OTNS enabled through OTNS visualization.
 """
@@ -21,6 +21,7 @@ import argparse
 import datetime
 import enum
 import logging
+import os
 import re
 import sys
 import time
@@ -39,7 +40,7 @@ class RegexType(enum.Enum):
   """
   # regex that matches the four components above as groups
   LOG_LINE = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
-  SET_UP = r"SET UP CLASS (\w+)"
+  SET_UP_CLASS = r"SET UP CLASS (\w+)"
 
 
 class SilkReplayer(object):
@@ -70,7 +71,10 @@ class SilkReplayer(object):
     self.input_path = args.path
     self.speed = float(args.playback_speed)
 
-    self.set_up_logger(args.result_path)
+    if args.results_dir is not None:
+      self.set_up_logger(args.results_dir)
+    else:
+      self.set_up_logger(os.getcwd())
     self.acquire_devices(args.hw_conf_file)
 
     self.otns_manager = OtnsManager(
@@ -80,16 +84,19 @@ class SilkReplayer(object):
     self.last_time = None
     self.run()
 
-  def set_up_logger(self, result_path: str):
+  def set_up_logger(self, result_dir: str):
     """Set up logger for the replayer.
 
     Args:
-      result_path (str): output path of log.
+      result_dir (str): output directory of log.
     """
     self.logger = logging.getLogger("silk_replay")
     self.logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(LOG_LINE_FORMAT)
+
+    timestamp = datetime.datetime.today().strftime("%m-%d-%H:%M")
+    result_path = result_dir + "/silk_replay_on_{}.log".format(timestamp)
 
     file_handler = logging.FileHandler(result_path, mode="w")
     file_handler.setLevel(logging.DEBUG)
@@ -118,11 +125,12 @@ class SilkReplayer(object):
       argparse.Namespace: parsed arguments attributes.
     """
     parser = argparse.ArgumentParser(description="Replay a Silk test log")
-    parser.add_argument("-r", "--result_path", dest="result_path",
+    parser.add_argument("-r", "--results_dir", dest="results_dir",
                         metavar="ResPath",
                         help="Set the path for run results")
     parser.add_argument("-c", "--hwconfig", dest="hw_conf_file",
                         metavar="ConfFile",
+                        default="/opt/openthread_test/hwconfig.ini",
                         help="Name the hardware config file")
     parser.add_argument("-v", "--verbose", "--verbosity", type=int,
                         default=1, choices=list(range(0, 3)),
@@ -130,6 +138,7 @@ class SilkReplayer(object):
                         help="Verbosity level (0=quiet, 1=default, 2=verbose)")
     parser.add_argument("-s", "--otns", dest="otns_server",
                         metavar="OtnsServer",
+                        default="localhost",
                         help="OTNS server address")
     parser.add_argument("-p", "--speed", dest="playback_speed",
                         type=float, default=1.0,
@@ -161,9 +170,9 @@ class SilkReplayer(object):
     """
     parts = entity_name.split(".")
     if len(parts) == 1 and parts[0] == "silk":
-      set_up_match = re.match(RegexType.SET_UP.value, message)
-      if set_up_match:
-        self.otns_manager.set_test_title(set_up_match.group(1))
+      set_up_class_match = re.match(RegexType.SET_UP_CLASS.value, message)
+      if set_up_class_match:
+        self.otns_manager.set_test_title(set_up_class_match.group(1))
     if len(parts) < 2 or parts[0] != "silk" or parts[1] == "otnsManager":
       return
 
@@ -215,7 +224,8 @@ class SilkReplayer(object):
           message = line_match.group(4)
 
           # delay for the time difference between two log lines
-          time.sleep(delay)
+          if delay > 0:
+            time.sleep(delay)
           self.execute_message(entity_name, message)
 
 
