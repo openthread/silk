@@ -108,9 +108,10 @@ class GRpcClient:
       y (int): y position of title.
       font_size (int): font size of title.
     """
-    response = self.stub.CtrlSetTitle(
-        visualize_grpc_pb2.SetTitleEvent(
-            title=title, x=x, y=y, font_size=font_size))
+    response = self.stub.Command(
+        visualize_grpc_pb2.CommandRequest(
+            command="title \"{:s}\" x {:d} y {:d} fs {:d}".format(
+                title, x, y, font_size)))
     self.logger.info("Sent title {:s}, response: {}".format(title, response))
 
   def add_node(self, x: int, y: int, node_id: int):
@@ -121,18 +122,11 @@ class GRpcClient:
       y (int): y coordinate of the new node.
       node_id (int): node ID of the new node.
     """
-    mode = visualize_grpc_pb2.NodeMode(
-        rx_on_when_idle=True,
-        secure_data_requests=False,
-        full_thread_device=True,
-        full_network_data=False)
-
-    response = self.stub.CtrlAddNode(
-        visualize_grpc_pb2.AddNodeRequest(
-            x=x, y=y, is_router=True, mode=mode, node_id=node_id))
-    self.logger.info(
-        ("Added node {:d} at x={:d}, y={:d}, response: {}").format(
-            node_id, x, y, response))
+    response = self.stub.Command(
+        visualize_grpc_pb2.CommandRequest(
+            command="add router x {:d} y {:d} id {:d}".format(x, y, node_id)))
+    self.logger.info("Added node {:d} at x={:d}, y={:d}, response: {}".format(
+        node_id, x, y, response))
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request async.
@@ -148,8 +142,9 @@ class GRpcClient:
           "Moved node ID={:d} to x={:d}, y={:d}, response: {}".format(
               node_id, x, y, response))
 
-    request_future = self.stub.CtrlMoveNodeTo.future(
-        visualize_grpc_pb2.MoveNodeToRequest(node_id=node_id, x=x, y=y))
+    request_future = self.stub.Command.future(
+        visualize_grpc_pb2.CommandRequest(
+            command="move {:d} {:d} {:d}".format(node_id, x, y)))
     request_future.add_done_callback(handle_response)
 
   def delete_node(self, node_id: int):
@@ -158,8 +153,8 @@ class GRpcClient:
     Args:
       node_id (int): node ID of the node to be deleted.
     """
-    response = self.stub.CtrlDeleteNode(
-        visualize_grpc_pb2.DeleteNodeRequest(node_id=node_id))
+    response = self.stub.Command(
+        visualize_grpc_pb2.CommandRequest(command="del {:d}".format(node_id)))
     self.logger.info(
         "Deleted node ID={:d}, response: {}".format(node_id, response))
 
