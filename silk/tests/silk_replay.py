@@ -71,10 +71,7 @@ class SilkReplayer(object):
     self.input_path = args.path
     self.speed = float(args.playback_speed)
 
-    if args.results_dir is not None:
-      self.set_up_logger(args.results_dir)
-    else:
-      self.set_up_logger(os.getcwd())
+    self.set_up_logger(args.results_dir or os.getcwd())
     self.acquire_devices(args.hw_conf_file)
 
     self.otns_manager = OtnsManager(
@@ -105,7 +102,7 @@ class SilkReplayer(object):
     formatter = logging.Formatter(LOG_LINE_FORMAT)
 
     timestamp = datetime.today().strftime("%m-%d-%H:%M")
-    result_path = result_dir + "/silk_replay_on_{}.log".format(timestamp)
+    result_path = os.path.join(result_dir, "silk_replay_on_{}.log".format(timestamp))
 
     file_handler = logging.FileHandler(result_path, mode="w")
     file_handler.setLevel(logging.DEBUG)
