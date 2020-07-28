@@ -25,6 +25,7 @@ import math
 import re
 import socket
 import struct
+from typing import Dict
 
 import grpc
 
@@ -536,7 +537,8 @@ class OtnsNodeSummary(object):
       time (datetime.datetime, optional): time of the change. Defaults
         to datetime.now().
     """
-    self.extaddr_history.append((time, extaddr))
+    if not self.extaddr_history or self.extaddr_history[-1][1] != extaddr:
+      self.extaddr_history.append((time, extaddr))
 
   def role_changed(self, role: RoleType, time=datetime.now()):
     """Add an entry to the node's role history.
@@ -546,7 +548,8 @@ class OtnsNodeSummary(object):
       time (datetime.datetime, optional): time of the change. Defaults
         to datetime.now().
     """
-    self.role_history.append((time, role))
+    if not self.role_history or self.role_history[-1][1] != role:
+      self.role_history.append((time, role))
 
   def child_changed(self, added: bool, child: int, time=datetime.now()):
     """Add an entry to the node's children history.
@@ -570,7 +573,15 @@ class OtnsNodeSummary(object):
     """
     self.neighbors_history.append((time, added, neighbor))
 
-  def __str__(self):
+  def to_string(self, extaddr_table: Dict[int, int]) -> str:
+    """Generate summary string.
+
+    Args:
+      extaddr_table (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      str: string representation of the summary.
+    """
     lines = []
     lines.append("OTNS Summary for node {:d}".format(self.node_id))
 
@@ -578,28 +589,37 @@ class OtnsNodeSummary(object):
       lines.append("Extended address changes:")
       for time, extaddr in self.extaddr_history:
         lines.append(
-            "[{:s}] {:016x}".format(time.strftime(DATE_FORMAT), extaddr))
+            "[{:s}] {:016x}".format(time.strftime(DATE_FORMAT)[:-3], extaddr))
 
     if self.role_history:
       lines.append("Role changes:")
       for time, role in self.role_history:
-        lines.append("[{:s}] {:s}".format(time.strftime(DATE_FORMAT), role.name))
+        lines.append(
+            "[{:s}] {:s}".format(time.strftime(DATE_FORMAT)[:-3], role.name))
 
     if self.children_history:
       lines.append("Children changes:")
       for time, added, child in self.children_history:
         action = "added" if added else "removed"
+        if child in extaddr_table:
+          child_repr = "node {:d}".format(extaddr_table[child])
+        else:
+          child_repr = "extaddr {:016x}".format(child)
         lines.append(
-            "[{:s}] {:s} {:016x}".format(
-                time.strftime(DATE_FORMAT), action, child))
+            "[{:s}] {:s} {:s}".format(
+                time.strftime(DATE_FORMAT)[:-3], action, child_repr))
 
     if self.neighbors_history:
       lines.append("Neighbors changes:")
       for time, added, neighbor in self.neighbors_history:
         action = "added" if added else "removed"
+        if neighbor in extaddr_table:
+          neighbor_repr = "node {:d}".format(extaddr_table[neighbor])
+        else:
+          neighbor_repr = "extaddr {:016x}".format(neighbor)
         lines.append(
-            "[{:s}] {:s} {:016x}".format(
-                time.strftime(DATE_FORMAT), action, neighbor))
+            "[{:s}] {:s} {:s}".format(
+                time.strftime(DATE_FORMAT)[:-3], action, neighbor_repr))
 
     return "\n".join(lines)
 

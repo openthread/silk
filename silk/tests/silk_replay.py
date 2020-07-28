@@ -211,8 +211,12 @@ class SilkReplayer(object):
   def output_summary(self):
     """Print summary of the replayed log.
     """
+    extaddr_table = {}
     for summary in self.otns_manager.node_summaries.values():
-      self.logger.debug(summary)
+      if summary.extaddr_history:
+        extaddr_table[summary.extaddr_history[-1][1]] = summary.node_id
+    for summary in self.otns_manager.node_summaries.values():
+      self.logger.debug(summary.to_string(extaddr_table))
 
   def run(self):
     """Run the Silk log replayer.
