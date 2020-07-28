@@ -18,7 +18,7 @@ Enables replaying Silk log with OTNS enabled through OTNS visualization.
 """
 
 import argparse
-import datetime
+from datetime import datetime
 import enum
 import logging
 import os
@@ -90,18 +90,6 @@ class SilkReplayer(object):
     Args:
       result_dir (str): output directory of log.
     """
-    self.logger = logging.getLogger("silk_replay")
-    self.logger.setLevel(logging.DEBUG)
-
-    formatter = logging.Formatter(LOG_LINE_FORMAT)
-
-    timestamp = datetime.datetime.today().strftime("%m-%d-%H:%M")
-    result_path = result_dir + "/silk_replay_on_{}.log".format(timestamp)
-
-    file_handler = logging.FileHandler(result_path, mode="w")
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(formatter)
-
     if self.verbosity == 0:
       stream_level = logging.CRITICAL
     elif self.verbosity == 1:
@@ -109,10 +97,22 @@ class SilkReplayer(object):
     else:
       stream_level = logging.DEBUG
 
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(stream_level)
-    stream_handler.setFormatter(formatter)
-    self.logger.addHandler(stream_handler)
+    logging.basicConfig(format=LOG_LINE_FORMAT, level=stream_level)
+
+    self.logger = logging.getLogger("silk_replay")
+    self.logger.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter(LOG_LINE_FORMAT)
+
+    timestamp = datetime.today().strftime("%m-%d-%H:%M")
+    result_path = result_dir + "/silk_replay_on_{}.log".format(timestamp)
+
+    file_handler = logging.FileHandler(result_path, mode="w")
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    if self.logger.hasHandlers():
+      self.logger.handlers.clear()
     self.logger.addHandler(file_handler)
 
   def parse_args(self, argv):
@@ -161,12 +161,14 @@ class SilkReplayer(object):
     self.device_name_map = dict()
     self.logger.debug("Loaded devices %s", self.device_names)
 
-  def execute_message(self, entity_name: str, message: str):
+  def execute_message(self, entity_name: str, message: str,
+                      timestamp: datetime):
     """Execute the intended action represented by the message.
 
     Args:
       entity_name (str): name of the entity carrying out the action.
       message (str): message content of the action.
+      timestamp (datetime.datetime): timestamp of the message.
     """
     parts = entity_name.split(".")
     if len(parts) == 1 and parts[0] == "silk":
@@ -198,12 +200,19 @@ class SilkReplayer(object):
 
     extaddr_match = re.search(OtnsRegexType.GET_EXTADDR_RES.value, message)
     if extaddr_match:
-      self.otns_manager.update_extaddr(device, int(extaddr_match.group(1), 16))
+      self.otns_manager.update_extaddr(
+          device, int(extaddr_match.group(1), 16), time=timestamp)
       return
 
     status_match = re.match(OtnsRegexType.STATUS.value, message)
     if status_match:
-      self.otns_manager.process_node_status(device, message)
+      self.otns_manager.process_node_status(device, message, time=timestamp)
+
+  def output_summary(self):
+    """Print summary of the replayed log.
+    """
+    for summary in self.otns_manager.node_summaries.values():
+      self.logger.debug(summary)
 
   def run(self):
     """Run the Silk log replayer.
@@ -212,8 +221,7 @@ class SilkReplayer(object):
       for line in file:
         line_match = re.search(RegexType.LOG_LINE.value, line)
         if line_match:
-          timestamp = datetime.datetime.strptime(
-              line_match.group(1), DATE_FORMAT)
+          timestamp = datetime.strptime(line_match.group(1), DATE_FORMAT)
           if not self.last_time:
             self.last_time = timestamp
           time_diff = timestamp - self.last_time
@@ -226,7 +234,9 @@ class SilkReplayer(object):
           # delay for the time difference between two log lines
           if delay > 0:
             time.sleep(delay)
-          self.execute_message(entity_name, message)
+          self.execute_message(entity_name, message, timestamp)
+
+    self.output_summary()
 
 
 if __name__ == "__main__":
