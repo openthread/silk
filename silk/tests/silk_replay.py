@@ -28,7 +28,7 @@ import time
 
 import silk.hw.hw_resource as hw_resource
 import silk.node.fifteen_four_dev_board as ffdb
-from silk.tools.otns_manager import OtnsManager
+from silk.tools.otns_manager import OtnsManager, OtnsNodeSummaryCollection
 from silk.tools.otns_manager import RegexType as OtnsRegexType
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
@@ -102,7 +102,7 @@ class SilkReplayer(object):
     formatter = logging.Formatter(LOG_LINE_FORMAT)
 
     timestamp = datetime.today().strftime("%m-%d-%H:%M")
-    result_path = os.path.join(result_dir, "silk_replay_on_{}.log".format(timestamp))
+    result_path = os.path.join(result_dir, f"silk_replay_on_{timestamp}.log")
 
     file_handler = logging.FileHandler(result_path, mode="w")
     file_handler.setLevel(logging.DEBUG)
@@ -156,7 +156,7 @@ class SilkReplayer(object):
     self.device_names = set(
         hw_resource.global_instance().get_hw_module_names())
     self.device_name_map = dict()
-    self.logger.debug("Loaded devices %s", self.device_names)
+    self.logger.debug(f"Loaded devices {self.device_names}")
 
   def execute_message(self, entity_name: str, message: str,
                       timestamp: datetime):
@@ -205,19 +205,28 @@ class SilkReplayer(object):
     if status_match:
       self.otns_manager.process_node_status(device, message, time=timestamp)
 
-  def output_summary(self):
+  def output_summary(self, coalesced: bool):
     """Print summary of the replayed log.
+
+    Args:
+      coalesced (bool): if the summary should be printed grouped by time
     """
-    extaddr_table = {}
+    extaddr_map = {}
     for summary in self.otns_manager.node_summaries.values():
       if summary.extaddr_history:
-        extaddr_table[summary.extaddr_history[-1][1]] = summary.node_id
-    for summary in self.otns_manager.node_summaries.values():
-      self.logger.debug(summary.to_string(extaddr_table))
+        extaddr_map[summary.extaddr_history[-1][1]] = summary.node_id
+    if coalesced:
+      collection = OtnsNodeSummaryCollection(
+          self.otns_manager.node_summaries.values())
+      self.logger.debug(collection.to_string(extaddr_map))
+    else:
+      for summary in self.otns_manager.node_summaries.values():
+        self.logger.debug(summary.to_string(extaddr_map))
 
   def run(self):
     """Run the Silk log replayer.
     """
+    self.otns_manager.set_replay_speed(self.speed)
     with open(file=self.input_path, mode="r") as file:
       for line in file:
         line_match = re.search(RegexType.LOG_LINE.value, line)
@@ -237,7 +246,7 @@ class SilkReplayer(object):
             time.sleep(delay)
           self.execute_message(entity_name, message, timestamp)
 
-    self.output_summary()
+    self.output_summary(True)
 
 
 if __name__ == "__main__":

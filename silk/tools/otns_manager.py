@@ -25,7 +25,7 @@ import math
 import re
 import socket
 import struct
-from typing import Dict
+from typing import Dict, List, Tuple
 
 import grpc
 
@@ -93,7 +93,7 @@ class GRpcClient:
       server_addr (str): the address of the gRPC server.
       logger (logging.Logger): logger for the class.
     """
-    logger.debug("Starting gRPC client with address {:s}".format(server_addr))
+    logger.debug(f"Starting gRPC client with address {server_addr}")
     self.server_addr = server_addr
     self.channel = grpc.insecure_channel(self.server_addr)
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
@@ -110,9 +110,18 @@ class GRpcClient:
     """
     response = self.stub.Command(
         visualize_grpc_pb2.CommandRequest(
-            command="title \"{:s}\" x {:d} y {:d} fs {:d}".format(
-                title, x, y, font_size)))
-    self.logger.info("Sent title {:s}, response: {}".format(title, response))
+            command=f"title \"{title}\" x {x} y {y} fs {font_size}"))
+    self.logger.info(f"Sent title {title}, resp: {response}".rstrip("\n"))
+
+  def set_speed(self, speed: float):
+    """Send test replay speed to OTNS.
+
+    Args:
+        speed (float): test replay speed.
+    """
+    response = self.stub.Command(
+        visualize_grpc_pb2.CommandRequest(command=f"speed {speed}"))
+    self.logger.info(f"Sent speed {speed}, resp: {response}".rstrip("\n"))
 
   def add_node(self, x: int, y: int, node_id: int):
     """Sends an add node request.
@@ -124,9 +133,9 @@ class GRpcClient:
     """
     response = self.stub.Command(
         visualize_grpc_pb2.CommandRequest(
-            command="add router x {:d} y {:d} id {:d}".format(x, y, node_id)))
-    self.logger.info("Added node {:d} at x={:d}, y={:d}, response: {}".format(
-        node_id, x, y, response))
+            command=f"add router x {x} y {y} id {node_id}"))
+    self.logger.info(f"Added node {node_id} at x={x}, y={y}, resp: {response}"
+                     .rstrip("\n"))
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request async.
@@ -139,12 +148,11 @@ class GRpcClient:
     def handle_response(request_future):
       response = request_future.result()
       self.logger.info(
-          "Moved node ID={:d} to x={:d}, y={:d}, response: {}".format(
-              node_id, x, y, response))
+          f"Moved node ID={node_id} to x={x}, y={y}, resp: {response}"
+          .rstrip("\n"))
 
     request_future = self.stub.Command.future(
-        visualize_grpc_pb2.CommandRequest(
-            command="move {:d} {:d} {:d}".format(node_id, x, y)))
+        visualize_grpc_pb2.CommandRequest(command=f"move {node_id} {x} {y}"))
     request_future.add_done_callback(handle_response)
 
   def delete_node(self, node_id: int):
@@ -154,9 +162,9 @@ class GRpcClient:
       node_id (int): node ID of the node to be deleted.
     """
     response = self.stub.Command(
-        visualize_grpc_pb2.CommandRequest(command="del {:d}".format(node_id)))
-    self.logger.info(
-        "Deleted node ID={:d}, response: {}".format(node_id, response))
+        visualize_grpc_pb2.CommandRequest(command=f"del {node_id}"))
+    self.logger.info(f"Deleted node ID={node_id}, resp: {response}"
+                     .rstrip("\n"))
 
 
 class Event:
@@ -313,17 +321,16 @@ class OtnsNode(object):
   def send_extaddr_event(self):
     """Send extaddr event.
     """
-    event = Event.status_event("extaddr={:016x}".format(self.extaddr))
+    event = Event.status_event(f"extaddr={self.extaddr:016x}")
     self.logger.debug(
-        "Node {:d} sending extaddr={:016x}".format(self.node_id, self.extaddr))
+        f"Node {self.node_id} sending extaddr={self.extaddr:016x}")
     self.send_event(event.to_bytes())
 
   def send_role_event(self):
     """Send role event.
     """
-    event = Event.status_event("role={:1d}".format(self.role.value))
-    self.logger.debug(
-        "Node {:d} sending role={:1d}".format(self.node_id, self.role.value))
+    event = Event.status_event(f"role={self.role.value:1d}")
+    self.logger.debug(f"Node {self.node_id} sending role={self.role.value:1d}")
     self.send_event(event.to_bytes())
 
   def send_child_added_event(self, child_addr: int):
@@ -333,7 +340,7 @@ class OtnsNode(object):
       child_addr (str): extended address of the child
         that is added to this node.
     """
-    event = Event.status_event("child_added={:016x}".format(child_addr))
+    event = Event.status_event(f"child_added={child_addr:016x}")
     self.send_event(event.to_bytes())
 
   def send_child_removed_event(self, child_addr: int):
@@ -343,7 +350,7 @@ class OtnsNode(object):
       child_addr (str): extended address of the child
         that is removed from this node.
     """
-    event = Event.status_event("child_removed={:016x}".format(child_addr))
+    event = Event.status_event(f"child_removed={child_addr:016x}")
     self.send_event(event.to_bytes())
 
   def send_router_added_event(self, router_addr: int):
@@ -353,7 +360,7 @@ class OtnsNode(object):
       router_addr (str): extended address of the router
         that is added to  the neighbor list of this node.
     """
-    event = Event.status_event("router_added={:016x}".format(router_addr))
+    event = Event.status_event(f"router_added={router_addr:016x}")
     self.send_event(event.to_bytes())
 
   def send_router_removed_event(self, router_addr: int):
@@ -363,7 +370,7 @@ class OtnsNode(object):
       router_addr (str): extended address of the router
         that is removed from the neighbor list of this node.
     """
-    event = Event.status_event("router_removed={:016x}".format(router_addr))
+    event = Event.status_event(f"router_removed={router_addr:016x}")
     self.send_event(event.to_bytes())
 
   def update_extaddr(self, extaddr: int):
@@ -430,11 +437,11 @@ class OtnsNode(object):
     """Call gRPC client to create a node on server for itself.
     """
     if self.node_on_otns:
-      self.logger.debug("Node {:d} already on OTNS while trying to create")
+      self.logger.debug(
+          f"Node {self.node_id} already on OTNS while trying to create")
       return
     self.logger.debug(
-        "Adding node {:d} to OTNS at ({:d},{:d})".format(
-            self.node_id, self.vis_x, self.vis_y))
+        f"Adding node {self.node_id} to OTNS at ({self.vis_x},{self.vis_y})")
     self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
     self.send_extaddr_event()
     self.node_on_otns = True
@@ -443,10 +450,10 @@ class OtnsNode(object):
     """Call gRPC client to remove the node on server for itself.
     """
     if not self.node_on_otns:
-      self.logger.debug("Node {:d} not on OTNS while trying to delete")
+      self.logger.debug(
+          f"Node {self.node_id} not on OTNS while trying to delete")
       return
-    self.logger.debug(
-        "Deleting node {:d} on OTNS ".format(self.node_id))
+    self.logger.debug(f"Deleting node {self.node_id} on OTNS")
     self.grpc_client.delete_node(self.node_id)
     self.node_on_otns = False
 
@@ -454,8 +461,7 @@ class OtnsNode(object):
     """Call gRPC client to update the node's visualization position.
     """
     self.logger.debug(
-        "moving node {:d} to OTNS at ({:d},{:d})".format(
-            self.node_id, self.vis_x, self.vis_y))
+        f"Moving node {self.node_id} to OTNS at ({self.vis_x},{self.vis_y})")
     self.grpc_client.move_node(self.node_id, self.vis_x, self.vis_y)
 
   def update_vis_position(self, x: int, y: int):
@@ -502,13 +508,13 @@ class OtnsNodeSummary(object):
 
   Attributes:
     node_id (int): ID of the node.
-    extaddr_history (List[Tuple[datetime.datetime, int]]): history of extaddr.
-    role_history (List[Tuple[datetime.datetime, RoleType]]): history
-      of the node's role.
-    children_history (List[Tuple[datetime.datetime, bool, int]]): history of
-      the node's children.
-    neighbors_history (List[Tuple[datetime.datetime, bool, int]]): history of
-      the node's neighbors.
+    extaddr_history (List[Tuple[datetime, int]]): history of extaddr.
+    role_history (List[Tuple[datetime, RoleType]]): history of the
+      node's role.
+    children_history (List[Tuple[datetime, bool, int]]): history of the
+      node's children.
+    neighbors_history (List[Tuple[datetime, bool, int]]): history of the
+      node's neighbors.
   """
 
   def __init__(self, node_id: int):
@@ -568,56 +574,154 @@ class OtnsNodeSummary(object):
     """
     self.neighbors_history.append((time, added, neighbor))
 
-  def to_string(self, extaddr_table: Dict[int, int]) -> str:
+  def format_extaddr_history(self) -> List[Tuple[datetime, str]]:
+    """Format this summary's extaddr history and return the list.
+
+    Returns:
+      List[Tuple[datetime, str]]: list of extaddr history, in the format of a
+        tuple containing the time of the event and the formatted string.
+    """
+    return [(time, f"extaddr {extaddr:016x}")
+            for time, extaddr in self.extaddr_history]
+
+  def format_role_history(self) -> List[Tuple[datetime, str]]:
+    """Format this summary's role history and return the list.
+
+    Returns:
+      List[Tuple[datetime, str]]: list of role history, in the format of a
+        tuple containing the time of the event and the formatted string.
+    """
+    return [(time, f"role {role.name}") for time, role in self.role_history]
+
+  def format_children_history(self,
+                              extaddr_map: Dict[int, int]
+                             ) -> List[Tuple[datetime, str]]:
+    """Format this summary's children history and return the list.
+
+    Args:
+      extaddr_map (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      List[Tuple[datetime, str]]: list of children history, in the format
+        of a tuple containing the time of the event and the formatted string.
+    """
+    history = []
+    for time, added, child in self.children_history:
+      action = "added" if added else "removed"
+      if child in extaddr_map:
+        child_repr = f"{action} child node {extaddr_map[child]:d}"
+      else:
+        child_repr = f"{action} child extaddr {child:016x}"
+      history.append((time, f"{child_repr}"))
+    return history
+
+  def format_neighbors_history(self,
+                               extaddr_map: Dict[int, int]
+                              ) -> List[Tuple[datetime, str]]:
+    """Format this summary's neighbors history and return the list.
+
+    Args:
+      extaddr_map (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      List[Tuple[datetime, str]]: list of neighbors history, in the format
+        of a tuple containing the time of the event and the formatted string.
+    """
+    history = []
+    for time, added, neighbor in self.neighbors_history:
+      action = "added" if added else "removed"
+      if neighbor in extaddr_map:
+        neighbor_repr = f"{action} neighbor node {extaddr_map[neighbor]}"
+      else:
+        neighbor_repr = f"{action} neighbor extaddr {neighbor:016x}"
+      history.append((time, f"{neighbor_repr}"))
+    return history
+
+  def to_string(self, extaddr_map: Dict[int, int]) -> str:
     """Generate summary string.
 
     Args:
-      extaddr_table (Dict[int, int]): table mapping extaddr to node ID.
+      extaddr_map (Dict[int, int]): table mapping extaddr to node ID.
 
     Returns:
       str: string representation of the summary.
     """
     lines = []
-    lines.append("OTNS Summary for node {:d}".format(self.node_id))
+    lines.append(f"OTNS Summary for node {self.node_id}")
 
     if self.extaddr_history:
       lines.append("Extended address changes:")
-      for time, extaddr in self.extaddr_history:
-        lines.append(
-            "[{:s}] {:016x}".format(time.strftime(DATE_FORMAT)[:-3], extaddr))
+      lines.extend([f"[{h[0].strftime(DATE_FORMAT)[:-3]}] {h[1]}"
+                    for h in self.format_extaddr_history()])
 
     if self.role_history:
       lines.append("Role changes:")
-      for time, role in self.role_history:
-        lines.append(
-            "[{:s}] {:s}".format(time.strftime(DATE_FORMAT)[:-3], role.name))
+      lines.extend([f"[{h[0].strftime(DATE_FORMAT)[:-3]}] {h[1]}"
+                    for h in self.format_role_history()])
 
     if self.children_history:
       lines.append("Children changes:")
-      for time, added, child in self.children_history:
-        action = "added" if added else "removed"
-        if child in extaddr_table:
-          child_repr = "node {:d}".format(extaddr_table[child])
-        else:
-          child_repr = "extaddr {:016x}".format(child)
-        lines.append(
-            "[{:s}] {:s} {:s}".format(
-                time.strftime(DATE_FORMAT)[:-3], action, child_repr))
+      lines.extend([f"[{h[0].strftime(DATE_FORMAT)[:-3]}] {h[1]}"
+                    for h in self.format_children_history(extaddr_map)])
 
     if self.neighbors_history:
       lines.append("Neighbors changes:")
-      for time, added, neighbor in self.neighbors_history:
-        action = "added" if added else "removed"
-        if neighbor in extaddr_table:
-          neighbor_repr = "node {:d}".format(extaddr_table[neighbor])
-        else:
-          neighbor_repr = "extaddr {:016x}".format(neighbor)
-        lines.append(
-            "[{:s}] {:s} {:s}".format(
-                time.strftime(DATE_FORMAT)[:-3], action, neighbor_repr))
+      lines.extend([f"[{h[0].strftime(DATE_FORMAT)[:-3]}] {h[1]}"
+                    for h in self.format_neighbors_history(extaddr_map)])
 
     return "\n".join(lines)
 
+  def to_log_list(self,
+                  extaddr_map: Dict[int, int]) -> List[Tuple[datetime, str]]:
+    """Generate summary logs list.
+
+    Args:
+      extaddr_map (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      List[Tuple[datetime, str]]: list of node's history, in the format
+        of a tuple containing the time of the event and the log-formatted
+        string.
+    """
+    return (self.format_extaddr_history() +
+            self.format_role_history() +
+            self.format_children_history(extaddr_map) +
+            self.format_neighbors_history(extaddr_map))
+
+class OtnsNodeSummaryCollection(object):
+  """A collection of OtnsNodeSummary that supports printing events
+    ordered by time.
+
+  Args:
+    collection (List[OtnsNodeSummary]): list of OtnsNodeSummary.
+  """
+
+  def __init__(self, collection: List[OtnsNodeSummary]):
+    self.collection = collection
+
+  def to_string(self, extaddr_map: Dict[int, int]) -> str:
+    """Generate summary string.
+
+    Args:
+      extaddr_map (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      str: string representation of the summary.
+    """
+    events = []
+    for summary in self.collection:
+      node_events = summary.to_log_list(extaddr_map)
+      events.extend([(time, summary.node_id, string) for time, string in node_events])
+    events.sort(key=lambda event:event[0])
+
+    lines = []
+    lines.append("OTNS Summary")
+
+    for event in events:
+      lines.append(
+          f"[{event[0].strftime(DATE_FORMAT)[:-3]}] node {event[1]}: {event[2]}")
+
+    return "\n".join(lines)
 
 class OtnsManager(object):
   """OTNS communication manager for a test case.
@@ -647,7 +751,7 @@ class OtnsManager(object):
     """
     self.server_host = server_host
     self.grpc_client = GRpcClient(
-        server_addr="{:s}:{:d}".format(server_host, GRPC_SERVER_PORT),
+        server_addr=f"{server_host}:{GRPC_SERVER_PORT}",
         logger=logger.getChild("gRPCClient"))
     self.otns_node_map = {}
     self.otns_monitor_map = {}
@@ -662,8 +766,7 @@ class OtnsManager(object):
 
     self.logger = logger
     self.logger.info(
-        "OTNS manager created, connecting from {:s} to {:s}.".format(
-            self.local_host, server_host))
+        f"OTNS manager created, connect {self.local_host} to {server_host}.")
 
   def set_test_title(self, title: str):
     """Set title of the test case.
@@ -672,6 +775,14 @@ class OtnsManager(object):
         title (str): title of the test case.
     """
     self.grpc_client.set_title(title)
+
+  def set_replay_speed(self, speed: float):
+    """Set speed of the replaying test log.
+
+    Args:
+        speed (float): speed of the replaying test log.
+    """
+    self.grpc_client.set_speed(speed)
 
   def add_device(self, device: HwModule) -> OtnsNode:
     """Add a hardware module to OTNS manager.
@@ -697,8 +808,8 @@ class OtnsManager(object):
         server_host=self.server_host,
         server_port=SERVER_PORT,
         grpc_client=self.grpc_client,
-        logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
-    self.logger.debug("Adding new node {:d} to OTNS".format(node_id))
+        logger=self.logger.getChild(f"OtnsNode{node_id}"))
+    self.logger.debug(f"Adding new node {node_id} to OTNS")
     otns_node.create_otns_node()
     return otns_node
 
@@ -720,8 +831,7 @@ class OtnsManager(object):
       self.node_summaries[node_id] = OtnsNodeSummary(node_id)
     else:
       otns_node = self.otns_node_map[node]
-      self.logger.debug(
-          "Adding existing node {:d} to OTNS".format(otns_node.node_id))
+      self.logger.debug(f"Adding existing node {otns_node.node_id} to OTNS")
       node.otns_manager = self
       self.otns_node_map[node].create_otns_node()
 
@@ -745,7 +855,7 @@ class OtnsManager(object):
         otns_node.close_socket()
 
         node_id = otns_node.node_id
-        self.logger.debug("Removing node {:d} from OTNS".format(node_id))
+        self.logger.debug(f"Removing node {node_id} from OTNS")
         otns_node.delete_otns_node()
 
         del self.otns_node_map[node]
@@ -871,7 +981,7 @@ class OtnsManager(object):
     """
     if node in self.otns_node_map:
       self.logger.debug(
-          "Subscribing to node {:d}".format(self.otns_node_map[node].node_id))
+          f"Subscribing to node {self.otns_node_map[node].node_id}")
       wpantund_otns_monitor = WpantundOtnsMonitor(
           publisher=node.wpantund_process)
       wpantund_otns_monitor.node = self.otns_node_map[node]
@@ -886,8 +996,7 @@ class OtnsManager(object):
     """
     if node in self.otns_node_map and node in self.otns_monitor_map:
       self.logger.debug(
-          "Unsubscribing from node {:d}".format(
-              self.otns_node_map[node].node_id))
+          f"Unsubscribing from node {self.otns_node_map[node].node_id}")
       self.otns_monitor_map[node].unsubscribe()
       self.otns_monitor_map[node].otns_manager = None
       del self.otns_monitor_map[node]
