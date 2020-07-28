@@ -54,10 +54,6 @@ class TestFormNetwork(testcase.TestCase):
 
         cls.add_test_device(cls.router)
 
-        for end_node in cls.joiner_list[-2:]:
-            end_node.full_thread_device = False
-            end_node.rx_on_when_idle = False
-
         for end_node in cls.joiner_list:
             cls.add_test_device(end_node)
 

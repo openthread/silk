@@ -18,12 +18,14 @@ This class manages the communication between a Silk test case and the OTNS
 dispatcher, for visualization purposes.
 """
 
+from datetime import datetime
 import enum
 import logging
 import math
 import re
 import socket
 import struct
+from typing import Dict
 
 import grpc
 
@@ -32,6 +34,8 @@ from silk.node.fifteen_four_dev_board import ThreadDevBoard
 from silk.tools.pb import visualize_grpc_pb2
 from silk.tools.pb import visualize_grpc_pb2_grpc
 from silk.utils import signal
+
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
 
 GRPC_SERVER_PORT = 8999
 SERVER_PORT = 9000
@@ -45,11 +49,13 @@ class RegexType(enum.Enum):
   STOP_WPANTUND_REQ = r"sudo ip netns del"
   GET_EXTADDR_REQ = r"getprop -v NCP:ExtendedAddress"
   GET_EXTADDR_RES = r"\[stdout\] \[([A-Fa-f0-9]{16})\]"
-  STATUS = r"wpantund\[(\d+)\]: NCP => .*\[OTNS\] ([\w\d]+=[A-Fa-f0-9,]+)"
+  STATUS = r"wpantund\[(\d+)\]: NCP => .*\[OTNS\] ([\w\d]+=[A-Fa-f0-9,rsdn]+)"
   EXTADDR_STATUS = r"extaddr=([A-Fa-f0-9]{16})"
   ROLE_STATUS = r"role=([0-4])"
   CHILD_ADDED_STATUS = r"child_added=([A-Fa-f0-9]{16})"
   CHILD_REMOVED_STATUS = r"child_removed=([A-Fa-f0-9]{16})"
+  ROUTER_ADDED_STATUS = r"router_added=([A-Fa-f0-9]{16})"
+  ROUTER_REMOVED_STATUS = r"router_removed=([A-Fa-f0-9]{16})"
 
 
 class EventType(enum.Enum):
@@ -107,31 +113,26 @@ class GRpcClient:
             title=title, x=x, y=y, font_size=font_size))
     self.logger.info("Sent title {:s}, response: {}".format(title, response))
 
-  def add_node(self, x: int, y: int, node_id: int, ftd=True,
-               rx_on_when_idle=True):
+  def add_node(self, x: int, y: int, node_id: int):
     """Sends an add node request.
 
     Args:
       x (int): x coordinate of the new node.
       y (int): y coordinate of the new node.
       node_id (int): node ID of the new node.
-      ftd (bool): if the node is a full Thread device.
-      rx_on_when_idle (bool): if rx is on when device is idle.
     """
     mode = visualize_grpc_pb2.NodeMode(
-        rx_on_when_idle=rx_on_when_idle,
+        rx_on_when_idle=True,
         secure_data_requests=False,
-        full_thread_device=ftd,
+        full_thread_device=True,
         full_network_data=False)
-    is_router = ftd and rx_on_when_idle
 
     response = self.stub.CtrlAddNode(
         visualize_grpc_pb2.AddNodeRequest(
-            x=x, y=y, is_router=is_router, mode=mode, node_id=node_id))
+            x=x, y=y, is_router=True, mode=mode, node_id=node_id))
     self.logger.info(
-        ("Added node {:d} at x={:d}, y={:d}, sleepy: {}, FTD: {}, "
-         "response: {}").format(
-             node_id, x, y, not rx_on_when_idle, ftd, response))
+        ("Added node {:d} at x={:d}, y={:d}, response: {}").format(
+            node_id, x, y, response))
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request async.
@@ -243,9 +244,6 @@ class OtnsNode(object):
     source_addr (str, int): UDP source address.
     dest_addr (str, int): UDP destination address.
 
-    rx_on_when_idle (bool): if device is receiving when idling.
-    full_thread_device (bool): if device is a full Thread device.
-
     grpc_client (GRpcClient): gRPC client instance from the manager.
     logger (logging.Logger): logger for the node.
     node_on_otns (bool): if the node has been reported to OTNS.
@@ -253,11 +251,11 @@ class OtnsNode(object):
     extaddr(int): extended address of the node in network.
     role(RoleType): role of the node in network.
     children (List[int]): extended addresses of children.
+    neighbors (List[int]): extended addresses of neighbors.
   """
 
   def __init__(self, node_id: int, vis_x: int, vis_y: int,
                local_host: str, server_host: str, server_port: int,
-               rx_on_when_idle: bool, full_thread_device: bool,
                grpc_client: GRpcClient, logger: logging.Logger):
     """Initialize a node.
 
@@ -268,8 +266,6 @@ class OtnsNode(object):
       local_host (str): host address of this machine.
       server_host (str): host address of the OTNS dispatcher.
       server_port (int): port number of the OTNS dispatcher.
-      rx_on_when_idle (bool): if device is receiving when idling.
-      full_thread_device (bool): if device is a full Thread device.
       grpc_client (GRpcClient): gRPC client instance from the manager.
       logger (logging.Logger): logger for the node.
     """
@@ -295,10 +291,9 @@ class OtnsNode(object):
     self.grpc_client = grpc_client
 
     self.extaddr = node_id
-    self.rx_on_when_idle = rx_on_when_idle
-    self.full_thread_device = full_thread_device
     self.role = RoleType.DISABLED
     self.children = set()
+    self.neighbors = set()
 
     self.node_on_otns = False
 
@@ -340,27 +335,47 @@ class OtnsNode(object):
     """Send child added event.
 
     Args:
-        child_addr (str): extended address of the child
-          that is added to this node.
+      child_addr (str): extended address of the child
+        that is added to this node.
     """
     event = Event.status_event("child_added={:016x}".format(child_addr))
     self.send_event(event.to_bytes())
 
   def send_child_removed_event(self, child_addr: int):
-    """Send child added event.
+    """Send child removed event.
 
     Args:
-        child_addr (str): extended address of the child
-          that is removed from this node.
+      child_addr (str): extended address of the child
+        that is removed from this node.
     """
     event = Event.status_event("child_removed={:016x}".format(child_addr))
+    self.send_event(event.to_bytes())
+
+  def send_router_added_event(self, router_addr: int):
+    """Send router added event.
+
+    Args:
+      router_addr (str): extended address of the router
+        that is added to  the neighbor list of this node.
+    """
+    event = Event.status_event("router_added={:016x}".format(router_addr))
+    self.send_event(event.to_bytes())
+
+  def send_router_removed_event(self, router_addr: int):
+    """Send router removed event.
+
+    Args:
+      router_addr (str): extended address of the router
+        that is removed from the neighbor list of this node.
+    """
+    event = Event.status_event("router_removed={:016x}".format(router_addr))
     self.send_event(event.to_bytes())
 
   def update_extaddr(self, extaddr: int):
     """Update the node's extended address.
 
     Args:
-        extaddr (int): new extended address of the node.
+      extaddr (int): new extended address of the node.
     """
     if extaddr != self.extaddr:
       self.extaddr = extaddr
@@ -380,7 +395,7 @@ class OtnsNode(object):
     """Add a node as a child of this node.
 
     Args:
-        child_addr (int): extended address of the child to add.
+      child_addr (int): extended address of the child to add.
     """
     if child_addr not in self.children:
       self.children.add(child_addr)
@@ -390,11 +405,31 @@ class OtnsNode(object):
     """Remove a child node of this node.
 
     Args:
-        child_addr (int): extended address of the child to remove.
+      child_addr (int): extended address of the child to remove.
     """
     if child_addr in self.children:
       self.children.remove(child_addr)
       self.send_child_removed_event(child_addr)
+
+  def add_router(self, router_addr: int):
+    """Add a router node as a neighbor of this node.
+
+    Args:
+      router_addr (int): extended address of the router to add.
+    """
+    if router_addr not in self.neighbors:
+      self.neighbors.add(router_addr)
+      self.send_router_added_event(router_addr)
+
+  def remove_router(self, router_addr: int):
+    """Remove a child node of this node.
+
+    Args:
+      router_addr (int): extended address of the router to remove.
+    """
+    if router_addr in self.neighbors:
+      self.neighbors.remove(router_addr)
+      self.send_router_removed_event(router_addr)
 
   def create_otns_node(self):
     """Call gRPC client to create a node on server for itself.
@@ -405,9 +440,7 @@ class OtnsNode(object):
     self.logger.debug(
         "Adding node {:d} to OTNS at ({:d},{:d})".format(
             self.node_id, self.vis_x, self.vis_y))
-    self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id,
-                              ftd=self.full_thread_device,
-                              rx_on_when_idle=self.rx_on_when_idle)
+    self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
     self.send_extaddr_event()
     self.node_on_otns = True
 
@@ -455,42 +488,8 @@ class WpantundOtnsMonitor(signal.Subscriber):
     Args:
         line (str): line of log to process.
     """
-    needs_layout_update = False
-    status_match = re.search(RegexType.STATUS.value, line)
-    if status_match:
-      message = status_match.group(2)
-
-      if self.node:
-        extaddr_match = re.search(RegexType.EXTADDR_STATUS.value, message)
-        role_match = re.search(RegexType.ROLE_STATUS.value, message)
-        child_added_match = re.search(RegexType.CHILD_ADDED_STATUS.value,
-                                      message)
-        child_removed_match = re.search(RegexType.CHILD_REMOVED_STATUS.value,
-                                        message)
-        if extaddr_match:
-          self.node.update_extaddr(int(extaddr_match.group(1), 16))
-          needs_layout_update = True
-        elif role_match:
-          self.node.update_role(RoleType(int(role_match.group(1))))
-          needs_layout_update = True
-        elif child_added_match:
-          self.node.add_child(int(child_added_match.group(1), 16))
-          needs_layout_update = True
-        elif child_removed_match:
-          self.node.remove_child(int(child_removed_match.group(1), 16))
-          needs_layout_update = True
-        else:
-          event = Event.status_event(message)
-          self.node.send_event(event.to_bytes())
-
-    get_extaddr_info_match = re.search(RegexType.GET_EXTADDR_RES.value, line)
-    if get_extaddr_info_match:
-      extaddr = get_extaddr_info_match.group(1)
-      if self.node:
-        self.node.update_extaddr(int(extaddr, 16))
-
-    if needs_layout_update and self.otns_manager:
-      self.otns_manager.update_layout()
+    if self.otns_manager:
+      self.otns_manager.update_status(self.node, line)
 
   def subscribeHandle(self, sender, **kwargs):
     """Handle messages from Publisher, a wpantund process.
@@ -501,6 +500,128 @@ class WpantundOtnsMonitor(signal.Subscriber):
     """
     line = kwargs["line"]
     self.process_log_line(line)
+
+
+class OtnsNodeSummary(object):
+  """OTNS history summary for a node.
+
+  Attributes:
+    node_id (int): ID of the node.
+    extaddr_history (List[Tuple[datetime.datetime, int]]): history of extaddr.
+    role_history (List[Tuple[datetime.datetime, RoleType]]): history
+      of the node's role.
+    children_history (List[Tuple[datetime.datetime, bool, int]]): history of
+      the node's children.
+    neighbors_history (List[Tuple[datetime.datetime, bool, int]]): history of
+      the node's neighbors.
+  """
+
+  def __init__(self, node_id: int):
+    """Initialize a summary object for an OTNS node.
+
+    Args:
+      node_id (int): ID of the node.
+    """
+    self.node_id = node_id
+
+    self.extaddr_history = []
+    self.role_history = []
+    self.children_history = []
+    self.neighbors_history = []
+
+  def extaddr_changed(self, extaddr: int, time=datetime.now()):
+    """Add an entry to the node's extended address history.
+
+    Args:
+      extaddr (int): new extended address of node.
+      time (datetime.datetime, optional): time of the change. Defaults
+        to datetime.now().
+    """
+    if not self.extaddr_history or self.extaddr_history[-1][1] != extaddr:
+      self.extaddr_history.append((time, extaddr))
+
+  def role_changed(self, role: RoleType, time=datetime.now()):
+    """Add an entry to the node's role history.
+
+    Args:
+      role (RoleType): new role of node.
+      time (datetime.datetime, optional): time of the change. Defaults
+        to datetime.now().
+    """
+    if not self.role_history or self.role_history[-1][1] != role:
+      self.role_history.append((time, role))
+
+  def child_changed(self, added: bool, child: int, time=datetime.now()):
+    """Add an entry to the node's children history.
+
+    Args:
+      added (bool): True if the child is added; False if removed.
+      child (int): extended address of the child.
+      time (datetime.datetime, optional): time of the change. Defaults
+        to datetime.now().
+    """
+    self.children_history.append((time, added, child))
+
+  def neighbor_changed(self, added: bool, neighbor: int, time=datetime.now()):
+    """Add an entry to the node's neighbors history.
+
+    Args:
+      added (bool): True if the neighbor is added; False if removed.
+      neighbor (int): extended address of the neighbor.
+      time (datetime.datetime, optional): time of the change. Defaults
+        to datetime.now().
+    """
+    self.neighbors_history.append((time, added, neighbor))
+
+  def to_string(self, extaddr_table: Dict[int, int]) -> str:
+    """Generate summary string.
+
+    Args:
+      extaddr_table (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      str: string representation of the summary.
+    """
+    lines = []
+    lines.append("OTNS Summary for node {:d}".format(self.node_id))
+
+    if self.extaddr_history:
+      lines.append("Extended address changes:")
+      for time, extaddr in self.extaddr_history:
+        lines.append(
+            "[{:s}] {:016x}".format(time.strftime(DATE_FORMAT)[:-3], extaddr))
+
+    if self.role_history:
+      lines.append("Role changes:")
+      for time, role in self.role_history:
+        lines.append(
+            "[{:s}] {:s}".format(time.strftime(DATE_FORMAT)[:-3], role.name))
+
+    if self.children_history:
+      lines.append("Children changes:")
+      for time, added, child in self.children_history:
+        action = "added" if added else "removed"
+        if child in extaddr_table:
+          child_repr = "node {:d}".format(extaddr_table[child])
+        else:
+          child_repr = "extaddr {:016x}".format(child)
+        lines.append(
+            "[{:s}] {:s} {:s}".format(
+                time.strftime(DATE_FORMAT)[:-3], action, child_repr))
+
+    if self.neighbors_history:
+      lines.append("Neighbors changes:")
+      for time, added, neighbor in self.neighbors_history:
+        action = "added" if added else "removed"
+        if neighbor in extaddr_table:
+          neighbor_repr = "node {:d}".format(extaddr_table[neighbor])
+        else:
+          neighbor_repr = "extaddr {:016x}".format(neighbor)
+        lines.append(
+            "[{:s}] {:s} {:s}".format(
+                time.strftime(DATE_FORMAT)[:-3], action, neighbor_repr))
+
+    return "\n".join(lines)
 
 
 class OtnsManager(object):
@@ -518,6 +639,8 @@ class OtnsManager(object):
     auto_layout (bool): if manager should auto layout node positions.
     max_node_count (int): the maximum number of nodes ever managed by
       this manager.
+    node_summaries (Dict[int, OtnsNodeSummary]): map from node ID to
+      OtnsNodeSummary instances.
   """
 
   def __init__(self, server_host: str, logger: logging.Logger):
@@ -536,6 +659,7 @@ class OtnsManager(object):
 
     self.auto_layout = False
     self.max_node_count = 0
+    self.node_summaries = {}
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
@@ -554,6 +678,35 @@ class OtnsManager(object):
     """
     self.grpc_client.set_title(title)
 
+  def add_device(self, device: HwModule) -> OtnsNode:
+    """Add a hardware module to OTNS manager.
+
+    Args:
+      device (HwModule): hardware device to add.
+
+    Returns:
+      (OtnsNode): the OTNS node created from the device.
+    """
+    try:
+      vis_x, vis_y = device.get_otns_vis_position()
+    except ValueError:
+      vis_x, vis_y = device.get_otns_vis_layout_center()
+      self.auto_layout = True
+
+    node_id = device.get_otns_vis_node_id()
+    otns_node = OtnsNode(
+        node_id=node_id,
+        vis_x=vis_x,
+        vis_y=vis_y,
+        local_host=self.local_host,
+        server_host=self.server_host,
+        server_port=SERVER_PORT,
+        grpc_client=self.grpc_client,
+        logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
+    self.logger.debug("Adding new node {:d} to OTNS".format(node_id))
+    otns_node.create_otns_node()
+    return otns_node
+
   def add_node(self, node: ThreadDevBoard):
     """Add a node to OTNS visualization.
 
@@ -563,32 +716,17 @@ class OtnsManager(object):
     assert isinstance(node.device, HwModule), (
         "Adding non HwModule node to OTNS manager.")
 
-    try:
-      vis_x, vis_y = node.device.get_otns_vis_position()
-    except ValueError:
-      vis_x, vis_y = node.device.get_otns_vis_layout_center()
-      self.auto_layout = True
-
     if node not in self.otns_node_map:
-      node_id = node.device.get_otns_vis_node_id()
-      otns_node = OtnsNode(
-          node_id=node_id,
-          vis_x=vis_x,
-          vis_y=vis_y,
-          local_host=self.local_host,
-          server_host=self.server_host,
-          server_port=SERVER_PORT,
-          rx_on_when_idle=node.rx_on_when_idle,
-          full_thread_device=node.full_thread_device,
-          grpc_client=self.grpc_client,
-          logger=self.logger.getChild("OtnsNode{:d}".format(node_id)))
-
-      self.logger.debug("Adding new node {:d} to OTNS".format(node_id))
-      otns_node.create_otns_node()
+      otns_node = self.add_device(node.device)
       node.otns_manager = self
       self.otns_node_map[node] = otns_node
+
+      node_id = otns_node.node_id
+      self.node_summaries[node_id] = OtnsNodeSummary(node_id)
     else:
-      self.logger.debug("Adding existing node {:d} to OTNS".format(node_id))
+      otns_node = self.otns_node_map[node]
+      self.logger.debug(
+          "Adding existing node {:d} to OTNS".format(otns_node.node_id))
       node.otns_manager = self
       self.otns_node_map[node].create_otns_node()
 
@@ -619,15 +757,115 @@ class OtnsManager(object):
 
         self.update_layout()
 
-  def update_extaddr(self, node: ThreadDevBoard, extaddr: int):
+  def process_node_status(self, node: ThreadDevBoard,
+                          message: str, time=datetime.now()):
+    """Manually process a ThreadDevBoard status message.
+
+    Args:
+      node (ThreadDevBoard): ThreadDevBoard node.
+      message (str): status message.
+      time (datetime.datetime, optional): time of the update. Defaults to
+        datetime.now().
+    """
+    if node in self.otns_node_map:
+      self.update_status(self.otns_node_map[node], message, time=time)
+
+  def update_status(self, node: OtnsNode, message: str, time: datetime):
+    """Manually update node status with a status message.
+
+    Args:
+      node (OtnsNode): OTNS node.
+      message (str): status message.
+      time (datetime.datetime): time of the update.
+    """
+    status_match = re.search(RegexType.STATUS.value, message)
+    if status_match:
+      message = status_match.group(2)
+
+      extaddr_match = re.search(RegexType.EXTADDR_STATUS.value, message)
+      if extaddr_match:
+        extaddr = int(extaddr_match.group(1), 16)
+        node.update_extaddr(extaddr)
+        self.node_summaries[node.node_id].extaddr_changed(extaddr, time)
+        return
+
+      role_match = re.search(RegexType.ROLE_STATUS.value, message)
+      if role_match:
+        role = RoleType(int(role_match.group(1)))
+        node.update_role(role)
+        self.node_summaries[node.node_id].role_changed(role, time)
+        self.update_layout()
+
+        if role == RoleType.DISABLED or role == RoleType.DETACHED:
+          for child in list(node.neighbors):
+            node.remove_router(child)
+            for neighbor in self.otns_node_map.values():
+              if neighbor.extaddr == child:
+                neighbor.remove_router(node.extaddr)
+                break
+          for child in list(node.children):
+            node.remove_child(child)
+        return
+
+      child_added_match = re.search(
+          RegexType.CHILD_ADDED_STATUS.value, message)
+      if child_added_match:
+        child = int(child_added_match.group(1), 16)
+        node.add_child(child)
+        self.node_summaries[node.node_id].child_changed(True, child, time)
+        return
+
+      child_removed_match = re.search(
+          RegexType.CHILD_REMOVED_STATUS.value, message)
+      if child_removed_match:
+        child = int(child_removed_match.group(1), 16)
+        node.remove_child(child)
+        self.node_summaries[node.node_id].child_changed(False, child, time)
+        return
+
+      router_added_match = re.search(
+          RegexType.ROUTER_ADDED_STATUS.value, message)
+      if router_added_match:
+        router = int(router_added_match.group(1), 16)
+        node.add_router(router)
+        self.node_summaries[node.node_id].neighbor_changed(True, router, time)
+        return
+
+      router_removed_match = re.search(
+          RegexType.ROUTER_REMOVED_STATUS.value, message)
+      if router_removed_match:
+        router = int(router_removed_match.group(1), 16)
+        node.remove_router(router)
+        self.node_summaries[node.node_id].neighbor_changed(False, router, time)
+        return
+
+      event = Event.status_event(message)
+      node.send_event(event.to_bytes())
+      return
+
+    get_extaddr_info_match = re.search(
+        RegexType.GET_EXTADDR_RES.value, message)
+    if get_extaddr_info_match:
+      extaddr = get_extaddr_info_match.group(1)
+      node.update_extaddr(int(extaddr, 16))
+
+  def update_extaddr(self, node: ThreadDevBoard,
+                     extaddr: int, time=datetime.now()):
     """Report a node's extended address to OTNS manager.
 
     Args:
-        node (ThreadDevBoard): node to update.
-        extaddr (int): new extaddr to report.
+      node (ThreadDevBoard): node to update.
+      extaddr (int): new extaddr to report.
+      time (datetime.datetime, optional): time of the update. Defaults to
+        datetime.now().
     """
     if node in self.otns_node_map:
       self.otns_node_map[node].update_extaddr(extaddr)
+      node_id = self.otns_node_map[node].node_id
+
+      if node_id in self.node_summaries:
+        self.node_summaries[node_id].extaddr_changed(extaddr, time=time)
+
       self.update_layout()
 
   def subscribe_to_node(self, node: ThreadDevBoard):

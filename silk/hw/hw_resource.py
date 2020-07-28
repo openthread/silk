@@ -44,7 +44,7 @@ class HardwareNotFound(Exception):
 
 
 class HwResource(object):
-    def __init__(self, filename=None, create=False):
+    def __init__(self, filename=None, virtual=False, create=False):
         self._hw_modules = []
         self._thread_sniffer_pool = []
         self._parser = configparser.SafeConfigParser()
@@ -54,6 +54,7 @@ class HwResource(object):
             print('ERROR: No hw config file found at {0}'.format(self._filename))
         
         self._cluster_id = 1
+        self._virtual = virtual
 
     def load_config(self):
         """Returns a Config object from a given INI file"""
@@ -136,7 +137,7 @@ class HwResource(object):
 
     def _update_hw_modules(self):
         for i, device_name in enumerate(self._parser.sections()):
-            if not self._find_hw_module_by_name(device_name):
+            if not self.find_hw_module_by_name(device_name):
                 node_id = i + 1 + self._cluster_id * CLUSTER_NODE_LIMIT
                 try:
                     self._add_hw_module(
@@ -145,7 +146,8 @@ class HwResource(object):
                                     parser=self._parser,
                                     node_id=node_id,
                                     layout_center=self._layout_center,
-                                    layout_radius=self._layout_radius))
+                                    layout_radius=self._layout_radius,
+                                    virtual=self._virtual))
                 except RuntimeError as e:
                     print("Failed to add %s" % device_name)
 
@@ -162,7 +164,7 @@ class HwResource(object):
 
         return None
 
-    def _find_hw_module_by_name(self, name):
+    def find_hw_module_by_name(self, name):
         retval = None
 
         for m in self._hw_modules:
@@ -170,17 +172,24 @@ class HwResource(object):
                 retval = m
 
         return retval
+    
+    def get_hw_module_names(self):
+        """Get the list of names of hardware modules.
 
+        Returns:
+            List[str]: list of hardware module names.
+        """
+        return [module.name() for module in self._hw_modules]
 
 _global_instance = None
 
 
-def global_instance(filename=None):
+def global_instance(filename=None, virtual=False):
     """ Get the common global instance """
     global _global_instance
 
     if _global_instance is None:
-        _global_instance = HwResource(filename)
+        _global_instance = HwResource(filename, virtual)
 
     return _global_instance
 
