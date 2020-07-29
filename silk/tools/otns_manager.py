@@ -887,19 +887,20 @@ class OtnsManager(object):
     Args:
       node (ThreadDevBoard): ThreadDevBoard node.
       message (str): status message.
-      time (datetime.datetime, optional): time of the update. Defaults to
+      time (datetime, optional): time of the update. Defaults to
         datetime.now().
     """
     if node in self.otns_node_map:
       self.update_status(self.otns_node_map[node], message, time=time)
 
-  def update_status(self, node: OtnsNode, message: str, time: datetime):
+  def update_status(self, node: OtnsNode, message: str, time=datetime.now()):
     """Manually update node status with a status message.
 
     Args:
       node (OtnsNode): OTNS node.
       message (str): status message.
-      time (datetime.datetime): time of the update.
+      time (datetime, optional): time of the update. Defaults to
+        datetime.now().
     """
     status_match = re.search(RegexType.STATUS.value, message)
     if status_match:
