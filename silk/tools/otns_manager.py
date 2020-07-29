@@ -106,6 +106,7 @@ class GRpcClient:
     Args:
         command (str): command content.
     """
+    self.logger.info(f"Sending cmd: {command}")
     response = self.stub.Command(
         visualize_grpc_pb2.CommandRequest(command=command))
     self.logger.info(f"Sent cmd: {command}, resp: {response}".rstrip("\n"))

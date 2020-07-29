@@ -50,6 +50,7 @@ class SilkReplayer(object):
     speed (float): speed ratio for the replay. 2.0 means speeding up to 2x.
     verbosity (int): terminal log verbosity.
     input_path (str): input Silk log file path.
+    log_filename (str): name of input log file.
     logger (logging.Logger): logger for the replayer.
 
     device_names (Set[str]): name of hardware modules from hwconfig.ini file.
@@ -69,6 +70,7 @@ class SilkReplayer(object):
     args = self.parse_args(argv)
     self.verbosity = args.verbosity
     self.input_path = args.path
+    self.log_filename = os.path.basename(args.path)
     self.speed = float(args.playback_speed)
 
     self.set_up_logger(args.results_dir or os.getcwd())
@@ -81,9 +83,8 @@ class SilkReplayer(object):
     self.last_time = None
     self.run()
 
-    timestamp = datetime.today().strftime("%m-%d-%H:%M")
     result_path = os.path.join(
-        args.results_dir, f"silk_replay_on_{timestamp}.csv")
+        args.results_dir, f"silk_replay_summary_for_{self.log_filename}.csv")
     self.output_summary(coalesced=True, csv_path=result_path)
 
   def set_up_logger(self, result_dir: str):
@@ -106,8 +107,8 @@ class SilkReplayer(object):
 
     formatter = logging.Formatter(LOG_LINE_FORMAT)
 
-    timestamp = datetime.today().strftime("%m-%d-%H:%M")
-    result_path = os.path.join(result_dir, f"silk_replay_on_{timestamp}.log")
+    result_path = os.path.join(
+        result_dir, f"silk_replay_log_for_{self.log_filename}.log")
 
     file_handler = logging.FileHandler(result_path, mode="w")
     file_handler.setLevel(logging.DEBUG)
@@ -224,8 +225,8 @@ class SilkReplayer(object):
     if csv_path:
       collection = OtnsNodeSummaryCollection(
           self.otns_manager.node_summaries.values())
-      df = collection.to_csv(extaddr_map)
-      df.to_csv(csv_path, index=False)
+      data_frame = collection.to_csv(extaddr_map)
+      data_frame.to_csv(csv_path, index=False)
     elif coalesced:
       collection = OtnsNodeSummaryCollection(
           self.otns_manager.node_summaries.values())
