@@ -81,6 +81,11 @@ class SilkReplayer(object):
     self.last_time = None
     self.run()
 
+    timestamp = datetime.today().strftime("%m-%d-%H:%M")
+    result_path = os.path.join(
+        args.results_dir, f"silk_replay_on_{timestamp}.csv")
+    self.output_summary(True, result_path)
+
   def set_up_logger(self, result_dir: str):
     """Set up logger for the replayer.
 
@@ -205,17 +210,23 @@ class SilkReplayer(object):
     if status_match:
       self.otns_manager.process_node_status(device, message, time=timestamp)
 
-  def output_summary(self, coalesced: bool):
+  def output_summary(self, coalesced: bool, csv_path: str):
     """Print summary of the replayed log.
 
     Args:
-      coalesced (bool): if the summary should be printed grouped by time
+      coalesced (bool): if the summary should be printed grouped by time.
+      csv_path (str): path to CSV output file
     """
     extaddr_map = {}
     for summary in self.otns_manager.node_summaries.values():
       if summary.extaddr_history:
         extaddr_map[summary.extaddr_history[-1][1]] = summary.node_id
-    if coalesced:
+    if csv_path:
+      collection = OtnsNodeSummaryCollection(
+          self.otns_manager.node_summaries.values())
+      df = collection.to_csv(extaddr_map)
+      df.to_csv(csv_path, index=False)
+    elif coalesced:
       collection = OtnsNodeSummaryCollection(
           self.otns_manager.node_summaries.values())
       self.logger.debug(collection.to_string(extaddr_map))
@@ -245,8 +256,6 @@ class SilkReplayer(object):
           if delay > 0:
             time.sleep(delay)
           self.execute_message(entity_name, message, timestamp)
-
-    self.output_summary(True)
 
 
 if __name__ == "__main__":

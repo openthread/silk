@@ -4,7 +4,8 @@ grpcio-tools >= 1.30
 ipaddress == 1.0.22
 jsonfield == 2.0.2
 netifaces == 0.10.7
-numpy == 1.15.2
+numpy >= 1.15.4
+pandas >= 1.1.0
 pexpect >= 4.6.0
 protobuf ~= 3.12
 psutil == 5.7.0

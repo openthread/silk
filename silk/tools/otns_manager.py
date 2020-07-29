@@ -28,6 +28,7 @@ import struct
 from typing import Dict, List, Tuple
 
 import grpc
+import pandas
 
 from silk.hw.hw_module import HwModule
 from silk.node.fifteen_four_dev_board import ThreadDevBoard
@@ -387,7 +388,7 @@ class OtnsNode(object):
     """Update the node's role.
 
     Args:
-        role (RoleType): new role of the node.
+      role (RoleType): new role of the node.
     """
     if role != self.role:
       self.role = role
@@ -722,6 +723,33 @@ class OtnsNodeSummaryCollection(object):
           f"[{event[0].strftime(DATE_FORMAT)[:-3]}] node {event[1]}: {event[2]}")
 
     return "\n".join(lines)
+
+  def to_csv(self, extaddr_map: Dict[int, int]) -> pandas.DataFrame:
+    """Generate summary string in CSV format.
+
+    Args:
+      extaddr_map (Dict[int, int]): table mapping extaddr to node ID.
+
+    Returns:
+      pandas.DataFrame: DataFrame of events.
+    """
+    events = []
+    for summary in self.collection:
+      node_events = summary.to_log_list(extaddr_map)
+      events.extend(
+          [(time, summary.node_id, string) for time, string in node_events])
+    events.sort(key=lambda event:event[0])
+
+    node_ids = sorted(list(extaddr_map.values()))
+    columns = [f"node{i:d}" for i in node_ids]
+    columns.insert(0, 'timestamp')
+
+    for i, event in enumerate(events):
+      events[i] = {"timestamp" : event[0].strftime(DATE_FORMAT)[:-3],
+                   f"node{event[1]}" : event[2]}
+
+    return pandas.DataFrame(events, columns=columns)
+
 
 class OtnsManager(object):
   """OTNS communication manager for a test case.
