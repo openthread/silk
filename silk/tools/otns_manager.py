@@ -100,6 +100,16 @@ class GRpcClient:
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
     self.logger = logger
 
+  def _send_command(self, command: str):
+    """Send a Command gRPC request.
+
+    Args:
+        command (str): command content.
+    """
+    response = self.stub.Command(
+        visualize_grpc_pb2.CommandRequest(command=command))
+    self.logger.info(f"Sent cmd: {command}, resp: {response}".rstrip("\n"))
+
   def set_title(self, title: str, x=0, y=20, font_size=20):
     """Send test title to OTNS.
 
@@ -109,10 +119,7 @@ class GRpcClient:
       y (int): y position of title.
       font_size (int): font size of title.
     """
-    response = self.stub.Command(
-        visualize_grpc_pb2.CommandRequest(
-            command=f"title \"{title}\" x {x} y {y} fs {font_size}"))
-    self.logger.info(f"Sent title {title}, resp: {response}".rstrip("\n"))
+    self._send_command(f"title \"{title}\" x {x} y {y} fs {font_size}")
 
   def set_speed(self, speed: float):
     """Send test replay speed to OTNS.
@@ -120,9 +127,7 @@ class GRpcClient:
     Args:
         speed (float): test replay speed.
     """
-    response = self.stub.Command(
-        visualize_grpc_pb2.CommandRequest(command=f"speed {speed}"))
-    self.logger.info(f"Sent speed {speed}, resp: {response}".rstrip("\n"))
+    self._send_command(f"speed {speed}")
 
   def add_node(self, x: int, y: int, node_id: int):
     """Sends an add node request.
@@ -132,11 +137,7 @@ class GRpcClient:
       y (int): y coordinate of the new node.
       node_id (int): node ID of the new node.
     """
-    response = self.stub.Command(
-        visualize_grpc_pb2.CommandRequest(
-            command=f"add router x {x} y {y} id {node_id}"))
-    self.logger.info(f"Added node {node_id} at x={x}, y={y}, resp: {response}"
-                     .rstrip("\n"))
+    self._send_command(f"add router x {x} y {y} id {node_id}")
 
   def move_node(self, node_id: int, x: int, y: int):
     """Sends a move node request async.
@@ -146,15 +147,7 @@ class GRpcClient:
       x (int): new x coordinate of the node.
       y (int): new y coordianate of the node.
     """
-    def handle_response(request_future):
-      response = request_future.result()
-      self.logger.info(
-          f"Moved node ID={node_id} to x={x}, y={y}, resp: {response}"
-          .rstrip("\n"))
-
-    request_future = self.stub.Command.future(
-        visualize_grpc_pb2.CommandRequest(command=f"move {node_id} {x} {y}"))
-    request_future.add_done_callback(handle_response)
+    self._send_command(f"move {node_id} {x} {y}")
 
   def delete_node(self, node_id: int):
     """Sends a delete node request.
@@ -162,10 +155,7 @@ class GRpcClient:
     Args:
       node_id (int): node ID of the node to be deleted.
     """
-    response = self.stub.Command(
-        visualize_grpc_pb2.CommandRequest(command=f"del {node_id}"))
-    self.logger.info(f"Deleted node ID={node_id}, resp: {response}"
-                     .rstrip("\n"))
+    self._send_command(f"del {node_id}")
 
 
 class Event:

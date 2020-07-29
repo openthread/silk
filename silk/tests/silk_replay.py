@@ -84,7 +84,7 @@ class SilkReplayer(object):
     timestamp = datetime.today().strftime("%m-%d-%H:%M")
     result_path = os.path.join(
         args.results_dir, f"silk_replay_on_{timestamp}.csv")
-    self.output_summary(True, result_path)
+    self.output_summary(coalesced=True, csv_path=result_path)
 
   def set_up_logger(self, result_dir: str):
     """Set up logger for the replayer.
