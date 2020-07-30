@@ -15,7 +15,7 @@
 #    limitations under the License.
 #
 
-PYTHON ?= python3
+PYTHON ?= ./env/bin/python3
 PYTHON_VERSION ?= $(shell $(PYTHON) -c "import sys; sys.stdout.write(sys.version[:3])")
 SUDO ?= sudo
 MAKE ?= make

@@ -35,14 +35,14 @@ install_packages_apt()
 {
     # apt update and install dependencies
     sudo apt-get update
-    sudo apt-get install python3-pip expect figlet graphviz python3-tk -y
+    sudo apt-get install python3-pip python3-venv expect figlet graphviz python3-tk -y
 }
 
 install_packages_pip()
 {
-    # pip install dependencies
-    sudo python3 -m pip install pip --upgrade
-    sudo python3 -m pip install -r requirements.txt
+    ./env/bin/python3 -m pip install pip --upgrade
+    ./env/bin/python3 -m pip install wheel --upgrade
+    ./env/bin/python3 -m pip install -r requirements.txt
 }
 
 install_packages()
@@ -54,11 +54,18 @@ install_packages()
 
 compile_proto()
 {
-    python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+    ./env/bin/python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+}
+
+setup_venv()
+{
+    sudo python3 -m pip install --user virtualenv
+    python3 -m venv env
 }
 
 main()
 {
+    setup_venv
     install_packages
     compile_proto
 }

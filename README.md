@@ -15,6 +15,18 @@ Install and Build:
 ``` shell
 sudo make install-cluster
 ``` 
+
+### Virtualenv
+The `bootstrap.sh` creates a Python virtualenv under `env` directory. This avoids collisions with system managed packages. To run
+any test script, use one of the following methods:
+
+1. For the example scripts, `#!../../env/bin/python3` was added as shebang. Therefore they could automatically use the venv if
+   they are made executable using `chmod +x silk/unit_tests/silk_run_test.py` then ran with `sudo silk/unit_tests/silk_run_test.py`
+   for example.
+2. Use full path of Python in venv, i.e. `sudo ./env/bin/python3 silk/unit_tests/silk_run_test.py`.
+3. Activate the venv using `source ./env/bin/activate`, run using `sudo python3 silk/unit_tests/silk_run_test.py`, and `deactive`
+   when done.
+
 ## Configuration
 
 ### `hwconfig.ini`

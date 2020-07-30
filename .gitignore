@@ -8,6 +8,8 @@ dist/*.*
 testbed.egg-info/*.*
 silk.egg-info/*
 
+env/*
+
 *.out
 *.pcap
 *pb2.py
