@@ -56,6 +56,7 @@ message VisualizeEvent {
         OnExtAddrChangeEvent on_ext_addr_change = 20;
         SetTitleEvent set_title = 21;
         SetNodeModeEvent set_node_mode = 22;
+        SetNetworkInfoEvent set_network_info = 23;
     }
 }
 
@@ -192,6 +193,12 @@ message SetNodeModeEvent {
     NodeMode node_mode = 2;
 }
 
+message SetNetworkInfoEvent {
+    bool real = 1;
+    string version = 2;
+    string commit = 3;
+}
+
 message CommandRequest {
     string command = 1;
 }
@@ -203,40 +210,7 @@ message CommandResponse {
 service VisualizeGrpcService {
     //    rpc Echo (EchoRequest) returns (EchoResponse);
     rpc Visualize (VisualizeRequest) returns (stream VisualizeEvent);
-    rpc CtrlAddNode (AddNodeRequest) returns (Empty);
-    rpc CtrlDeleteNode (DeleteNodeRequest) returns (Empty);
-    rpc CtrlMoveNodeTo (MoveNodeToRequest) returns (Empty);
-    rpc CtrlSetNodeFailed (SetNodeFailedRequest) returns (Empty);
-    rpc CtrlSetSpeed (SetSpeedRequest) returns (Empty);
-    rpc CtrlSetTitle (SetTitleEvent) returns (Empty);
     rpc Command (CommandRequest) returns (CommandResponse);
-}
-
-message AddNodeRequest {
-    int32 x = 1;
-    int32 y = 2;
-    bool is_router = 3;
-    NodeMode mode = 4;
-    uint32 node_id = 5;
-}
-
-message DeleteNodeRequest {
-    int32 node_id = 1;
-}
-
-message MoveNodeToRequest {
-    int32 node_id = 1;
-    int32 x = 2;
-    int32 y = 3;
-}
-
-message SetNodeFailedRequest {
-    int32 node_id = 1;
-    bool failed = 2;
-}
-
-message SetSpeedRequest {
-    double speed = 1;
 }
 
 message Empty {
