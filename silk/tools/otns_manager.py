@@ -131,15 +131,15 @@ class GRpcClient:
     """
     self._send_command(f"speed {speed}")
 
-  def set_netinfo(self, version: str, commit: str):
+  def set_netinfo(self, version: str=None, commit: str=None):
     """Set OTNS netinfo.
 
     Args:
-      version (str): version string.
-      commit (str): commit string.
+      version (str, optional): version string. Default to None.
+      commit (str, optional): commit string. Default to None.
     """
-    version_clause = f"version \"{version}\"" if version else ""
-    commit_clause = f"commit \"{commit}\"" if commit else ""
+    version_clause = f"version \"{version}\"" if version is not None else ""
+    commit_clause = f"commit \"{commit}\"" if commit is not None else ""
     self._send_command(f"netinfo {version_clause} {commit_clause} real y")
 
   def add_node(self, x: int, y: int, node_id: int):
@@ -990,7 +990,7 @@ class OtnsManager(object):
     ncp_version_match = re.search(RegexType.NCP_VERSION.value, message)
     if ncp_version_match:
       ncp_version = ncp_version_match.group(1)
-      self.grpc_client.set_netinfo(version=ncp_version, commit=None)
+      self.grpc_client.set_netinfo(version=ncp_version)
       return
 
   def set_ncp_version(self, version: str):
@@ -999,7 +999,7 @@ class OtnsManager(object):
     Args:
       version (str): version string.
     """
-    self.grpc_client.set_netinfo(version=version, commit=None)
+    self.grpc_client.set_netinfo(version=version)
 
   def update_extaddr(self, node: ThreadDevBoard,
                      extaddr: int, time=datetime.now()):
