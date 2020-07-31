@@ -57,6 +57,7 @@ class RegexType(enum.Enum):
   CHILD_REMOVED_STATUS = r"child_removed=([A-Fa-f0-9]{16})"
   ROUTER_ADDED_STATUS = r"router_added=([A-Fa-f0-9]{16})"
   ROUTER_REMOVED_STATUS = r"router_removed=([A-Fa-f0-9]{16})"
+  NCP_VERSION = r"NCP is running \"(.*)\""
 
 
 class EventType(enum.Enum):
@@ -129,6 +130,17 @@ class GRpcClient:
         speed (float): test replay speed.
     """
     self._send_command(f"speed {speed}")
+
+  def set_netinfo(self, version: str=None, commit: str=None):
+    """Set OTNS netinfo.
+
+    Args:
+      version (str, optional): version string. Default to None.
+      commit (str, optional): commit string. Default to None.
+    """
+    version_clause = f"version \"{version}\"" if version is not None else ""
+    commit_clause = f"commit \"{commit}\"" if commit is not None else ""
+    self._send_command(f"netinfo {version_clause} {commit_clause} real y")
 
   def add_node(self, x: int, y: int, node_id: int):
     """Sends an add node request.
@@ -973,6 +985,21 @@ class OtnsManager(object):
     if get_extaddr_info_match:
       extaddr = get_extaddr_info_match.group(1)
       node.update_extaddr(int(extaddr, 16))
+      return
+
+    ncp_version_match = re.search(RegexType.NCP_VERSION.value, message)
+    if ncp_version_match:
+      ncp_version = ncp_version_match.group(1)
+      self.grpc_client.set_netinfo(version=ncp_version)
+      return
+
+  def set_ncp_version(self, version: str):
+    """Set NCP version for display on OTNS.
+
+    Args:
+      version (str): version string.
+    """
+    self.grpc_client.set_netinfo(version=version)
 
   def update_extaddr(self, node: ThreadDevBoard,
                      extaddr: int, time=datetime.now()):

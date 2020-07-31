@@ -207,9 +207,16 @@ class SilkReplayer(object):
           device, int(extaddr_match.group(1), 16), time=timestamp)
       return
 
+    ncp_version_match = re.search(OtnsRegexType.NCP_VERSION.value, message)
+    if ncp_version_match:
+      ncp_version = ncp_version_match.group(1)
+      self.otns_manager.set_ncp_version(ncp_version)
+      return
+
     status_match = re.match(OtnsRegexType.STATUS.value, message)
     if status_match:
       self.otns_manager.process_node_status(device, message, time=timestamp)
+      return
 
   def output_summary(self, coalesced: bool, csv_path: str):
     """Print summary of the replayed log.
