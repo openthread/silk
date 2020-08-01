@@ -25,6 +25,19 @@ srcdir=`dirname ${0}`
 abs_srcdir=`pwd`
 abs_top_srcdir="${abs_srcdir}"
 
+use_venv='false'
+python='sudo python3'
+
+while getopts ':v' 'OPTKEY'; do
+    case ${OPTKEY} in
+        'v')
+            use_venv='true'
+            python='./env/bin/python3'
+            ;;
+        *) ;;
+    esac
+done
+
 link_sh_to_bash()
 {
     sudo mv /bin/sh /bin/sh.orig
@@ -40,9 +53,9 @@ install_packages_apt()
 
 install_packages_pip()
 {
-    ./env/bin/python3 -m pip install pip --upgrade
-    ./env/bin/python3 -m pip install wheel --upgrade
-    ./env/bin/python3 -m pip install -r requirements.txt
+    $python -m pip install pip --upgrade
+    $python -m pip install wheel --upgrade
+    $python -m pip install -r requirements.txt
 }
 
 install_packages()
@@ -54,18 +67,19 @@ install_packages()
 
 compile_proto()
 {
-    ./env/bin/python3 -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+    $python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
 }
 
 setup_venv()
 {
-    sudo python3 -m pip install --user virtualenv
     python3 -m venv env
 }
 
 main()
 {
-    setup_venv
+    if ${use_venv}; then
+        setup_venv
+    fi
     install_packages
     compile_proto
 }
