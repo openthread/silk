@@ -17,8 +17,12 @@ sudo make install-cluster
 ``` 
 
 ### Virtualenv
-The project can create a Python virtualenv under `env` directory This avoids collisions with system managed packages (such as
-`apt` installed `python3-psutil`):
+The project can create a Python virtualenv under `env` directory, which avoids collisions with system managed packages. Some of the packages
+used by this project tend to collide with `apt` managed packages (`python3-urllib3` and `python3-psutil`, for example), and will cause some
+system tools to fail. This option properly sets up a Python venv that doesn't install to system Python `dist-packages` path.
+
+This option is by default not applied, since most of the testbeds don't have this problem, because they might not have tools that depend on
+those libraries; but for development environments that do, it can be activated with:
 ``` shell
 cd silk
 ./bootstrap.sh -v
@@ -41,7 +45,7 @@ Silk relies on configuration files to determine what devices that are connected 
 used in tests. 
 
 An example of `hwconfig.ini` is in `silk/tests` folder.
- 
+
 The hardware model should be defined as 'Nrf52840' or 'NordicSniffer' in `hwconfig.ini` file. A cluster ID should be assigned
 to the config file as well, providing an offset for node IDs for visualizing multiple clusters by the same OTNS service.
 Attaching clusters with the same ID to the OTNS service could result in conflicts.
