@@ -32,11 +32,7 @@ Install and Build:
 sudo make install-cluster-venv
 ```
 
-To run any test script using venv, use one of the following methods:
-
-1. Use full path of Python in venv, i.e. `sudo ./env/bin/python3 silk/unit_tests/silk_run_test.py`.
-2. Activate the venv using `source ./env/bin/activate`, run using `sudo python3 silk/unit_tests/silk_run_test.py`, and `deactive`
-   when done.
+To run any test script using venv, use full path of Python in venv, i.e. `sudo ./env/bin/python3 silk/unit_tests/silk_run_test.py`.
 
 ## Configuration
 

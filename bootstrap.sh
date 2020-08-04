@@ -21,18 +21,20 @@
 
 # Establish some key directories
 
+python='python3'
+
 srcdir=`dirname ${0}`
 abs_srcdir=`pwd`
 abs_top_srcdir="${abs_srcdir}"
 
 use_venv='false'
-python='sudo python3'
+python_cmd=`sudo ${python}`
 
 while getopts ':v' 'OPTKEY'; do
     case ${OPTKEY} in
         'v')
             use_venv='true'
-            python='./env/bin/python3'
+            python_cmd=`./env/bin/${python}`
             ;;
         *) ;;
     esac
@@ -48,14 +50,14 @@ install_packages_apt()
 {
     # apt update and install dependencies
     sudo apt-get update
-    sudo apt-get install python3-pip python3-venv expect figlet graphviz python3-tk -y
+    sudo apt-get install $python-pip $python-venv expect figlet graphviz $python-tk -y
 }
 
 install_packages_pip()
 {
-    $python -m pip install pip --upgrade
-    $python -m pip install wheel --upgrade
-    $python -m pip install -r requirements.txt
+    $python_cmd -m pip install pip --upgrade
+    $python_cmd -m pip install wheel --upgrade
+    $python_cmd -m pip install -r requirements.txt
 }
 
 install_packages()
@@ -67,12 +69,12 @@ install_packages()
 
 compile_proto()
 {
-    $python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+    $python_cmd -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
 }
 
 setup_venv()
 {
-    python3 -m venv env
+    $python -m venv env
 }
 
 main()
