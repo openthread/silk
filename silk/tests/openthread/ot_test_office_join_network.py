@@ -106,5 +106,16 @@ class TestJoinNetwork(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test03_keep_running(self):
+        node_types = {}
+        for device in self.device_list:
+            node_types[device] = device.wpanctl(
+                    'get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
         while True:
+            for device in self.device_list:
+                device_type = device.wpanctl(
+                        'get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
+                if device_type != node_types[device]:
+                    name = device.get(wpan.WPAN_NAME)[1:-1]
+                    self.logger.info("Node %s type changed from %s to %s", name, node_types[device], device_type)
+                    node_types[device] = device_type
             time.sleep(60)
