@@ -28,13 +28,13 @@ abs_srcdir=`pwd`
 abs_top_srcdir="${abs_srcdir}"
 
 use_venv='false'
-python_cmd=`sudo ${python}`
+python_cmd="sudo ${python}"
 
 while getopts ':v' 'OPTKEY'; do
     case ${OPTKEY} in
         'v')
             use_venv='true'
-            python_cmd=`./env/bin/${python}`
+            python_cmd="./env/bin/${python}"
             ;;
         *) ;;
     esac
