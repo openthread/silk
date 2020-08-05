@@ -245,6 +245,7 @@ def setup_class_decorator(func):
                     server_host=__otns_host,
                     logger=cls.logger.getChild("otnsManager"))
             cls.otns_manager.set_test_title(cls.__name__)
+            cls.otns_manager.set_replay_speed(1.0)
         else:
             cls.otns_manager = None
 
