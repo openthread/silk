@@ -344,7 +344,8 @@ def teardown_class_decorator(func):
         output_file.close()
 
         cls.clear_test_devices()
-        cls.otns_manager.unsubscribe_from_all_nodes()
+        if cls.otns_manager:
+            cls.otns_manager.unsubscribe_from_all_nodes()
 
     return wrapper
 
