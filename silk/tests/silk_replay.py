@@ -41,6 +41,7 @@ class RegexType(enum.Enum):
   # regex that matches the four components above as groups
   LOG_LINE = r"\[([\d\s,:-]+)\] \[([\w\d.-]+)\] \[(\w+)\] (.+)"
   SET_UP_CLASS = r"SET UP CLASS (\w+)"
+  RUNNING_TEST = r"RUNNING TEST ([\w._]+)"
 
 
 class SilkReplayer(object):
@@ -178,6 +179,12 @@ class SilkReplayer(object):
       set_up_class_match = re.match(RegexType.SET_UP_CLASS.value, message)
       if set_up_class_match:
         self.otns_manager.set_test_title(set_up_class_match.group(1))
+        return
+
+      running_test_match = re.match(RegexType.RUNNING_TEST.value, message)
+      if running_test_match:
+        self.otns_manager.set_test_title(running_test_match.group(1))
+        return
     if len(parts) < 2 or parts[0] != "silk" or parts[1] == "otnsManager":
       return
 

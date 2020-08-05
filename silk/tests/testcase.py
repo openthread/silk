@@ -376,6 +376,9 @@ def test_method_decorator(func):
 
         self.results[self.current_test_class][self.current_test_method]["test"] = True
 
+        if self.otns_manager:
+            self.otns_manager.set_test_title(f"{self.current_test_class}.{self.current_test_method}")
+
     return wrapper
 
 
