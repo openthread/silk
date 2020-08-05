@@ -244,7 +244,7 @@ def setup_class_decorator(func):
             cls.otns_manager = OtnsManager(
                     server_host=__otns_host,
                     logger=cls.logger.getChild("otnsManager"))
-            cls.otns_manager.set_test_title(cls.__name__)
+            cls.otns_manager.set_test_title(f"{cls.current_test_class}.set_up")
             cls.otns_manager.set_replay_speed(1.0)
         else:
             cls.otns_manager = None
@@ -303,11 +303,16 @@ def teardown_class_decorator(func):
         cls = args[0]
         cls.logger.info("TEAR DOWN CLASS %s" % cls.current_test_class)
 
+        if cls.otns_manager:
+            cls.otns_manager.set_test_title(f"{cls.current_test_class}.tear_down")
+
         # Stop the Thread sniffer
         cls.thread_sniffer_tear_down_all()
 
         # Call the user teardown class function
         func(*args, **kwargs)
+
+        cls.logger.info("TEAR DOWN CLASS DONE %s" % cls.current_test_class)
 
         # Print results summary
         cls.logger.info("=====================================================================")
@@ -347,6 +352,7 @@ def teardown_class_decorator(func):
         cls.clear_test_devices()
         if cls.otns_manager:
             cls.otns_manager.unsubscribe_from_all_nodes()
+            cls.otns_manager.set_test_title("")
 
     return wrapper
 
