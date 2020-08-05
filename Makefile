@@ -16,7 +16,9 @@
 #
 
 PYTHON ?= python3
+PYTHON_VENV ?= ./env/bin/python3
 PYTHON_VERSION ?= $(shell $(PYTHON) -c "import sys; sys.stdout.write(sys.version[:3])")
+PYTHON_VENV_VERSION ?= $(shell $(PYTHON_VENV) -c "import sys; sys.stdout.write(sys.version[:3])")
 SUDO ?= sudo
 MAKE ?= make
 PEP8_LINT ?= pep8
@@ -55,6 +57,14 @@ check-prerequisites:
 			exit 1; \
 		fi; \
 	fi
+
+# Install in the project virtualenv.
+
+install-cluster-venv: check-prerequisites
+	$(MAKE) install-venv
+
+uninstall-cluster-venv:
+	$(MAKE) uninstall-venv
 
 # If TESTBED_PATH defined, install or uninstall the specific, $TESTBED_PATH,
 # location of the TESTBED package. If TESTBED_PATH is not defined, by default
@@ -137,6 +147,17 @@ uninstall-system:
 	$(MAKE) unlink
 	$(MAKE) clean
 	$(SUDO) rm -rf /usr/local/lib/python$(PYTHON_VERSION)/dist-packages/TESTBED-*egg
+
+# Install TESTBED into Python venv distribution packages.
+
+install-venv: check-prerequisites
+	# Installing TESTBED
+	$(PYTHON_VENV) setup.py install
+
+uninstall-venv:
+	$(MAKE) unlink
+	$(MAKE) clean
+	rm -rf ./env/lib/python$(PYTHON_VERSION)/dist-packages/TESTBED-*egg
 
 # Install TESTBED package into non-standard location. Because the installed package
 # location is not know to Python, the package path must be passed to PYTHON through
