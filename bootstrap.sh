@@ -19,9 +19,9 @@
 #      example compilation and programming.
 #
 
-# Establish some key directories
-
 python='python3'
+
+# Establish some key directories
 
 srcdir=`dirname ${0}`
 abs_srcdir=`pwd`
