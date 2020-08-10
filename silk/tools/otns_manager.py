@@ -1056,8 +1056,12 @@ class OtnsManager(object):
       subscriber.unsubscribe()
     self.otns_monitor_map.clear()
 
-  def update_layout(self):
+  def update_layout(self, use_two_layer=False):
     """Update layout of nodes in auto layout mode.
+
+    Args:
+      use_two_layer (bool, optional): if layout uses separate circles for
+        routers and EDs. Defaults to False.
     """
     no_nodes = not self.otns_node_map or self.max_node_count == 0
     if not self.auto_layout or no_nodes:
@@ -1080,14 +1084,19 @@ class OtnsManager(object):
     if not routers and not others:
       return
 
-    # order children near their parents
-    router_list = list(routers)
-    other_list = list(others)
-    router_list.sort(key=lambda x: x.node_id)
-    other_list.sort(key=lambda x: x.node_id)
+    if use_two_layer:
+      router_list = list(routers)
+      other_list = list(others)
+      router_list.sort(key=lambda x: x.node_id)
+      other_list.sort(key=lambda x: x.node_id)
+      groups = [other_list, router_list]
+    else:
+      node_list = list(routers) + list(others)
+      node_list.sort(key=lambda x: x.node_id)
+      groups = [node_list]
 
     angle_step = math.radians(360 / self.max_node_count)
-    for i, group in enumerate([other_list, router_list]):
+    for i, group in enumerate(groups):
       group_radius = radius / (i + 1)
       for node in group:
         angle = angle_step * node.node_id
