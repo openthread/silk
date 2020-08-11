@@ -57,6 +57,7 @@ install_packages_pip()
 {
     $python_cmd -m pip install pip --upgrade
     $python_cmd -m pip install wheel --upgrade
+    $python_cmd -m pip install setuptools --upgrade
     $python_cmd -m pip install -r requirements.txt
 }
 
