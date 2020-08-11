@@ -40,7 +40,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo ./bootstrap.sh
+          ./bootstrap.sh
       - name: Build
         run: |
           sudo make install-cluster
