@@ -45,31 +45,31 @@ class Watchable(object):
         self.__logger = logger
 
     def __get__(self, instance, owner):
-        self.__lock.acquire()
-        value = self.value
-        self.__lock.release()
+        instance.__lock.acquire()
+        value = instance.value
+        instance.__lock.release()
 
         return value
 
     def __set__(self, instance, value):
         modify = False
 
-        self.__lock.acquire()
+        instance.__lock.acquire()
 
-        modify = value != self.value
+        modify = value != instance.value
         if modify:
-            self.value = value
+            instance.value = value
 
         # Instruct watchers to poll again
         # even if values have not changed
-        for watcher in self.__watchers:
+        for watcher in instance.__watchers:
             watcher.set()
 
-        self.__lock.release()
+        instance.__lock.release()
 
-        if modify and self.__logger:
+        if modify and instance.__logger:
             log = "%s modified" % str(self)
-            self.__logger.debug(log)
+            instance.__logger.debug(log)
 
         return value
 
@@ -85,12 +85,12 @@ class Watchable(object):
     # Set the contained property
     # @param new_value The value to set
     def set(self, new_value):
-        return self.__set__(None, new_value)
+        return self.__set__(self, new_value)
 
     # Get the contained property
     # @return The value of the contained property
     def get(self):
-        return self.__get__(None, None)
+        return self.__get__(self, None)
 
     # Wait until the value of lambda_func(__property_object) == True
     # The below example will block until the underlying property becomes 5
