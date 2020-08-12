@@ -794,6 +794,7 @@ class OtnsManager(object):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
     self.local_host = sock.getsockname()[0]
+    sock.close()
 
     self.logger = logger
     self.logger.info(
@@ -892,6 +893,13 @@ class OtnsManager(object):
         del self.otns_node_map[node]
 
         self.update_layout()
+
+  def remove_all_nodes(self):
+    """Remove all nodes from OTNS visualization.
+    """
+    nodes = list(self.otns_node_map.keys())
+    for node in nodes:
+      self.remove_node(node)
 
   def process_node_status(self, node: ThreadDevBoard,
                           message: str, time=datetime.now()):

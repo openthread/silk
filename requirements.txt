@@ -1,7 +1,8 @@
 BeautifulSoup4 == 4.9.0
 dispatcher == 1.0
 dpkt == 1.9.1
-grpcio-tools >= 1.30
+grpcio-tools == 1.31.0
+grpcio-tools == 1.31.0
 ipaddress == 1.0.22
 jsonfield == 2.0.2
 netifaces == 0.10.7
@@ -14,6 +15,5 @@ pycrypto == 2.6.1
 PyDispatcher == 2.0.5
 pyserial == 3.4
 pyudev == 0.21.0
-PyYAML == 5.3.1
 urllib3 >= 1.25.9
 usbinfo == 1.1.1
