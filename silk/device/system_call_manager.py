@@ -139,7 +139,7 @@ class SystemCallManager(object):
             proc = subprocess.Popen(command, bufsize=0, shell=True,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
-        except:
+        except Exception:
             self.log_error("Failed to start subprocess.")
             self.log_error("\tCommand: %s" % command)
             return None
@@ -226,7 +226,6 @@ class SystemCallManager(object):
         Serialize requests to make system calls.
         Make system calls using the _make_system_call method.
         """
-        response = ""
         while True:
             self.__event_lock.acquire()
             self.set_all_clear(self.__message_queue.empty())
