@@ -131,8 +131,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             for cluster in cluster_list:
                 if cluster['ip'] == local_ip:
                     self.thread_mode = cluster['thread_mode']
-        except Exception:
-            logging.info('Cannot load cluster.conf file. Running on NCP mode.')
+        except Exception as error:
+            logging.info("Cannot load cluster.conf file. Running on NCP mode. Error: %s" % error)
 
         logging.debug('Thread Mode: {}'.format(self.thread_mode))
 
@@ -632,8 +632,8 @@ class ThreadDevBoard(FifteenFourDevBoardThreadNode):
                                                                                   name=name,
                                                                                   sw_version=sw_version)
                 self.hwModel = silk.hw.hw_module.hwEfr32
-            except Exception:
-                self.log_critical('Cannot find nRF52840 or efr32 Dev. board!!')
+            except Exception as error:
+                self.log_critical("Cannot find nRF52840 or efr32 Dev. board!! Error: %s" % error)
 
         self.device_path = self.device.port()
     

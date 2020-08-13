@@ -54,7 +54,8 @@ class OpenThreadSniffer(SnifferNode):
         global sniffer_py_path
         try:
             sniffer_py_path = subprocess.check_output(["which", "sniffer.py"]).strip()
-        except Exception:
+        except Exception as error:
+            self.logger.debug("Error getting sniffer.py path: %s" % error)
             sniffer_py_path = '/usr/local/bin/sniffer.py'
 
         self.device = hwr.global_instance().get_hw_module(self._hwModel)

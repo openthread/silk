@@ -139,8 +139,8 @@ class SystemCallManager(object):
             proc = subprocess.Popen(command, bufsize=0, shell=True,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT)
-        except Exception:
-            self.log_error("Failed to start subprocess.")
+        except Exception as error:
+            self.log_error("Failed to start subprocess: %s" % error)
             self.log_error("\tCommand: %s" % command)
             return None
 
