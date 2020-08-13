@@ -210,7 +210,7 @@ class BaseNode(object):
         self.store_data(match_results.group(1), self.ping6_sent_label)
         self.store_data(match_results.group(2), self.ping6_received_label)
 
-        return self.ping6_get_results(self)
+        return self.ping6_get_results()
 
     def ping6_get_results(self):
         return "%s / %s " % (self.ping6_received, self.ping6_sent)

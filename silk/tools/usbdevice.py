@@ -114,7 +114,7 @@ def device_find_from_serial(device_type, serial, interface_number):
                 # print device_interface_number, interface_number
                 if device_interface_number != interface_number:
                     continue
-            except:
+            except Exception:
                 continue
 
             devname = device_get_devname(device)
