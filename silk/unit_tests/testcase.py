@@ -13,12 +13,8 @@
 # limitations under the License.
 
 import logging
-import time
 import tracemalloc
 import unittest
-
-from otns.cli import OTNS
-from silk.tools.otns_manager import OtnsManager
 
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
 
@@ -29,22 +25,3 @@ class SilkTestCase(unittest.TestCase):
   def setUpClass(cls) -> None:
     tracemalloc.start()
     logging.basicConfig(level=logging.DEBUG, format=LOG_LINE_FORMAT)
-
-  def setUp(self) -> None:
-    """Test method set up.
-    """
-    self.ns = OTNS(otns_args=[
-        "-raw", "-real",
-        "-ot-cli", "otns-silk-proxy",
-        "-listen", ":9000",
-        "-log", "debug"])
-    # wait for OTNS gRPC server to start
-    time.sleep(0.5)
-    self.manager = OtnsManager("localhost", logging.Logger("OTNS Manager"))
-
-  def tearDown(self) -> None:
-    """Test method tear down.
-    """
-    self.manager.unsubscribe_from_all_nodes()
-    self.manager.remove_all_nodes()
-    self.ns.close()

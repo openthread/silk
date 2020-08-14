@@ -36,6 +36,43 @@ class MockHwModule(HwModule):
     self._dut_serial = "683" + str(random.getrandbits(24))
     self._layout_center = 100, 100
     self._layout_radius = 100
+    self._layout_x = None
+    self._layout_y = None
+  
+  def set_otns_vis_position(self, x: int, y: int):
+    """Set mock OTNS visualization position.
+
+    Args:
+      x (int): x coordinate of visualization position.
+      y (int): y coordinate of visualization position.
+    """
+    self._layout_x = x
+    self._layout_y = y
+  
+  def get_otns_vis_position(self):
+    """Get mock OTNS visualization position.
+
+    Raises:
+      ValueError: if OTNS visualization position is not set.
+
+    Returns:
+      Tuple[int, int]: OTNS visualization position coordinates.
+    """
+    if self._layout_x is None or self._layout_y is None:
+      raise ValueError("Node position must have x and y coordinates.")
+
+    return self._layout_x, self._layout_y
+
+  def set_otns_layout_parameter(self, x: int, y: int, radius: int):
+    """Set mock OTNS visualization auto layout parameter.
+
+    Args:
+      x (int): x coordinate of visualization center.
+      y (int): y coordinate of visualization center.
+      radius (int): radius visualization circle.
+    """
+    self._layout_center = x, y
+    self._layout_radius = radius
 
 
 class MockThreadDevBoard(ThreadDevBoard):
@@ -54,7 +91,8 @@ class MockThreadDevBoard(ThreadDevBoard):
       node_id (int): ID of the node.
     """
     mock_device = MockHwModule(name, node_id)
-    FifteenFourDevBoardNode.__init__(self,
-                                     virtual=True,
-                                     device=mock_device,
-                                     device_path=mock_device.port())
+    FifteenFourDevBoardNode.__init__(
+        self,
+        virtual=True,
+        device=mock_device,
+        device_path=mock_device.port())
