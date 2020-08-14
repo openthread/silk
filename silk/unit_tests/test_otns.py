@@ -21,9 +21,9 @@ from otns.cli import OTNS
 
 from silk.tools.otns_manager import OtnsManager
 from silk.unit_tests.testcase import SilkTestCase
-from silk.unit_tests.mock_device import MockThreadDevBoard
+from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
 
-class BasicTest(SilkTestCase):
+class OTNSIntegrationTest(SilkTestCase):
   """Silk integration test case for OTNS.
   """
   def setUp(self) -> None:
@@ -36,7 +36,8 @@ class BasicTest(SilkTestCase):
         "-log", "debug"])
     # wait for OTNS gRPC server to start
     time.sleep(1)
-    self.manager = OtnsManager("localhost", logging.Logger("OTNS Manager"))
+    self.manager = OtnsManager("localhost",
+                               self.logger.getChild("OtnsManager"))
 
   def tearDown(self) -> None:
     """Test method tear down.
@@ -108,10 +109,10 @@ class BasicTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 2)
-    self.assertEqual(nodes_info[device_1_id]['x'], device_1_x)
-    self.assertEqual(nodes_info[device_1_id]['y'], device_1_y)
-    self.assertEqual(nodes_info[device_2_id]['x'], device_2_x)
-    self.assertEqual(nodes_info[device_2_id]['y'], device_2_y)
+    self.assertEqual(nodes_info[device_1_id]["x"], device_1_x)
+    self.assertEqual(nodes_info[device_1_id]["y"], device_1_y)
+    self.assertEqual(nodes_info[device_2_id]["x"], device_2_x)
+    self.assertEqual(nodes_info[device_2_id]["y"], device_2_y)
 
     device_3_id = random.randint(21, 30)
     device_3 = MockThreadDevBoard("device_3", device_3_id)
@@ -124,12 +125,12 @@ class BasicTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 3)
-    self.assertEqual(nodes_info[device_1_id]['x'], device_1_x)
-    self.assertEqual(nodes_info[device_1_id]['y'], device_1_y)
-    self.assertEqual(nodes_info[device_2_id]['x'], device_2_x)
-    self.assertEqual(nodes_info[device_2_id]['y'], device_2_y)
-    self.assertEqual(nodes_info[device_3_id]['x'], device_3_x)
-    self.assertEqual(nodes_info[device_3_id]['y'], device_3_y)
+    self.assertEqual(nodes_info[device_1_id]["x"], device_1_x)
+    self.assertEqual(nodes_info[device_1_id]["y"], device_1_y)
+    self.assertEqual(nodes_info[device_2_id]["x"], device_2_x)
+    self.assertEqual(nodes_info[device_2_id]["y"], device_2_y)
+    self.assertEqual(nodes_info[device_3_id]["x"], device_3_x)
+    self.assertEqual(nodes_info[device_3_id]["y"], device_3_y)
   
   def testAddAutoLayoutDevices(self):
     """Test auto layout.
@@ -164,9 +165,9 @@ class BasicTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y, delta=1)
 
     manager.add_node(device_2)
@@ -174,36 +175,37 @@ class BasicTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 2)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
                            layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
                            layout_center_y, delta=1)
     
     manager.add_node(device_3)
     manager.add_node(device_4)
     ns.go(0.1)
 
+    # forming a cross shape
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 4)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
                            layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
                            layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
                            layout_center_y - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_4_id]["x"],
                            layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_4_id]["y"],
                            layout_center_y, delta=1)
 
   def testRemoveAutoLayoutDevices(self):
@@ -242,60 +244,60 @@ class BasicTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 4)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
                            layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
                            layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
                            layout_center_y - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_4_id]["x"],
                            layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_4_id]["y"],
                            layout_center_y, delta=1)
     
     manager.remove_node(device_4)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 3)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
                            layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
                            layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
                            layout_center_y - layout_radius, delta=1)
 
     manager.remove_node(device_3)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 2)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
                            layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
                            layout_center_y, delta=1)
 
     manager.remove_node(device_2)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
                            layout_center_y + layout_radius, delta=1)
 
     manager.add_node(device_2)
@@ -303,9 +305,9 @@ class BasicTest(SilkTestCase):
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
                            layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
                            layout_center_y, delta=1)
 
     manager.add_node(device_3)
@@ -313,9 +315,9 @@ class BasicTest(SilkTestCase):
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
                            layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
                            layout_center_y - layout_radius, delta=1)
 
     manager.add_node(device_4)
@@ -323,11 +325,125 @@ class BasicTest(SilkTestCase):
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_4_id]['x'],
+    self.assertAlmostEqual(nodes_info[device_4_id]["x"],
                            layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]['y'],
+    self.assertAlmostEqual(nodes_info[device_4_id]["y"],
                            layout_center_y, delta=1)
 
+  def testUpdateExtaddr(self):
+    """Test updating node extended address.
 
-if __name__ == '__main__':
+    Also tests updating before the OTNS manager subscribes to the node.
+    """
+    ns = self.ns
+    manager = self.manager
+
+    device_id = random.randint(1, 10)
+    device_extaddr = random.getrandbits(64)
+    device = MockThreadDevBoard("device", device_id)
+    wpantund_process = MockWpantundProcess()
+    device.wpantund_process = wpantund_process
+
+    manager.add_node(device)
+    ns.go(0.1)
+
+    self.assertEqual(ns.nodes()[device_id]["extaddr"], device_id)
+
+    wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
+    ns.go(0.1)
+
+    self.assertEqual(ns.nodes()[device_id]["extaddr"], device_id)
+
+    manager.subscribe_to_node(device)
+    wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
+    ns.go(0.1)
+
+    self.assertEqual(ns.nodes()[device_id]["extaddr"], device_extaddr)
+
+  def testUpdateRLOC16(self):
+    """Test updating node RLOC16.
+
+    Also tests updating before the OTNS manager subscribes to the node.
+    """
+    ns = self.ns
+    manager = self.manager
+
+    device_id = random.randint(1, 10)
+    device_rloc16 = random.getrandbits(16)
+    device = MockThreadDevBoard("device", device_id)
+    wpantund_process = MockWpantundProcess()
+    device.wpantund_process = wpantund_process
+
+    manager.add_node(device)
+    ns.go(0.1)
+
+    original_rloc16 = ns.nodes()[device_id]["rloc16"]
+
+    wpantund_process.emit_status(f"rloc16={device_rloc16}")
+    ns.go(0.1)
+
+    self.assertEqual(ns.nodes()[device_id]["rloc16"], original_rloc16)
+
+    manager.subscribe_to_node(device)
+    wpantund_process.emit_status(f"rloc16={device_rloc16}")
+    ns.go(0.1)
+
+    self.assertEqual(ns.nodes()[device_id]["rloc16"], device_rloc16)
+
+  def testFormPartition(self):
+    """Test forming a partition.
+    """
+    ns = self.ns
+    manager = self.manager
+
+    device_1_id = random.randint(1, 10)
+    device_1_parid = random.getrandbits(16)
+    device_1 = MockThreadDevBoard("device_1", device_1_id)
+    wpantund_process_1 = MockWpantundProcess()
+    device_1.wpantund_process = wpantund_process_1
+
+    device_2_id = random.randint(11, 20)
+    device_2_parid = random.getrandbits(16)
+    device_2 = MockThreadDevBoard("device_2", device_2_id)
+    wpantund_process_2 = MockWpantundProcess()
+    device_2.wpantund_process = wpantund_process_2
+
+    manager.add_node(device_1)
+    manager.add_node(device_2)
+
+    manager.subscribe_to_node(device_1)
+    manager.subscribe_to_node(device_2)
+
+    wpantund_process_1.emit_status(f"parid={device_1_parid:08x}")
+    wpantund_process_2.emit_status(f"parid={device_2_parid:08x}")
+    ns.go(0.1)
+
+    partitions_info = ns.partitions()
+    self.assertEqual(len(partitions_info), 2)
+    self.assertEqual(len(partitions_info[device_1_parid]), 1)
+    self.assertEqual(len(partitions_info[device_2_parid]), 1)
+    self.assertEqual(partitions_info[device_1_parid][0], device_1_id)
+    self.assertEqual(partitions_info[device_2_parid][0], device_2_id)
+
+    wpantund_process_2.emit_status(f"parid={device_1_parid:08x}")
+    ns.go(0.1)
+
+    partitions_info = ns.partitions()
+    self.assertEqual(len(partitions_info), 1)
+    self.assertEqual(len(partitions_info[device_1_parid]), 2)
+    self.assertTrue(device_1_id in partitions_info[device_1_parid])
+    self.assertTrue(device_2_id in partitions_info[device_1_parid])
+
+    wpantund_process_2.emit_status(f"parid={device_2_parid:08x}")
+    ns.go(0.1)
+
+    partitions_info = ns.partitions()
+    self.assertEqual(len(partitions_info), 2)
+    self.assertEqual(len(partitions_info[device_1_parid]), 1)
+    self.assertEqual(len(partitions_info[device_2_parid]), 1)
+    self.assertEqual(partitions_info[device_1_parid][0], device_1_id)
+    self.assertEqual(partitions_info[device_2_parid][0], device_2_id)
+
+
+if __name__ == "__main__":
     unittest.main()

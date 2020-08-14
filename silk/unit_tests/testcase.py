@@ -25,3 +25,4 @@ class SilkTestCase(unittest.TestCase):
   def setUpClass(cls) -> None:
     tracemalloc.start()
     logging.basicConfig(level=logging.DEBUG, format=LOG_LINE_FORMAT)
+    cls.logger = logging.Logger(cls.__name__)

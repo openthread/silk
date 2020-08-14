@@ -17,6 +17,7 @@ import random
 
 from silk.hw.hw_module import HwModule
 from silk.node.fifteen_four_dev_board import FifteenFourDevBoardNode, ThreadDevBoard
+from silk.utils import signal
 
 class MockHwModule(HwModule):
   """Mock HwModule for unit testing.
@@ -96,3 +97,22 @@ class MockThreadDevBoard(ThreadDevBoard):
         virtual=True,
         device=mock_device,
         device_path=mock_device.port())
+
+
+class MockWpantundProcess(signal.Publisher):
+  """Mock signal publisher that act as wpantund process.
+  """
+  def __init__(self):
+    """Initialize a mock wpantund process.
+    """
+    super().__init__()
+    self._process_id = random.getrandbits(16)
+    self._prefix = f"wpantund[{self._process_id}]: NCP => [OTNS] "
+  
+  def emit_status(self, status: str):
+    """Emit a status string to subscribers.
+
+    Args:
+      status (str): status to emit.
+    """
+    self.emit(line=self._prefix + status)
