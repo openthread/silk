@@ -49,25 +49,21 @@ jobs:
         run: python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
       - name: Install OTNS
         run: |
-          GOPATH=$(go env GOPATH)
-          export PATH=$PATH:"$GOPATH"/bin
-          mkdir -p "$GOPATH"/bin
           OTNS_PATH="$HOME/src/otns"
+          mkdir -p $(go env GOPATH)/bin
           mkdir -p $OTNS_PATH
           git clone https://github.com/openthread/ot-ns.git $OTNS_PATH
           cd $OTNS_PATH
           ./script/install-deps
           go get ./cmd/otns
           go get ./cmd/real/...
-          echo "OTNS installed: $(command -v otns)"
           cd pylibs
           python setup.py install
       - name: Install
         run: python setup.py install
       - name: Test
         run: |
-          GOPATH=$(go env GOPATH)
-          export PATH=$PATH:"$GOPATH"/bin
+          export PATH=$PATH:$(go env GOPATH)/bin
           python -m coverage run silk/unit_tests/test_otns.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
