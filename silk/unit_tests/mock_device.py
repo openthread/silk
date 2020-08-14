@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import configparser
+import logging
 import random
 
 from silk.hw.hw_module import HwModule
@@ -97,6 +98,8 @@ class MockThreadDevBoard(ThreadDevBoard):
         virtual=True,
         device=mock_device,
         device_path=mock_device.port())
+    if self.logger:
+      self.logger.setLevel(logging.WARN)
 
 
 class MockWpantundProcess(signal.Publisher):
