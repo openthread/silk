@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
 import random
 import time
 import unittest
@@ -103,7 +102,7 @@ class OTNSIntegrationTest(SilkTestCase):
     speed = random.randint(21, 40)
     manager.set_replay_speed(speed)
     self.assertAlmostEqual(ns.speed, speed)
-  
+
   def testAddFixedPositionDevices(self):
     """Test adding fixed position nodes.
     """
@@ -142,14 +141,14 @@ class OTNSIntegrationTest(SilkTestCase):
 
     device_3_x, device_3_y = random.randint(100, 200), random.randint(100, 200)
     device_3.device.set_otns_vis_position(device_3_x, device_3_y)
-  
+
     manager.add_node(device_3)
     ns.go(0.1)
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 3)
     assert_device_fixed_positions([device_1, device_2, device_3])
-  
+
   def testAddAutoLayoutDevices(self):
     """Test adding auto layout nodes.
     """
@@ -199,7 +198,7 @@ class OTNSIntegrationTest(SilkTestCase):
         device_1.id: (layout_center_x - layout_radius, layout_center_y),
         device_2.id: (layout_center_x + layout_radius, layout_center_y)}
     self.assert_device_positions(nodes_info, expected_coords)
-    
+
     manager.add_node(device_3)
     manager.add_node(device_4)
     ns.go(0.1)
@@ -241,7 +240,7 @@ class OTNSIntegrationTest(SilkTestCase):
         layout_center_x, layout_center_y, layout_radius)
     device_4.device.set_otns_layout_parameter(
         layout_center_x, layout_center_y, layout_radius)
-    
+
     manager.add_node(device_1)
     manager.add_node(device_2)
     manager.add_node(device_3)
@@ -256,7 +255,7 @@ class OTNSIntegrationTest(SilkTestCase):
         device_3.id: (layout_center_x, layout_center_y - layout_radius),
         device_4.id: (layout_center_x + layout_radius, layout_center_y)}
     self.assert_device_positions(nodes_info, expected_coords)
-    
+
     manager.remove_node(device_4)
     ns.go(0.1)
     nodes_info = ns.nodes()
@@ -428,4 +427,4 @@ class OTNSIntegrationTest(SilkTestCase):
   # TODO: Add child & router table tests after adding query support to OTNS CLI
 
 if __name__ == "__main__":
-    unittest.main()
+  unittest.main()
