@@ -16,6 +16,7 @@ import logging
 import random
 import time
 import unittest
+from typing import Any, Dict, List, Tuple
 
 from otns.cli import OTNS
 
@@ -48,6 +49,20 @@ class OTNSIntegrationTest(SilkTestCase):
     self.ns.close()
     # wait for OTNS gRPC server to stop
     time.sleep(0.2)
+
+  def assert_device_positions(self,
+                              nodes_info: Dict[int, Dict[str, Any]],
+                              expected_coords: Dict[int, Tuple[int, int]]):
+    """Helper method to assert auto layout position devices coordinates.
+
+    Args:
+      nodes_info (Dict[int, Dict[str, Any]]): nodes info dictionary
+      expected_coords (Dict[int, Tuple[int, int]]): dict mapping device
+        id to coodinates to check
+    """
+    for device_id, coords in expected_coords.items():
+      self.assertAlmostEqual(nodes_info[device_id]["x"], coords[0], delta=1)
+      self.assertAlmostEqual(nodes_info[device_id]["y"], coords[1], delta=1)
 
   def testAddDevice(self):
     """Test adding device.
@@ -92,6 +107,16 @@ class OTNSIntegrationTest(SilkTestCase):
   def testAddFixedPositionDevices(self):
     """Test adding fixed position nodes.
     """
+    def assert_device_fixed_positions(devices: List[MockThreadDevBoard]):
+      """Helper method to assert fixed position devices coordinates.
+
+      Args:
+        devices (List[MockThreadDevBoard]): list of devices to check
+      """
+      for device in devices:
+        self.assertEqual(nodes_info[device.id]["x"], device.x)
+        self.assertEqual(nodes_info[device.id]["y"], device.y)
+
     ns = self.ns
     manager = self.manager
 
@@ -110,10 +135,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 2)
-    self.assertEqual(nodes_info[device_1_id]["x"], device_1_x)
-    self.assertEqual(nodes_info[device_1_id]["y"], device_1_y)
-    self.assertEqual(nodes_info[device_2_id]["x"], device_2_x)
-    self.assertEqual(nodes_info[device_2_id]["y"], device_2_y)
+    assert_device_fixed_positions([device_1, device_2])
 
     device_3_id = random.randint(21, 30)
     device_3 = MockThreadDevBoard("device_3", device_3_id)
@@ -126,15 +148,10 @@ class OTNSIntegrationTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 3)
-    self.assertEqual(nodes_info[device_1_id]["x"], device_1_x)
-    self.assertEqual(nodes_info[device_1_id]["y"], device_1_y)
-    self.assertEqual(nodes_info[device_2_id]["x"], device_2_x)
-    self.assertEqual(nodes_info[device_2_id]["y"], device_2_y)
-    self.assertEqual(nodes_info[device_3_id]["x"], device_3_x)
-    self.assertEqual(nodes_info[device_3_id]["y"], device_3_y)
+    assert_device_fixed_positions([device_1, device_2, device_3])
   
   def testAddAutoLayoutDevices(self):
-    """Test auto layout.
+    """Test adding auto layout nodes.
     """
     ns = self.ns
     manager = self.manager
@@ -166,48 +183,36 @@ class OTNSIntegrationTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y, delta=1)
+    # placing the first node alone
+    expected_coords = {
+        device_1.id: (layout_center_x + layout_radius, layout_center_y)}
+    nodes_info = ns.nodes()
+    self.assert_device_positions(nodes_info, expected_coords)
 
     manager.add_node(device_2)
     ns.go(0.1)
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 2)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
-                           layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
-                           layout_center_y, delta=1)
+    # forming a horizontal line
+    expected_coords = {
+        device_1.id: (layout_center_x - layout_radius, layout_center_y),
+        device_2.id: (layout_center_x + layout_radius, layout_center_y)}
+    self.assert_device_positions(nodes_info, expected_coords)
     
     manager.add_node(device_3)
     manager.add_node(device_4)
     ns.go(0.1)
 
-    # forming a cross shape
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 4)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
-                           layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
-                           layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
-                           layout_center_y - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]["x"],
-                           layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]["y"],
-                           layout_center_y, delta=1)
+    # forming a cross shape
+    expected_coords = {
+        device_1.id: (layout_center_x, layout_center_y + layout_radius),
+        device_2.id: (layout_center_x - layout_radius, layout_center_y),
+        device_3.id: (layout_center_x, layout_center_y - layout_radius),
+        device_4.id: (layout_center_x + layout_radius, layout_center_y)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
   def testRemoveAutoLayoutDevices(self):
     """Test that removing nodes keeps other nodes stationary with auto layout.
@@ -245,91 +250,66 @@ class OTNSIntegrationTest(SilkTestCase):
 
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 4)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
-                           layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
-                           layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
-                           layout_center_y - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]["x"],
-                           layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]["y"],
-                           layout_center_y, delta=1)
+    expected_coords = {
+        device_1.id: (layout_center_x, layout_center_y + layout_radius),
+        device_2.id: (layout_center_x - layout_radius, layout_center_y),
+        device_3.id: (layout_center_x, layout_center_y - layout_radius),
+        device_4.id: (layout_center_x + layout_radius, layout_center_y)}
+    self.assert_device_positions(nodes_info, expected_coords)
     
     manager.remove_node(device_4)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 3)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
-                           layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
-                           layout_center_y, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
-                           layout_center_y - layout_radius, delta=1)
+    expected_coords = {
+        device_1.id: (layout_center_x, layout_center_y + layout_radius),
+        device_2.id: (layout_center_x - layout_radius, layout_center_y),
+        device_3.id: (layout_center_x, layout_center_y - layout_radius)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
     manager.remove_node(device_3)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 2)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
-                           layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
-                           layout_center_y, delta=1)
+    expected_coords = {
+        device_1.id: (layout_center_x, layout_center_y + layout_radius),
+        device_2.id: (layout_center_x - layout_radius, layout_center_y)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
     manager.remove_node(device_2)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_1_id]["y"],
-                           layout_center_y + layout_radius, delta=1)
+    expected_coords = {
+        device_1.id: (layout_center_x, layout_center_y + layout_radius)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
     manager.add_node(device_2)
     manager.remove_node(device_1)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["x"],
-                           layout_center_x - layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_2_id]["y"],
-                           layout_center_y, delta=1)
+    expected_coords = {
+        device_2.id: (layout_center_x - layout_radius, layout_center_y)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
     manager.add_node(device_3)
     manager.remove_node(device_2)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["x"],
-                           layout_center_x, delta=1)
-    self.assertAlmostEqual(nodes_info[device_3_id]["y"],
-                           layout_center_y - layout_radius, delta=1)
+    expected_coords = {
+        device_3.id: (layout_center_x, layout_center_y - layout_radius)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
     manager.add_node(device_4)
     manager.remove_node(device_3)
     ns.go(0.1)
     nodes_info = ns.nodes()
     self.assertEqual(len(nodes_info), 1)
-    self.assertAlmostEqual(nodes_info[device_4_id]["x"],
-                           layout_center_x + layout_radius, delta=1)
-    self.assertAlmostEqual(nodes_info[device_4_id]["y"],
-                           layout_center_y, delta=1)
+    expected_coords = {
+        device_4.id: (layout_center_x + layout_radius, layout_center_y)}
+    self.assert_device_positions(nodes_info, expected_coords)
 
   def testUpdateExtaddr(self):
     """Test updating node extended address.
@@ -348,18 +328,18 @@ class OTNSIntegrationTest(SilkTestCase):
     manager.add_node(device)
     ns.go(0.1)
 
-    self.assertEqual(ns.nodes()[device_id]["extaddr"], device_id)
+    self.assertEqual(ns.nodes()[device.id]["extaddr"], device.id)
 
     wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
     ns.go(0.1)
 
-    self.assertEqual(ns.nodes()[device_id]["extaddr"], device_id)
+    self.assertEqual(ns.nodes()[device.id]["extaddr"], device.id)
 
     manager.subscribe_to_node(device)
     wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
     ns.go(0.1)
 
-    self.assertEqual(ns.nodes()[device_id]["extaddr"], device_extaddr)
+    self.assertEqual(ns.nodes()[device.id]["extaddr"], device_extaddr)
 
   def testUpdateRLOC16(self):
     """Test updating node RLOC16.
@@ -378,18 +358,18 @@ class OTNSIntegrationTest(SilkTestCase):
     manager.add_node(device)
     ns.go(0.1)
 
-    original_rloc16 = ns.nodes()[device_id]["rloc16"]
+    original_rloc16 = ns.nodes()[device.id]["rloc16"]
 
     wpantund_process.emit_status(f"rloc16={device_rloc16}")
     ns.go(0.1)
 
-    self.assertEqual(ns.nodes()[device_id]["rloc16"], original_rloc16)
+    self.assertEqual(ns.nodes()[device.id]["rloc16"], original_rloc16)
 
     manager.subscribe_to_node(device)
     wpantund_process.emit_status(f"rloc16={device_rloc16}")
     ns.go(0.1)
 
-    self.assertEqual(ns.nodes()[device_id]["rloc16"], device_rloc16)
+    self.assertEqual(ns.nodes()[device.id]["rloc16"], device_rloc16)
 
   def testFormPartition(self):
     """Test forming a partition.
@@ -423,8 +403,8 @@ class OTNSIntegrationTest(SilkTestCase):
     self.assertEqual(len(partitions_info), 2)
     self.assertEqual(len(partitions_info[device_1_parid]), 1)
     self.assertEqual(len(partitions_info[device_2_parid]), 1)
-    self.assertEqual(partitions_info[device_1_parid][0], device_1_id)
-    self.assertEqual(partitions_info[device_2_parid][0], device_2_id)
+    self.assertEqual(partitions_info[device_1_parid][0], device_1.id)
+    self.assertEqual(partitions_info[device_2_parid][0], device_2.id)
 
     wpantund_process_2.emit_status(f"parid={device_1_parid:08x}")
     ns.go(0.1)
@@ -432,8 +412,8 @@ class OTNSIntegrationTest(SilkTestCase):
     partitions_info = ns.partitions()
     self.assertEqual(len(partitions_info), 1)
     self.assertEqual(len(partitions_info[device_1_parid]), 2)
-    self.assertTrue(device_1_id in partitions_info[device_1_parid])
-    self.assertTrue(device_2_id in partitions_info[device_1_parid])
+    self.assertTrue(device_1.id in partitions_info[device_1_parid])
+    self.assertTrue(device_2.id in partitions_info[device_1_parid])
 
     wpantund_process_2.emit_status(f"parid={device_2_parid:08x}")
     ns.go(0.1)
@@ -442,9 +422,10 @@ class OTNSIntegrationTest(SilkTestCase):
     self.assertEqual(len(partitions_info), 2)
     self.assertEqual(len(partitions_info[device_1_parid]), 1)
     self.assertEqual(len(partitions_info[device_2_parid]), 1)
-    self.assertEqual(partitions_info[device_1_parid][0], device_1_id)
-    self.assertEqual(partitions_info[device_2_parid][0], device_2_id)
+    self.assertEqual(partitions_info[device_1_parid][0], device_1.id)
+    self.assertEqual(partitions_info[device_2_parid][0], device_2.id)
 
+  # TODO: Add child & router table tests after adding query support to OTNS CLI
 
 if __name__ == "__main__":
     unittest.main()

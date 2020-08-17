@@ -101,6 +101,18 @@ class MockThreadDevBoard(ThreadDevBoard):
     if self.logger:
       self.logger.setLevel(logging.WARN)
 
+  @property
+  def id(self) -> int:
+    return self.device.get_otns_vis_node_id()
+
+  @property
+  def x(self) -> int:
+    return self.device.get_otns_vis_position()[0]
+
+  @property
+  def y(self) -> int:
+    return self.device.get_otns_vis_position()[1]
+
 
 class MockWpantundProcess(signal.Publisher):
   """Mock signal publisher that act as wpantund process.
