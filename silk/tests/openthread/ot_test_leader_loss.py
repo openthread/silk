@@ -12,19 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-from silk.tools import wpan_table_parser
-
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, verify_within
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, verify_within
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 ROLE_WAIT_TIME = 180
@@ -33,7 +32,6 @@ NUM_CHILDREN = 1
 
 
 class TestLeaderLoss(testcase.TestCase):
-    # -----------------------------------------------------------------------------------------------------------------------
     # Test description: LeaderLoss
     #
     # Network Topology:
@@ -55,7 +53,7 @@ class TestLeaderLoss(testcase.TestCase):
     #
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.r3 = ffdb.ThreadDevBoard()
@@ -72,7 +70,7 @@ class TestLeaderLoss(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in cls.all_nodes:
 
@@ -81,12 +79,10 @@ class TestLeaderLoss(testcase.TestCase):
 
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="MORTAR-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".
-                format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="MORTAR-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -106,11 +102,12 @@ class TestLeaderLoss(testcase.TestCase):
 
     def _verify_device_role(self, device, expect_role):
         """
-        verify device role
-        """
+    verify device role
+    """
+
         def check_device_role():
-            node_type = device.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            self.logger.info('Node type for {} is {} currently, expect to be {}'.format(
+            node_type = device.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            self.logger.info("Node type for {} is {} currently, expect to be {}".format(
                 device.device_path, node_type, expect_role))
             verify(node_type == expect_role)
 
@@ -119,13 +116,13 @@ class TestLeaderLoss(testcase.TestCase):
 
     def _verify_devices_roles(self, devices_roles):
         # verify devices only one is leader and rest are routers
-        leader_count = devices_roles.count('leader')
-        router_count = devices_roles.count('router')
-        if leader_count == 1 and router_count == len(devices_roles)-1:
+        leader_count = devices_roles.count("leader")
+        router_count = devices_roles.count("router")
+        if leader_count == 1 and router_count == len(devices_roles) - 1:
             return True
         else:
             self.logger.info("leader count is {}, should be 1".format(leader_count))
-            self.logger.info("router count is {}, should be {}".format(router_count, len(devices_roles)-1))
+            self.logger.info("router count is {}, should be {}".format(router_count, len(devices_roles) - 1))
             return False
 
     def _verify_children(self, device, children_num):
@@ -164,10 +161,10 @@ class TestLeaderLoss(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.r2.join(self.network_data, 'router')
+        self.r2.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
-        self.r3.join(self.network_data, 'router')
+        self.r3.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         self.fed1.join(self.network_data, "end-node")
@@ -184,32 +181,33 @@ class TestLeaderLoss(testcase.TestCase):
             self.r1.device_path, self.r2.device_path, self.r3.device_path))
         # verify r1 role is leader
         r1_result = self._verify_device_role(self.r1, "leader")
-        self.assertTrue(r1_result, 'r1 cannot get into leader role after {} seconds timeout'.format(ROLE_WAIT_TIME))
+        self.assertTrue(r1_result, "r1 cannot get into leader role after {} seconds timeout".format(ROLE_WAIT_TIME))
 
         # verify r2 role is router
         r2_result = self._verify_device_role(self.r2, "router")
-        self.assertTrue(r2_result, 'r2 cannot get into router role after {} seconds timeout'.format(ROLE_WAIT_TIME))
+        self.assertTrue(r2_result, "r2 cannot get into router role after {} seconds timeout".format(ROLE_WAIT_TIME))
 
         # verify r3 role is router
         r3_result = self._verify_device_role(self.r3, "router")
-        self.assertTrue(r3_result, 'r3 cannot get into router role after {} seconds timeout'.format(ROLE_WAIT_TIME))
+        self.assertTrue(r3_result, "r3 cannot get into router role after {} seconds timeout".format(ROLE_WAIT_TIME))
 
     @testcase.test_method_decorator
     def test02_reset_r1(self):
         """
-        reset r1, verify r2 or r3 becomes leader, the other one stays as router
-        """
+    reset r1, verify r2 or r3 becomes leader, the other one stays as router
+    """
         self.r1.reset_thread_radio()
         self.wait_for_completion(self.device_list)
 
         # verify r2, r3 role, one of them change to be leader
-        r1_role = self.r1.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-        r2_role = self.r2.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-        r3_role = self.r3.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
+        r1_role = self.r1.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+        r2_role = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+        r3_role = self.r3.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
         devices_roles = [r1_role, r2_role, r3_role]
         roles_result = self._verify_devices_roles(devices_roles)
-        self.assertTrue(roles_result,
-                        'r1, r2, r3 only one can be leader, r1 is {}, r2 is {}, r3 is {}'.format(r1_role, r2_role, r3_role))
+        self.assertTrue(
+            roles_result,
+            "r1, r2, r3 only one can be leader, r1 is {}, r2 is {}, r3 is {}".format(r1_role, r2_role, r3_role))
 
         # verify their children stayed with their parents
         self._verify_children(self.r1, NUM_CHILDREN)
@@ -219,10 +217,10 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test03_r1_leave_network(self):
         """
-        unwhitelist r1 out
-        r1 leave the network
-        verify either r2 or r3 is leader, the other one is router
-        """
+    unwhitelist r1 out
+    r1 leave the network
+    verify either r2 or r3 is leader, the other one is router
+    """
         self.r2.un_whitelist_node(self.r1)
         self.r3.un_whitelist_node(self.r1)
         self.r1.un_whitelist_node(self.r2)
@@ -230,25 +228,25 @@ class TestLeaderLoss(testcase.TestCase):
 
         self.r1.leave()
         self.wait_for_completion(self.device_list)
-        # total wait for minutes (default is 5m) for one router to change to leader,
-        # but it will break out if one router changed to leader early
+        # total wait for minutes (default is 5m) for one router to change
+        # to leader, but it will break out if one router changed to leader early
         timeout = time.time() + LEADER_CHANGE_WAIT_TIME
         while True:
             if time.time() > timeout:
                 break
             for device in self.all_nodes[1:]:
-                node_type = device.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2)
-                role = node_type.split('=')[1].strip()[1:-1]
+                node_type = device.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2)
+                role = node_type.split("=")[1].strip()[1:-1]
             time.sleep(30)
             # verify r2, r3 role, one of them change to be leader
-            r2_role = self.r2.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            r3_role = self.r3.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            roles_result = (r2_role == "leader" and r3_role == "router") or (r3_role == "leader" and r2_role == "router")
+            r2_role = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            r3_role = self.r3.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            roles_result = (r2_role == "leader" and r3_role == "router") or (r3_role == "leader" and
+                                                                             r2_role == "router")
             if roles_result:
                 break
 
-        self.assertTrue(roles_result, 'r2, r3 nobody change to leader in 5m, r2 is {},'
-                                      'r3 is {}'.format(r2_role, r3_role))
+        self.assertTrue(roles_result, ("r2, r3 nobody change to leader in 5m," f" r2 is {r2_role}, r3 is {r3_role}"))
 
         # verify their children stayed with their parents
         self._verify_children(self.r2, NUM_CHILDREN)
@@ -257,8 +255,8 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test04_r1_join_network(self):
         """
-        r1 re-join network as router
-        """
+    r1 re-join network as router
+    """
         self.r1.whitelist_node(self.r2)
         self.r2.whitelist_node(self.r1)
 
@@ -269,12 +267,12 @@ class TestLeaderLoss(testcase.TestCase):
         self.r3.whitelist_node(self.r1)
         self.wait_for_completion(self.device_list)
 
-        self.r1.join(self.network_data, 'router')
+        self.r1.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         # verify r1 role is router
         r1_result = self._verify_device_role(self.r1, "router")
-        self.assertTrue(r1_result, 'r1 cannot get into router role after {} seconds timeout'.format(ROLE_WAIT_TIME))
+        self.assertTrue(r1_result, ("r1 cannot get into router role" f" after {ROLE_WAIT_TIME} seconds timeout"))
         time.sleep(120)
 
         # verify their children stayed with their parents

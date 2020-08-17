@@ -11,20 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Sample script to run SilkReplayer to replay a log.
+"""
 
 from silk.tests import silk_replay
 
-CONFIG_PATH = '/opt/openthread_test/'
-LOG_PATH = '/opt/openthread_test/results/'
+CONFIG_PATH = "/opt/openthread_test/"
+LOG_PATH = "/opt/openthread_test/results/"
 
 argv = [
-    'tests/silk_replay.py',
-    '-r', LOG_PATH,
-    '-v2',
-    '-c', CONFIG_PATH + 'hwconfig.ini',
-    '-s', 'localhost',
-    '-p', '20',
-    '/home/pi/Documents/silk.log'
+    "tests/silk_replay.py", "-r", LOG_PATH, "-v2", "-c", CONFIG_PATH + "hwconfig.ini", "-s", "localhost", "-p", "20",
+    "/home/pi/Documents/silk.log"
 ]
 
 silk_replay.SilkReplayer(argv=argv)

@@ -1,4 +1,3 @@
-from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +12,10 @@ from __future__ import print_function
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import object
-import os
 import json
+import os
 
-CONF_PATH = '/opt/openthread_test/'
+CONF_PATH = "/opt/openthread_test/"
 
 
 class JsonFile(object):
@@ -28,7 +26,7 @@ class JsonFile(object):
     @staticmethod
     def load_json_file(file_path):
         try:
-            with open(file_path, 'r') as jfile:
+            with open(file_path, "r") as jfile:
 
                 json_data = jfile.read()
                 json_line = json.loads(json_data)
@@ -45,10 +43,10 @@ class JsonFile(object):
         try:
             json_data = json.dumps(json_line, sort_keys=True, indent=2)
         except Exception:
-            print ("Failed to save json file: %s" % (file_path))
+            print("Failed to save json file: %s" % (file_path))
             return
 
-        with open(file_path, 'w') as jfile:
+        with open(file_path, "w") as jfile:
             jfile.write(json_data)
 
     @staticmethod
@@ -70,4 +68,3 @@ class JsonFile(object):
     def is_json_file_existed(conf_file):
         file_path = JsonFile.get_conf_file(conf_file)
         return os.path.isfile(file_path)
-

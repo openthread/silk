@@ -29,7 +29,7 @@ if [[ $output == *"Already"* ]]; then
 
   echo "No code changes for Openthread........."
 
- else
+else
 
   echo "Started to build Openthread for nrf52840..........."
 

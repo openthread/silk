@@ -15,31 +15,30 @@
 import subprocess
 import logging
 
-LOG_FILE = '/opt/openthread_test/results/ps_cleanup.log'
+LOG_FILE = "/opt/openthread_test/results/ps_cleanup.log"
 
 
-def ps_cleanup(usb_port='ALL', logname=LOG_FILE):
+def ps_cleanup(usb_port="ALL", logname=LOG_FILE):
+    logging.basicConfig(format="%(levelname)s:%(message)s", filename=logname, level=logging.DEBUG)
 
-        logging.basicConfig(format='%(levelname)s:%(message)s', filename=logname, level=logging.DEBUG)
+    logging.info("*" * 30 + "  New logs  " + "*" * 30)
 
-        logging.info('*'*30 + '  New logs  ' + '*'*30)
+    output = subprocess.check_output("ps -ef | grep wpantund", shell=True)
+    logging.info("#" * 10 + "wpantund and ttyACM process info after tearDownClass" + "#" * 10)
+    logging.info(output)
 
-        output = subprocess.check_output('ps -ef | grep wpantund', shell=True)
-        logging.info('#'*10 + 'wpantund and ttyACM process info after tearDownClass'  + '#'*10)
-        logging.info(output)
+    logging.info("#" * 10 + "Kill all wpantund processes if any " + "#" * 10)
+    output_str = output.decode("utf-8")
+    for line in output_str:
+        if "sbin/wpantund" in line and (usb_port.upper() == "ALL" or line.split()[-1] == usb_port):
+            pid = line.split()[1]
+            logging.info(pid)
+            cmd = "sudo kill -9 " + pid
+            logging.info(subprocess.check_output(cmd, shell=True).decode("utf-8"))
 
-        logging.info('#'*10 + 'Kill all wpantund processes if any ' +  '#'*10)
-        output_str = output.decode('utf-8')
-        for line in output_str:
-            if 'sbin/wpantund' in line and (usb_port.upper() == 'ALL' or line.split()[-1] == usb_port):
-                pid = line.split()[1]
-                logging.info(pid)
-                cmd = 'sudo kill -9 ' + pid
-                logging.info(subprocess.check_output(cmd, shell=True).decode('utf-8'))
-
-        output = subprocess.check_output('ps -ef | grep ttyACM', shell=True).decode('utf-8')
-        logging.info(output)
+    output = subprocess.check_output("ps -ef | grep ttyACM", shell=True).decode("utf-8")
+    logging.info(output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ps_cleanup(LOG_FILE)

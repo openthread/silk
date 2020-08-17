@@ -11,32 +11,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+"""Various time and timeout related utilties.
 """
-Various time and timeout related utilties
-"""
-from __future__ import print_function
 
-from builtins import object
 import datetime
 
 
-# A class encapsulating tracking of a timeout
-# Useful for cases where a timeout is passed in by the user and successive calls
-# to blocking calls with timeouts need to be performed with timeout values adjusted
-# according to the time remaining
 class Deadline(object):
-    # Constructor
-    # @param timeout The timeout, in seconds. Specify None for an "infinite" timeout
-    # @param start_now Whether to start tracking time passed now or wait until the first call
-    def __init__(self, timeout = None, start_now = False):
+    """A class encapsulating tracking of a timeout.
+
+    Useful for cases where a timeout is passed in by the user and successive
+    calls to blocking calls with timeouts need to be performed with timeout
+    values adjusted according to the time remaining.
+    """
+
+    def __init__(self, timeout: float = None, start_now: bool = False):
+        """Constructor.
+
+        Args:
+            timeout (float, optional): The timeout, in seconds. Specify None for
+                an "infinite" timeout. Defaults to None.
+            start_now (bool, optional): Whether to start tracking time passed now
+                or wait until the first call. Defaults to False.
+        """
         self.__timeout = None
 
         self.__start_time = None
         self.__end_time = None
 
         if timeout is not None:
-            self.__timeout = datetime.timedelta(seconds = timeout)
+            self.__timeout = datetime.timedelta(seconds=timeout)
 
         if start_now:
             self.__calculate_start_time()
@@ -50,15 +54,22 @@ class Deadline(object):
 
         return retval
 
-    # Start tracking the time passed from now. Will throw a RuntimeError if tracking was already started
     def start(self):
+        """Start tracking the time passed from now.
+
+        Raises:
+            RuntimeError: raised if tracking was already started.
+        """
         started = self.__calculate_start_time()
-        if started == False:
+        if not started:
             raise RuntimeError("Tracking already started")
 
-    # Get the remaining time left, in seconds
-    # @returns The time left in seconds
-    def get_remaining_seconds(self):
+    def get_remaining_seconds(self) -> float:
+        """Get the remaining time left, in seconds.
+
+        Returns:
+            float: The time left in seconds.
+        """
         retval = None
 
         self.__calculate_start_time()
@@ -74,12 +85,19 @@ class Deadline(object):
         return retval
 
 
-# A class encapsulating tracking of the duration of an operation.
-# Useful for cases where one wants to track how long something took.
 class Duration(object):
-    # Constructor
-    # @param start_now Specify whether the start time should start now, or wait until explicitly invoked
-    def __init__(self, start_now = False):
+    """A class encapsulating tracking of the duration of an operation.
+
+  Useful for cases where one wants to track how long something took.
+  """
+
+    def __init__(self, start_now: bool = False):
+        """Constructor.
+
+        Args:
+            start_now (bool, optional): specify whether the start time should
+                start now, or wait until explicitly invoked. Defaults to False.
+        """
         self.__start_time = None
 
         if start_now:
@@ -93,19 +111,29 @@ class Duration(object):
 
         return retval
 
-    # Return the start time
-    # @returns the start time
     @property
-    def start_time(self):
+    def start_time(self) -> float:
+        """Return the start time.
+
+        Returns:
+            float: Return the start time.
+        """
         return self.__start_time
 
-    # Start the duration, if not already started
-    def start(self):
+    def start(self) -> float:
+        """Start the duration, if not already started.
+
+        Returns:
+            float: start time.
+        """
         return self.__calculate_start_time()
 
-    # Get the time since the start time
-    # @returns The time in seconds
-    def get_elapsed_seconds(self):
+    def get_elapsed_seconds(self) -> float:
+        """Get the time since the start time
+
+        Returns:
+            float: The time in seconds.
+        """
         retval = None
 
         self.__calculate_start_time()
@@ -116,4 +144,3 @@ class Duration(object):
         retval = diff.seconds
 
         return retval
-

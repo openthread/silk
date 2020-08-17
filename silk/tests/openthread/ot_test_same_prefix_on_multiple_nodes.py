@@ -12,21 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import range
-from silk.config import wpan_constants as wpan
-from silk.tools.wpan_util import verify, verify_within
-from silk.tools import wpan_util
-from silk.tools import wpan_table_parser
-
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
 import random
 import unittest
 import time
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools import wpan_util
+from silk.tools.wpan_util import verify, verify_within
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -40,7 +38,7 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
     poll_interval = 500
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.sed2 = ffdb.ThreadDevBoard()
@@ -53,18 +51,17 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in cls.all_nodes:
             device.set_logger(cls.logger)
             cls.add_test_device(device)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -87,12 +84,12 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
             prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
             for p in prefixes:
                 if p.prefix == IP6_PREFIX:
-                    if (p.origin == 'ncp' and p.prefix_len == '64' and p.is_stable() and p.is_on_mesh()
-                       and p.is_preferred() and not p.is_def_route() and not p.is_slaac() and not p.is_dhcp()
-                       and not p.is_config() and p.priority == "med"):
+                    if (p.origin == "ncp" and p.prefix_len == "64" and p.is_stable() and p.is_on_mesh() and
+                            p.is_preferred() and not p.is_def_route() and not p.is_slaac() and not p.is_dhcp() and
+                            not p.is_config() and p.priority == "med"):
                         break
             else:  # `for` loop finished without finding the prefix.
-                raise wpan_util.VerifyError('Did not find prefix {} on node {}'.format(IP6_PREFIX, self.r1))
+                raise wpan_util.VerifyError("Did not find prefix {} on node {}".format(IP6_PREFIX, self.r1))
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
@@ -113,7 +110,7 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.r2.join(self.network_data, 'router')
+        self.r2.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         self.sed2.join(self.network_data, "sleepy-end-device")
@@ -121,15 +118,15 @@ class TestSamePrefixonMultipleNodes(testcase.TestCase):
         self.sed2.set_sleep_poll_interval(self.poll_interval)
 
         for _ in range(12):
-            node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print(node_type == 'router')
+            node_type = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            print(node_type == "router")
 
-            if node_type == 'router':
-                print('End-node moved up to a Router.')
+            if node_type == "router":
+                print("End-node moved up to a Router.")
                 break
             time.sleep(5)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 60 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 60 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_Verify_Add_IPV6(self):

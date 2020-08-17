@@ -12,24 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, verify_within, is_associated, check_neighbor_table
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools.wpan_util import (verify, verify_within, is_associated, check_neighbor_table)
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 WAIT_INTERVAL = 6
 
 
 class TestRouterLeaderResetRecovery(testcase.TestCase):
-    # -----------------------------------------------------------------------------------------------------------------------
     # Test description: Verify sequential reset recovery of a router and leader
     #
     # Network topology
@@ -50,7 +49,7 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
     poll_interval = 400
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.ed1 = ffdb.ThreadDevBoard()
@@ -62,18 +61,17 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in cls.all_nodes:
             device.set_logger(cls.logger)
             cls.add_test_device(device)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -117,22 +115,22 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.r2.join(self.network_data, 'router')
+        self.r2.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         self.ed1.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
         for _ in range(10):
-            node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print(node_type == 'router')
+            node_type = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            print(node_type == "router")
 
-            if node_type == 'router':
-                print('Matched!!!!!!!!!!!!!')
+            if node_type == "router":
+                print("Matched!!!!!!!!!!!!!")
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 100 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 100 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_verify_neighbor_table(self):
@@ -150,8 +148,9 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         # Reset r2 and check that everything recover correctly. Wait for it to be associated.
         self.r2.reset_thread_radio()
         self.wait_for_completion(self.device_list)
-        self.logger.info("verify after router {} reset and recovery it has leader(r1) {} in it's neighbor table"
-                         .format(self.r2.name, self.r1.name))
+        self.logger.info(
+            "verify after router {} reset and recovery it has leader(r1) {} in it's neighbor table".format(
+                self.r2.name, self.r1.name))
         verify_within(self.check_r2_neighbor_table, WAIT_INTERVAL)
         self.assertTrue(self.r1.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_LEADER)
         self.assertTrue(self.r2.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_ROUTER)
@@ -161,8 +160,9 @@ class TestRouterLeaderResetRecovery(testcase.TestCase):
         # Reset leader (i.e. r1) and check that everything recover correctly.
         self.r1.reset_thread_radio()
         self.wait_for_completion(self.device_list)
-        self.logger.info("verify after leader {} reset and recovery it has router(r2) {} in it's neighbor table"
-                         .format(self.r1.name, self.r2.name))
+        self.logger.info(
+            "verify after leader {} reset and recovery it has router(r2) {} in it's neighbor table".format(
+                self.r1.name, self.r2.name))
         verify_within(self.check_r1_neighbor_table, WAIT_INTERVAL)
 
         self.assertTrue(self.r1.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_LEADER)

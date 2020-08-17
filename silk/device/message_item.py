@@ -11,14 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 message_item.py
 
 This module provides a base class for message items processed by the embedded shell and system call manager
 """
-
-from builtins import object
 
 
 class MessageItemDelegates(object):
@@ -36,7 +33,7 @@ class MessageItemDelegates(object):
 
     # Perform an expect
     # See arguments in envision.Envision
-    def expect(self, expect_list, timeout = None):
+    def expect(self, expect_list, timeout=None):
         return self.expect_handler(self.instance, expect_list, timeout)
 
     # Perform a send
@@ -52,7 +49,8 @@ class MessageItemDelegates(object):
 
 class MessageItemBase(object):
     """
-    Base class used to encapsulate message/work objects handled by EmbeddedShell's message queue
+    Base class used to encapsulate message/work objects handled
+    by EmbeddedShell's message queue
     """
 
     def __init__(self):
@@ -64,20 +62,19 @@ class MessageItemBase(object):
         self._delegates = delegates
 
     def invoke(self, parent):
-        """ Invoke the action to be taken. 
-            Return true if the worker thread should exit.
-        """
+        """ Invoke the action to be taken.
+      Return true if the worker thread should exit.
+    """
         raise NotImplementedError()
 
 
 class MessageCallableItem(MessageItemBase):
-    """ 
-    Class to encapusulate a command/expect message into the message
-    queue.
-    
-    callable_ must be a method that returns true when action is complete. 
+    """Class to encapusulate a command/expect message into the message queue.
+
+    callable_ must be a method that returns true when action is complete.
     Must not return false indefinitely.
     """
+
     def __init__(self, callable_, args):
         super(MessageCallableItem, self).__init__()
         self.__callable = callable_
@@ -92,7 +89,7 @@ class MessageCallableItem(MessageItemBase):
 
     def invoke(self, parent):
         """ Invoke the action repeatedly via callable method until the callable returns true.
-            Return true if the worker thread should exit.
+        Return true if the worker thread should exit.
         """
         should_exit = False
 
@@ -103,7 +100,7 @@ class MessageCallableItem(MessageItemBase):
 
 
 class MessageExitItem(MessageItemBase):
-    """Class to encapsulate a worker thread exit message into the message queue
+    """Class to encapsulate a worker thread exit message into the message queue.
     """
 
     def __init__(self):

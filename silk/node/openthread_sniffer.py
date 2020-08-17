@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 This module requires that the OpenThread spinel-cli tools are installed
 
@@ -24,24 +23,24 @@ This module requires that the OpenThread spinel-cli tools are installed
 
     $ sudo visudo
 
-        Option 1: Add /usr/local/bin to your secure path
-        Option 2: Create a symlink from a secure path location to the sniffer.py
-                  you found above
+    Option 1: Add /usr/local/bin to your secure path
+    Option 2: Create a symlink from a secure path location to the sniffer.py
+        you found above
 
 This module makes subprocess calls out to sniffer.py to generate packet
 captures.
 """
-from builtins import str
 import os
 import subprocess
 
-import silk.hw.hw_resource as hwr
 from silk.node.sniffer_base import SnifferNode
+import silk.hw.hw_resource as hwr
 
 sniffer_py_path = None
 
 
 class OpenThreadSniffer(SnifferNode):
+
     def __init__(self):
         super().__init__()
         self.sniffer_process = None
@@ -56,9 +55,9 @@ class OpenThreadSniffer(SnifferNode):
             sniffer_py_path = subprocess.check_output(["which", "sniffer.py"]).strip()
         except Exception as error:
             self.logger.debug("Error getting sniffer.py path: %s" % error)
-            sniffer_py_path = '/usr/local/bin/sniffer.py'
+            sniffer_py_path = "/usr/local/bin/sniffer.py"
 
-        self.device = hwr.global_instance().get_hw_module(self._hwModel)
+        self.device = hwr.global_instance().get_hw_module(self._hw_model)
 
     def set_up(self):
         pass
@@ -69,12 +68,15 @@ class OpenThreadSniffer(SnifferNode):
 
     def start(self, channel, output_path):
         self.channel = channel
-        sniffer_args = [sniffer_py_path, "-c", str(channel), "-n 1", "--crc", "-b 115200", "--no-reset",
-                        "-u", self.device.port()]
+        sniffer_args = [
+            sniffer_py_path, "-c",
+            str(channel), "-n 1", "--crc", "-b 115200", "--no-reset", "-u",
+            self.device.port()
+        ]
 
         self.output_path = os.path.join(output_path, "thread_channel_%s.pcap" % channel)
         self.outfile = open(self.output_path, "wb")
-        self.sniffer_process = subprocess.Popen(sniffer_args, bufsize=0, stdout = self.outfile)
+        self.sniffer_process = subprocess.Popen(sniffer_args, bufsize=0, stdout=self.outfile)
 
     def restart(self):
         if self.sniffer_process is not None:
@@ -82,8 +84,7 @@ class OpenThreadSniffer(SnifferNode):
 
         self.fragment_count += 1
         output_name = os.path.splitext(self.output_path)
-        self.outfile = open(output_name[0] + "_fragment_{0}"
-                            .format(self.fragment_count) + output_name[1], "wb")
+        self.outfile = open(output_name[0] + "_fragment_{0}".format(self.fragment_count) + output_name[1], "wb")
 
         sniffer_args = [sniffer_py_path, "-c", str(self.channel), "-u", self.device.port()]
         self.sniffer_process = subprocess.Popen(sniffer_args, bufsize=0, stdout=self.outfile)
@@ -103,5 +104,4 @@ class OpenThreadSniffer(SnifferNode):
 
 
 class NordicSniffer(OpenThreadSniffer):
-    _hwModel = "NordicSniffer"
-
+    _hw_model = "NordicSniffer"

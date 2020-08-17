@@ -11,34 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Silk testcase class definition.
+"""Silk testcase class definition.
 
 All Silk tests should inherit from this class.
-
 """
 
-from builtins import range
-from builtins import object
 import collections
 import json
 import logging
 import os
 import sys
 import time
+import traceback
 import unittest
 
-import silk.config.defaults
 from silk.config import wpan_constants as wpan
-import silk.node.base_node
+from silk.hw.hw_resource import HardwareNotFound
 from silk.node.fifteen_four_dev_board import ThreadDevBoard
+from silk.tools.otns_manager import OtnsManager
+import silk.config.defaults
+import silk.node.base_node
 import silk.node.openthread_sniffer as openthread_sniffer
 import silk.node.sniffer_base as sniffer_node
-from silk.tools.otns_manager import OtnsManager
-from silk.hw.hw_resource import HardwareNotFound
-
-import traceback
 
 OUTPUT_DIRECTORY_KEY = "OUTPUT_DIRECTORY"
 DATE_FORMAT = "%Y-%m-%d_%H.%M.%S"
@@ -49,15 +43,17 @@ PING_SENT = "pings_sent"
 PING_RECEIVED = "pings_received"
 PING_ROUND_TRIP_TIME = "ping_rtt"
 
-__stream_verbosity = 1
-__file_handler = None
-__stream_handler = None
-__otns_host = None
+_STREAM_VERBOSITY = 1
+_FILE_HANDLER = None
+_STREAM_HANDLER = None
+_OTNS_HOST = None
 
 
-def setOutputDirectory(path):
-    """ Set the output directory path for test results. """
+def set_output_directory(path):
+    """Set the output directory path for test results.
+    """
     os.environ[OUTPUT_DIRECTORY_KEY] = path
+
 
 def setOtnsHost(host: str):
     """Set the OTNS server host for the test case.
@@ -65,20 +61,22 @@ def setOtnsHost(host: str):
     Args:
         host (str): OTNS server host
     """
-    global __otns_host
-    __otns_host = host
+    global _OTNS_HOST
+    _OTNS_HOST = host
 
-def setStreamVerbosity(verbosity):
-    """ Set the verbose level of console output
+
+def set_stream_verbosity(verbosity):
+    """Set the verbose level of console output.
 
     0 = Minimal output (errors only)
     1 = Standard output (info)
     2 = Debug output
     """
-    global __stream_verbosity
-    __stream_verbosity = verbosity
+    global _STREAM_VERBOSITY
+    _STREAM_VERBOSITY = verbosity
 
-def getSilkChildLogger(logger, device_name):
+
+def get_silk_child_logger(logger, device_name):
     """
     Silk nodes should take a logger object on instantiation.
     They should call this function with the logger and their own name to get a
@@ -91,15 +89,15 @@ def getSilkChildLogger(logger, device_name):
     return new_logger
 
 
-def getFrameworkLogger(output_dest):
-    """
-    This function is only meant to be called by the setup_class_decorator.
+def get_framework_logger(output_dest):
+    """This function is only meant to be called by the setup_class_decorator.
+
     This creates a top-level silk logger and installs two handlers.  One
     handler writes ALL logs from children out to a file specified by the
     framework.  The other handler writes INFO level and above to the terminal.
     """
-    global __file_handler
-    global __stream_handler
+    global _FILE_HANDLER
+    global _STREAM_HANDLER
 
     new_logger = logging.getLogger("silk")
     new_logger.setLevel(logging.DEBUG)
@@ -107,37 +105,35 @@ def getFrameworkLogger(output_dest):
     formatter = logging.Formatter(LOG_LINE_FORMAT)
 
     # Remove previous handler, if any
-    if __file_handler is not None:
-        new_logger.removeHandler(__file_handler)
+    if _FILE_HANDLER is not None:
+        new_logger.removeHandler(_FILE_HANDLER)
 
     # Configure and install new file handler
-    __file_handler = logging.FileHandler(output_dest, mode="w")
-    __file_handler.setLevel(logging.DEBUG)
-    __file_handler.setFormatter(formatter)
+    _FILE_HANDLER = logging.FileHandler(output_dest, mode="w")
+    _FILE_HANDLER.setLevel(logging.DEBUG)
+    _FILE_HANDLER.setFormatter(formatter)
 
-    if __stream_handler is not None:
-        new_logger.removeHandler(__stream_handler)
+    if _STREAM_HANDLER is not None:
+        new_logger.removeHandler(_STREAM_HANDLER)
 
-    if __stream_verbosity == 0:
+    if _STREAM_VERBOSITY == 0:
         stream_level = logging.CRITICAL
-    elif __stream_verbosity == 1:
+    elif _STREAM_VERBOSITY == 1:
         stream_level = logging.INFO
     else:
         stream_level = logging.DEBUG
 
-    __stream_handler = logging.StreamHandler()
-    __stream_handler.setLevel(stream_level)
-    __stream_handler.setFormatter(formatter)
-    new_logger.addHandler(__stream_handler)
-    new_logger.addHandler(__file_handler)
+    _STREAM_HANDLER = logging.StreamHandler()
+    _STREAM_HANDLER.setLevel(stream_level)
+    _STREAM_HANDLER.setFormatter(formatter)
+    new_logger.addHandler(_STREAM_HANDLER)
+    new_logger.addHandler(_FILE_HANDLER)
 
     return new_logger
 
 
 def setup_decorator(func):
-    """
-    This decorator should be used as a wrapper for all setUp methods in
-    silk.
+    """This decorator should be used as a wrapper for all setUp methods in silk.
 
     When unittest calls setUp
     1. Store the test method name
@@ -159,8 +155,7 @@ def setup_decorator(func):
         self.results[self.current_test_class][self.current_test_method][CASE_ID] = curr_case_id
 
         # Log the current test method
-        self.logger.info("SET UP %s.%s" % (self.current_test_class,
-                                           self.current_test_method))
+        self.logger.info("SET UP %s.%s" % (self.current_test_class, self.current_test_method))
 
         # Call the setUp function
         func(self)
@@ -172,15 +167,15 @@ def setup_decorator(func):
 
 
 def teardown_decorator(func):
-    """
-    Users should decorate their tearDown methods with this decorator.
+    """Users should decorate their tearDown methods with this decorator.
+
     1. Mark the logs to indicate which tearDown method is running
     2. Run the client's tearDown
     3. Report a pass if tearDown was successful
     """
+
     def wrapper(self, *args, **kwargs):
-        self.logger.info("TEAR DOWN %s.%s" % (self.current_test_class,
-                                              self.current_test_method))
+        self.logger.info("TEAR DOWN %s.%s" % (self.current_test_class, self.current_test_method))
 
         self.wait_for_completion(self.device_list)
         func(self)
@@ -192,9 +187,7 @@ def teardown_decorator(func):
 
 
 def setup_class_decorator(func):
-    """
-    This decorator should be used as a wrapper for all setUpClass methods in
-    silk.
+    """This decorator should be used as a wrapper for all setUpClass methods in silk.
 
     When unittest calls setUpClass
     1. Get the user-specified environment variable or use default
@@ -204,6 +197,7 @@ def setup_class_decorator(func):
     5. Create a result dictionary to store information as tests run
     6. Call the user's setUpClass method
     """
+
     def wrapper(*args, **kwargs):
         start_time_string = time.strftime(DATE_FORMAT)
         cls = args[0]
@@ -225,7 +219,7 @@ def setup_class_decorator(func):
 
         # Create a new logger for the test framework
         silk_log_dest = os.path.join(cls.current_output_directory, "silk.log")
-        cls.logger = getFrameworkLogger(silk_log_dest)
+        cls.logger = get_framework_logger(silk_log_dest)
         cls.logger.info("Log dest: %s" % cls.current_output_directory)
         cls.logger.info("SET UP CLASS %s" % cls.current_test_class)
 
@@ -240,10 +234,8 @@ def setup_class_decorator(func):
 
         cls.results[cls.current_test_class][SUITE_ID] = curr_suite_id
 
-        if __otns_host:
-            cls.otns_manager = OtnsManager(
-                    server_host=__otns_host,
-                    logger=cls.logger.getChild("otnsManager"))
+        if _OTNS_HOST:
+            cls.otns_manager = OtnsManager(server_host=_OTNS_HOST, logger=cls.logger.getChild("otnsManager"))
             cls.otns_manager.set_test_title(f"{cls.current_test_class}.set_up")
             cls.otns_manager.set_replay_speed(1.0)
         else:
@@ -256,14 +248,14 @@ def setup_class_decorator(func):
             # If the user's setUpClass call succeeded, try to Thread sniffers
             cls.thread_sniffer_start_all()
 
-            if __otns_host:
+            if _OTNS_HOST:
                 for device in cls.device_list:
                     cls.get_device_extaddr(device)
         except HardwareNotFound as e:
-            cls.results[cls.current_test_class]['setupClass'] = False
+            cls.results[cls.current_test_class]["setupClass"] = False
 
             cls.release_devices()
-            cls.logger.error('Hardware Not Found Error !!!')
+            cls.logger.error("Hardware Not Found Error !!!")
             output_file = open(os.path.join(cls.current_output_directory, "results.json"), "w")
             json.dump(cls.results, output_file, indent=4)
             output_file.close()
@@ -276,17 +268,17 @@ def setup_class_decorator(func):
                 for line in call.rstrip().splitlines():
                     cls.logger.error(line)
 
-            cls.results[cls.current_test_class]['setupClass'] = False
-            cls.logger.error('Hardware Configuration Error !!!')
+            cls.results[cls.current_test_class]["setupClass"] = False
+            cls.logger.error("Hardware Configuration Error !!!")
             output_file = open(os.path.join(cls.current_output_directory, "results.json"), "w")
             json.dump(cls.results, output_file, indent=4)
             output_file.close()
 
-            cls.logger.info("=====================================================================")
-            cls.logger.info("==================== CHECK HARDWARE CONFIGURATION ===================")
-            cls.logger.info("=====================================================================")
-            cls.logger.info( ("%s" % cls.__name__).ljust(34,".") + "FAILED SETUPCLASS".rjust(34, "."))
-            cls.logger.info("=====================================================================")
+            cls.logger.info("=" * 70)
+            cls.logger.info("=" * 20 + " CHECK HARDWARE CONFIGURATION " + "=" * 19)
+            cls.logger.info("=" * 70)
+            cls.logger.info(("%s" % cls.__name__).ljust(34, ".") + "FAILED SETUPCLASS".rjust(34, "."))
+            cls.logger.info("=" * 70)
             cls.release_devices()
             raise
 
@@ -294,11 +286,12 @@ def setup_class_decorator(func):
 
 
 def teardown_class_decorator(func):
-    """
-    Users should wrap their tearDownClass methods with this decorator.
+    """Users should wrap their tearDownClass methods with this decorator.
+
     This will stamp the log with an indication that the tearDownClass method
     is running and will uninstall all log handlers used by this test.
     """
+
     def wrapper(*args, **kwargs):
         cls = args[0]
         cls.logger.info("TEAR DOWN CLASS %s" % cls.current_test_class)
@@ -315,9 +308,9 @@ def teardown_class_decorator(func):
         cls.logger.info("TEAR DOWN CLASS DONE %s" % cls.current_test_class)
 
         # Print results summary
-        cls.logger.info("=====================================================================")
-        cls.logger.info("============================= SUMMARY ===============================")
-        cls.logger.info("=====================================================================")
+        cls.logger.info("=" * 70)
+        cls.logger.info("=" * 29 + " SUMMARY " + "=" * 31)
+        cls.logger.info("=" * 70)
         for test_class in list(cls.results.keys()):
             cls.logger.info(test_class)
 
@@ -328,18 +321,18 @@ def teardown_class_decorator(func):
                 test_case_name = test_case
                 test_case_dict = cls.results[test_class][test_case_name]
 
-                test_label = ("    %s" % test_case_name).ljust(34,".")
+                test_label = ("    %s" % test_case_name).ljust(34, ".")
 
                 if test_case_dict["setUp"] and test_case_dict["test"] and test_case_dict["tearDown"]:
-                    cls.logger.info( test_label + "PASS".rjust(68-len(test_label), "."))
+                    cls.logger.info(test_label + "PASS".rjust(68 - len(test_label), "."))
                 elif not test_case_dict["setUp"]:
-                    cls.logger.info( test_label + "FAILED SETUP".rjust(68-len(test_label), "."))
+                    cls.logger.info(test_label + "FAILED SETUP".rjust(68 - len(test_label), "."))
                 elif not test_case_dict["tearDown"]:
-                    cls.logger.info( test_label + "FAILED TEARDOWN".rjust(68-len(test_label), "."))
+                    cls.logger.info(test_label + "FAILED TEARDOWN".rjust(68 - len(test_label), "."))
                 else:
-                    cls.logger.info( test_label + "FAILED TEST".rjust(68-len(test_label), "."))
+                    cls.logger.info(test_label + "FAILED TEST".rjust(68 - len(test_label), "."))
 
-        cls.logger.info("=====================================================================")
+        cls.logger.info("=" * 70)
 
         # Remove the file and stream handler at the end of the test
         while len(cls.logger.handlers) > 0:
@@ -358,17 +351,17 @@ def teardown_class_decorator(func):
 
 
 def test_method_decorator(func):
-    """
-    Users should use this decorator on all of their test methods
+    """Users should use this decorator on all of their test methods.
+
     1. Mark logs before test methods are called.
     2. Report if the test was successful
     """
+
     def wrapper(self, *args, **kwargs):
 
         self.add_test_device(None)
         self.wait_for_completion(self.device_list)
-        self.logger.info("RUNNING TEST %s.%s" % (self.current_test_class,
-                                                 self.current_test_method))
+        self.logger.info("RUNNING TEST %s.%s" % (self.current_test_class, self.current_test_method))
 
         try:
             func(self)
@@ -390,6 +383,7 @@ def test_method_decorator(func):
 
 
 class stress_test_decorator(object):
+
     def __init__(self, num_iterations, allowed_failures=0):
         self.num_iterations = num_iterations
         self.allowed_failures = allowed_failures
@@ -397,18 +391,17 @@ class stress_test_decorator(object):
     def __call__(self, func):
         num_iterations = self.num_iterations
         allowed_failures = self.allowed_failures
+
         def wrapper(self, *args, **kwargs):
             self.add_test_device(None)
             self.wait_for_completion(self.device_list)
-            self.logger.info("RUNNING TEST %s.%s" % (self.current_test_class,
-                                                 self.current_test_method))
+            self.logger.info("RUNNING TEST %s.%s" % (self.current_test_class, self.current_test_method))
 
             pass_count = 0
 
             for ii in range(0, num_iterations, 1):
-                self.logger.info("RUNNING TEST %s.%s (%s/%s)" % (self.current_test_class,
-                                                                   self.current_test_method,
-                                                                   ii+1, num_iterations))
+                self.logger.info("RUNNING TEST %s.%s (%s/%s)" %
+                                 (self.current_test_class, self.current_test_method, ii + 1, num_iterations))
                 try:
                     func(self)
                     pass_count += 1
@@ -429,15 +422,13 @@ class stress_test_decorator(object):
 
 
 class TestCase(unittest.TestCase):
-    """
-    Base class for all silk tests
+    """Base class for all silk tests.
     """
 
     thread_sniffers = {}
 
     def wait_for_completion(self, node_list):
-        """
-        Block until all nodes in node_list have completed their task queue.
+        """Block until all nodes in node_list have completed their task queue.
 
         Signal test failure if any node in node_list returns an err_msg.
         """
@@ -446,8 +437,7 @@ class TestCase(unittest.TestCase):
             if err_msg is not None:
                 self.fail(err_msg)
 
-    def ping6(self, sender, target_addr, num_pings, ping_size=32,
-              allowed_errors=0, num_expected=None, interface=None):
+    def ping6(self, sender, target_addr, num_pings, ping_size=32, allowed_errors=0, num_expected=None, interface=None):
         if num_expected is None:
             num_expected = num_pings
 
@@ -460,21 +450,26 @@ class TestCase(unittest.TestCase):
         self.logger.info("Pings sent: %s" % sender.ping6_sent)
         self.logger.info("Pings received: %s" % sender.ping6_received)
         self.assertEqual(sender.ping6_sent, num_pings)
-        self.assertAlmostEqual(sender.ping6_received, num_expected,
-                               delta=allowed_errors)
+        self.assertAlmostEqual(sender.ping6_received, num_expected, delta=allowed_errors)
 
     def timed_ping6(self, sender, target_addr, num_pings, ping_size=32, interface=None):
         sender.timed_ping6(target_addr, num_pings, ping_size, interface)
         self.wait_for_completion(self.device_list)
 
-        self.results[self.current_test_class][self.current_test_method][PING_ROUND_TRIP_TIME] = sender.ping6_round_trip_time
+        self.results[self.current_test_class][
+            self.current_test_method][PING_ROUND_TRIP_TIME] = sender.ping6_round_trip_time
 
         self.logger.info("Ping RTT: %s" % sender.ping6_round_trip_time)
 
-    def ping6_multi_dest(self, sender, target_addrs, num_pings, ping_size=32,
-                         allowed_errors=0, num_expected=None, interface=None):
-        """
-        Sender pings all devices in target_addrs
+    def ping6_multi_dest(self,
+                         sender,
+                         target_addrs,
+                         num_pings,
+                         ping_size=32,
+                         allowed_errors=0,
+                         num_expected=None,
+                         interface=None):
+        """Sender pings all devices in target_addrs.
         """
         if num_expected is None:
             num_expected = num_pings
@@ -490,16 +485,21 @@ class TestCase(unittest.TestCase):
                 self.logger.info("Pings received: %s" % sender.ping6_received)
 
             if sender.ping6_received < (num_expected - allowed_errors) or \
-               sender.ping6_received > (num_expected + allowed_errors) or \
-               error is not None:
+                sender.ping6_received > (num_expected + allowed_errors) or \
+                error is not None:
                 failed_device_count += 1
 
         self.assertEqual(failed_device_count, 0)
 
-    def ping6_multi_source(self, senders, target_addr, num_pings, ping_size=32,
-                           allowed_errors=0, num_expected=None, interface=None):
-        """
-        Multiple senders all ping6 the same target_addr
+    def ping6_multi_source(self,
+                           senders,
+                           target_addr,
+                           num_pings,
+                           ping_size=32,
+                           allowed_errors=0,
+                           num_expected=None,
+                           interface=None):
+        """Multiple senders all ping6 the same target_addr.
         """
         if num_expected is None:
             num_expected = num_pings
@@ -520,7 +520,7 @@ class TestCase(unittest.TestCase):
                 continue
 
             elif sender.ping6_received < (num_expected - allowed_errors) or \
-                 sender.ping6_received > (num_expected + allowed_errors):
+                sender.ping6_received > (num_expected + allowed_errors):
                 failed_device_count += 1
 
         self.assertEqual(failed_device_count, 0)
@@ -578,8 +578,7 @@ class TestCase(unittest.TestCase):
             return
 
         cls.logger.debug("Starting Thread sniffer on channel %s" % channel)
-        cls.thread_sniffers[channel].start(channel=channel,
-                                           output_path=cls.current_output_directory)
+        cls.thread_sniffers[channel].start(channel=channel, output_path=cls.current_output_directory)
         cls.thread_sniffers[channel].wait_for_completion()
 
     @classmethod
@@ -628,9 +627,7 @@ class TestCase(unittest.TestCase):
     @classmethod
     def get_device_extaddr(cls, device):
         if cls.otns_manager and isinstance(device, ThreadDevBoard):
-            cls.otns_manager.update_extaddr(
-                    device,
-                    int(device.get(wpan.WPAN_EXT_ADDRESS)[1:-1], 16))
+            cls.otns_manager.update_extaddr(device, int(device.get(wpan.WPAN_EXT_ADDRESS)[1:-1], 16))
 
     @classmethod
     def clear_test_devices(cls):
@@ -652,8 +649,7 @@ class TestCase(unittest.TestCase):
 
     @classmethod
     def _testrail_dict_lookup(cls, test_element):
-        """
-        Return TestRail ID from TestRail dictionary key
+        """Return TestRail ID from TestRail dictionary key.
         """
         return_id = None
         if hasattr(cls, "testrail_dict"):

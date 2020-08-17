@@ -15,7 +15,7 @@
 
 def hwaddr_plain_add_colons(plain_hwaddr):
     eui = ""
-    for (i,c) in enumerate(plain_hwaddr):
+    for (i, c) in enumerate(plain_hwaddr):
 
         c = int(c, 16)
         if i == 1:
@@ -23,7 +23,7 @@ def hwaddr_plain_add_colons(plain_hwaddr):
 
         eui = eui + "%x" % c
         if (i + 1) % 2 == 0 and i != len(plain_hwaddr) - 1:
-            eui = eui + ':'
+            eui = eui + ":"
 
     eui = eui.upper()
     return eui.upper()
@@ -32,7 +32,7 @@ def hwaddr_plain_add_colons(plain_hwaddr):
 def hwaddr_from_iid(iid):
     hwaddr = None
 
-    hwaddr_plain = iid.replace(':','')
+    hwaddr_plain = iid.replace(":", "")
     hwaddr = hwaddr_plain_add_colons(hwaddr_plain)
 
     return hwaddr.upper()

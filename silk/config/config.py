@@ -11,16 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-config.py
-
-This file contains Configuration management classes for use by the silk framework
+"""This file contains Configuration management classes for use by the silk framework
 
 """
 
-from builtins import str
-from builtins import object
 import json
 
 BLACKLIST_KEY = "blacklist"
@@ -50,7 +44,7 @@ class Config(object):
         Load configuration data from file
         """
         try:
-            with open(self.config_file,'r') as fd:
+            with open(self.config_file, "r") as fd:
                 try:
                     raw_dict = json.load(fd)
                 except ValueError:
@@ -70,11 +64,8 @@ class Config(object):
         """
         Save configuration data to file
         """
-        with open(self.config_file, 'w') as fd:
-            raw_dict = {
-                BLACKLIST_KEY : self.get_blacklist(),
-                PORT_MAPPING : self._get_port_mapping()
-            }
+        with open(self.config_file, "w") as fd:
+            raw_dict = {BLACKLIST_KEY: self.get_blacklist(), PORT_MAPPING: self._get_port_mapping()}
 
             json.dump(raw_dict, fd)
 

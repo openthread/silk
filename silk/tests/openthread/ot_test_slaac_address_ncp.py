@@ -12,31 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-from silk.tools.wpan_util import verify, verify_within
-from silk.tools import wpan_util
-from silk.tools import wpan_table_parser
-
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools import wpan_util
+from silk.tools.wpan_util import verify, verify_within
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
-PREFIX = 'fd00:1234::'
+PREFIX = "fd00:1234::"
 IP_ADDRESS = PREFIX + "1234"
 
 WAIT_INTERVAL = 5
 
 
 class TestSlaacAddressNcp(testcase.TestCase):
-    # -----------------------------------------------------------------------------------------------------------------------
     # Test description: SLAAC address management by NCP
     #
     # Network topology:
@@ -64,7 +62,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
     slaac_addrs = None
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.fed1 = ffdb.ThreadDevBoard()
@@ -77,19 +75,17 @@ class TestSlaacAddressNcp(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in cls.all_nodes:
             device.set_logger(cls.logger)
             cls.add_test_device(device)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".
-                format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -108,8 +104,11 @@ class TestSlaacAddressNcp(testcase.TestCase):
         pass
 
     def check_prefix_and_slaac_address_are_added(self):
-        wpan_util.verify_correct_prefix_among_similar_prefixes(self.all_nodes, PREFIX, stable=True,
-                                                               on_mesh=True, slaac=True)
+        wpan_util.verify_correct_prefix_among_similar_prefixes(self.all_nodes,
+                                                               PREFIX,
+                                                               stable=True,
+                                                               on_mesh=True,
+                                                               slaac=True)
         wpan_util.verify_address(self.all_nodes, PREFIX)
 
     def check_prefix_and_slaac_address_are_removed(self):
@@ -138,30 +137,30 @@ class TestSlaacAddressNcp(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.r2.join(self.network_data, 'router')
+        self.r2.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         self.fed1.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
         for _ in range(10):
-            node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            self.logger.info(node_type == 'router')
+            node_type = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            self.logger.info(node_type == "router")
 
-            if node_type == 'router':
-                self.logger.info('End-node moved up to a Router.')
+            if node_type == "router":
+                self.logger.info("End-node moved up to a Router.")
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 100 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 100 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_enable_slaac_module_on_ncp(self):
         # Enable slaac module on ncp and disable it on wpantund for all nodes and verify it is disabled.
         for node in self.all_nodes:
-            verify(node.get(wpan.WPAN_OT_SLAAC_ENABLED) == 'true')
-            node.setprop("Daemon:IPv6:AutoAddSLAACAddress", 'false')
-            verify(node.get("Daemon:IPv6:AutoAddSLAACAddress") == 'false')
+            verify(node.get(wpan.WPAN_OT_SLAAC_ENABLED) == "true")
+            node.setprop("Daemon:IPv6:AutoAddSLAACAddress", "false")
+            verify(node.get("Daemon:IPv6:AutoAddSLAACAddress") == "false")
 
     @testcase.test_method_decorator
     def test03_verify_prefix_added(self):
@@ -177,7 +176,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
 
         # Save the assigned SLAAC addresses.
         TestSlaacAddressNcp.slaac_addrs = [node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes]
-        self.logger.info('Save the assigned slaac addresses created from slaac prefix on each node')
+        self.logger.info("Save the assigned slaac addresses created from slaac prefix on each node")
         self.logger.info(self.slaac_addrs)
 
     @testcase.test_method_decorator
@@ -187,8 +186,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
         self.wait_for_completion(self.device_list)
 
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
     @testcase.test_method_decorator
     def test05_verify_remove_prefix(self):
@@ -205,8 +203,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
 
         # Verify the prefix and related address gets added
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
         # Add same prefix on r1 and verify addresses stay as before and related prefix entries gets
         # added on all the node.
         # r1 should have 3 prefix entries((1 as origin:ncp (with rloc16 of r1), 2nd as origin:user (with rloc:0x0000))
@@ -215,8 +212,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
         self.r1.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         self.wait_for_completion(self.device_list)
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
     @testcase.test_method_decorator
     def test07_verify_removing_same_prefix(self):
@@ -225,8 +221,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
         self.r1.remove_prefix(PREFIX)
         self.wait_for_completion(self.device_list)
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
         # Remove the prefix on r2 and verify that the address and prefix are now removed on all nodes.
         self.r2.remove_prefix(PREFIX)
@@ -248,8 +243,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
 
         # Verify due to slaac = True flag each node gets an ip address related to the prefix
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
     @testcase.test_method_decorator
     def test09_verify_removing_prefix_with_different_slaac_flag(self):
@@ -295,8 +289,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
         # SLAAC module should add a SLAAC address as same slaac prefix is present on r2.
         self.r1.remove_ip6_address_on_interface(IP_ADDRESS)
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
         # Re-add the address
         self.r1.add_ip6_address_on_interface(IP_ADDRESS)
@@ -320,21 +313,19 @@ class TestSlaacAddressNcp(testcase.TestCase):
         # Ensure disabling SLAAC module removes previously added SLAAC addresses.
         self.r1.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
         for node in self.all_nodes:
-            node.set(wpan.WPAN_OT_SLAAC_ENABLED, 'false')
+            node.set(wpan.WPAN_OT_SLAAC_ENABLED, "false")
         verify_within(self.check_slaac_address_is_removed, WAIT_INTERVAL)
 
     @testcase.test_method_decorator
     def test13_verify_enabling_slaac_module_adds_back_slaac_address(self):
         # Re-enable SLAAC support on NCP and verify addresses are re-added back.
         for node in self.all_nodes:
-            node.set(wpan.WPAN_OT_SLAAC_ENABLED, 'true')
+            node.set(wpan.WPAN_OT_SLAAC_ENABLED, "true")
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
         self.r1.remove_prefix(PREFIX)
         verify_within(self.check_prefix_and_slaac_address_are_removed, WAIT_INTERVAL)
@@ -344,7 +335,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
         # Check behavior when prefix is added while SLAAC is disabled and then
         # enabled later.
         for node in self.all_nodes:
-            node.set(wpan.WPAN_OT_SLAAC_ENABLED, 'false')
+            node.set(wpan.WPAN_OT_SLAAC_ENABLED, "false")
 
         # Add prefix and verify that there is no address added
         self.r1.add_prefix(PREFIX, stable=True, on_mesh=True, slaac=True)
@@ -352,10 +343,9 @@ class TestSlaacAddressNcp(testcase.TestCase):
 
         # Enable slaac module and verify the prefix and address are added.
         for node in self.all_nodes:
-            node.set(wpan.WPAN_OT_SLAAC_ENABLED, 'true')
+            node.set(wpan.WPAN_OT_SLAAC_ENABLED, "true")
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)
-        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX)
-                          for node in self.all_nodes], self.slaac_addrs)
+        self.assertEqual([node.find_ip6_address_with_prefix(PREFIX) for node in self.all_nodes], self.slaac_addrs)
 
 
 if __name__ == "__main__":

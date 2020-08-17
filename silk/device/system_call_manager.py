@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import object
 import fcntl
 import os
 import queue
@@ -27,7 +26,7 @@ from silk.node.base_node import BaseNode
 
 
 class MessageSystemCallItem(message_item.MessageItemBase):
-    """Class to encapusulate a system call into the message queue
+    """Class to encapusulate a system call into the message queue.
     """
 
     def __init__(self, action, cmd, expect, timeout, field, refresh=0):
@@ -48,8 +47,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
         for line in response.splitlines():
             self.parent.log_error(line)
 
-        self._delegates.set_error('{0} not found for cmd:{1}!'.format(
-                                  self.expect, self.action))
+        self._delegates.set_error("{0} not found for cmd:{1}!".format(self.expect, self.action))
 
     def log_response_failure(self):
         self.parent.log_error("Worker failed to execute command.")
@@ -95,6 +93,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
 
 
 class SystemCallManager(object):
+
     def __init__(self):
         self.__message_queue = queue.Queue()
         self.__event_lock = threading.Lock()
@@ -136,9 +135,7 @@ class SystemCallManager(object):
         self.log_debug(log_line)
         self.log_debug(command)
         try:
-            proc = subprocess.Popen(command, bufsize=0, shell=True,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT)
+            proc = subprocess.Popen(command, bufsize=0, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         except Exception as error:
             self.log_error("Failed to start subprocess: %s" % error)
             self.log_error("\tCommand: %s" % command)
@@ -163,9 +160,9 @@ class SystemCallManager(object):
 
                 # Check the length of the read list to see if there is new data
                 if len(poll_list[0]) > 0:
-                    curr_line += proc.stdout.read(1).decode('utf-8')
+                    curr_line += proc.stdout.read(1).decode("utf-8")
             except Exception as err:
-                print('EXCEPTION:{}'.format(err))
+                print("EXCEPTION:{}".format(err))
                 break
 
             if len(curr_line) > 0 and curr_line[-1] == "\n" and not curr_line.isspace():
@@ -186,11 +183,11 @@ class SystemCallManager(object):
             while True:
                 try:
                     new_char = proc.stdout.read(1)
-                    this_stdout += new_char.decode('utf-8')
+                    this_stdout += new_char.decode("utf-8")
                     if not new_char:
                         break
                 except Exception as err:
-                    print('Exception: {}'.format(err))
+                    print("Exception: {}".format(err))
                     break
             if this_stdout:
                 this_stdout = curr_line + this_stdout
@@ -202,8 +199,7 @@ class SystemCallManager(object):
         return stdout
 
     def __clear_message_queue(self):
-        """Remove all pending messages in queue
-
+        """Remove all pending messages in queue.
         """
         try:
             while True:
@@ -212,17 +208,15 @@ class SystemCallManager(object):
             pass
 
     def __set_error(self, msg):
-        """Post error msg and clear message queue
-
+        """Post error msg and clear message queue.
         """
-        self.log_error('set_error: {0}'.format(msg))
+        self.log_error("set_error: {0}".format(msg))
         self.post_error(msg)
         self.__clear_message_queue()
 
     def __worker_run(self):
         """
-        Consumer thread for serializing and asynchronously handling command
-        inputs and expected returns.
+        Consumer thread for serializing and asynchronously handling command inputs and expected returns.
         Serialize requests to make system calls.
         Make system calls using the _make_system_call method.
         """
@@ -235,10 +229,7 @@ class SystemCallManager(object):
 
             error_handler = lambda me, error_str: me.__set_error(error_str)
 
-            delegates = message_item.MessageItemDelegates(self,
-                                                          None,
-                                                          None,
-                                                          error_handler)
+            delegates = message_item.MessageItemDelegates(self, None, None, error_handler)
 
             item.set_delegates(delegates)
 
@@ -246,10 +237,9 @@ class SystemCallManager(object):
 
 
 class TemporarySystemCallManager(SystemCallManager, BaseNode):
+    """Class that can be used to make simple system calls with timeouts and logging functionality.
     """
-    Class that can be used to make simple system calls with
-    timeouts and logging functionality.
-    """
+
     def __init__(self, name="TemporarySystemCallManager"):
         BaseNode.__init__(self, name)
         SystemCallManager.__init__(self)

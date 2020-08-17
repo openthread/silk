@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import range
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-from silk.tools import wpan_table_parser
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.tools.wpan_util import verify, verify_within, is_associated
-from silk.utils import process_cleanup
-
 import random
 import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, verify_within, is_associated
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -37,7 +36,7 @@ class TestParentResetChildRecovery(testcase.TestCase):
     poll_interval = 4000
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
 
         cls.sleepy_children = []
@@ -57,7 +56,7 @@ class TestParentResetChildRecovery(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 
@@ -68,11 +67,10 @@ class TestParentResetChildRecovery(testcase.TestCase):
             device.set_logger(cls.logger)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -98,8 +96,8 @@ class TestParentResetChildRecovery(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        self.router.form(self.network_data, 'router')
-        self.router.permit_join(60*NUM_CHILDREN)
+        self.router.form(self.network_data, "router")
+        self.router.permit_join(60 * NUM_CHILDREN)
         self.wait_for_completion(self.device_list)
 
         self.logger.info(self.router.ip6_lla)
@@ -148,7 +146,8 @@ class TestParentResetChildRecovery(testcase.TestCase):
 
         # Verify that number of state changes on all children stays as before (indicating they did not get detached).
         for i in range(len(self.all_children)):
-            verify(child_num_state_changes[i] == len(wpan_table_parser.parse_list(self.all_children[i].get("stat:ncp"))))
+            verify(
+                child_num_state_changes[i] == len(wpan_table_parser.parse_list(self.all_children[i].get("stat:ncp"))))
 
 
 if __name__ == "__main__":
