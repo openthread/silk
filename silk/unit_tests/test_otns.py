@@ -35,9 +35,10 @@ class OTNSIntegrationTest(SilkTestCase):
         "-listen", ":9000",
         "-log", "debug"])
     # wait for OTNS gRPC server to start
-    time.sleep(1)
+    time.sleep(0.3)
     self.manager = OtnsManager("localhost",
                                self.logger.getChild("OtnsManager"))
+    self.manager.wait_for_grpc_channel_ready(10)
 
   def tearDown(self) -> None:
     """Test method tear down.
@@ -46,7 +47,7 @@ class OTNSIntegrationTest(SilkTestCase):
     self.manager.remove_all_nodes()
     self.ns.close()
     # wait for OTNS gRPC server to stop
-    time.sleep(0.5)
+    time.sleep(0.2)
 
   def testAddDevice(self):
     """Test adding device.
