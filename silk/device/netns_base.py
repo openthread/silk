@@ -32,7 +32,7 @@ def createLinkPair(interface_1, interface_2):
 class NetnsController(SystemCallManager):
     """
     This class contains methods for creating, destroying, and manipulating
-    network namespaces.  It also provides methods for making systems calls in
+    network namespaces. It also provides methods for making systems calls in
     network namespaces.
 
     Network namespace manipulation requires sudo.  All inheriting classes must
@@ -50,18 +50,20 @@ class NetnsController(SystemCallManager):
     """
 
     _hwModel = None
-    netns = None
-    device_path = None
 
-    def __init__(self):
+    def __init__(self, netns: str = None, device_path: str = None):
         """
         Carve out a unique network namespace for this device instance.
         Initialize the necessary synchronization mechanisms for async
         operations.
         Startup the system call worker thread.
         """
+        self.netns = netns
+        if netns is not None and device_path is None:
+            self.device_path = ""
+        else:
+            self.device_path = device_path
         self.create_netns()
-
         SystemCallManager.__init__(self)
 
     def create_netns(self):
@@ -69,11 +71,11 @@ class NetnsController(SystemCallManager):
         wpantund will run in a network namespace for these tests.
         This function should be called on instantiation to create a
         unique network namespace name.
-        This function returns the network namepsace name.
+        This function returns the network namespace name.
         """
         self.log_info("Adding network namespace for %s" % self.device_path)
-
-        self.netns = os.path.basename(self.device_path)
+        if self.netns is None:
+            self.netns = os.path.basename(self.device_path)
         command = "sudo ip netns add %s" % self.netns
         self._make_system_call("netns-add", command, 2)
         return self.netns
