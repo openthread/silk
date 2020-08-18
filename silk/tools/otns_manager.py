@@ -101,11 +101,19 @@ class GRpcClient:
     self.stub = visualize_grpc_pb2_grpc.VisualizeGrpcServiceStub(self.channel)
     self.logger = logger
 
+  def wait_for_channel_ready(self, timeout: int=10):
+    """Blocking method that waits for the gRPC channel to be ready.
+
+    Args:
+      timeout (int, optional): wait timeout. Defaults to 10.
+    """
+    grpc.channel_ready_future(self.channel).result(timeout=timeout)
+
   def _send_command(self, command: str):
     """Send a Command gRPC request.
 
     Args:
-        command (str): command content.
+      command (str): command content.
     """
     self.logger.info(f"Sending cmd: {command}")
     response = self.stub.Command(
@@ -127,7 +135,7 @@ class GRpcClient:
     """Send test replay speed to OTNS.
 
     Args:
-        speed (float): test replay speed.
+      speed (float): test replay speed.
     """
     self._send_command(f"speed {speed}")
 
@@ -794,16 +802,25 @@ class OtnsManager(object):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
     self.local_host = sock.getsockname()[0]
+    sock.close()
 
     self.logger = logger
     self.logger.info(
         f"OTNS manager created, connect {self.local_host} to {server_host}.")
 
+  def wait_for_grpc_channel_ready(self, timeout: int=10):
+    """Blocking method that waits for the gRPC channel to be ready.
+
+    Args:
+      timeout (int, optional): wait timeout. Defaults to 10.
+    """
+    self.grpc_client.wait_for_channel_ready(timeout)
+
   def set_test_title(self, title: str):
     """Set title of the test case.
 
     Args:
-        title (str): title of the test case.
+      title (str): title of the test case.
     """
     self.grpc_client.set_title(title)
 
@@ -811,7 +828,7 @@ class OtnsManager(object):
     """Set speed of the replaying test log.
 
     Args:
-        speed (float): speed of the replaying test log.
+      speed (float): speed of the replaying test log.
     """
     self.grpc_client.set_speed(speed)
 
@@ -892,6 +909,13 @@ class OtnsManager(object):
         del self.otns_node_map[node]
 
         self.update_layout()
+
+  def remove_all_nodes(self):
+    """Remove all nodes from OTNS visualization.
+    """
+    nodes = list(self.otns_node_map.keys())
+    for node in nodes:
+      self.remove_node(node)
 
   def process_node_status(self, node: ThreadDevBoard,
                           message: str, time=datetime.now()):

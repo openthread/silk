@@ -110,7 +110,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
     """
 
     def __init__(self, wpantund_verbose_debug=False, sw_version=None,
-                 virtual=False, virtual_name=''):
+                 virtual=False, virtual_name='',
+                 device=None, device_path=None):
         self.logger = None
         self.wpantund_logger = None
         self.netns = None
@@ -123,33 +124,35 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.otns_manager = None
 
         self.wpantund_verbose_debug = wpantund_verbose_debug
-        local_ip = get_local_ip().strip().split()[1]
-
         self.thread_mode = 'NCP'
-        try:
-            cluster_list = JsonFile.get_json('clusters.conf')['clusters']
-            for cluster in cluster_list:
-                if cluster['ip'] == local_ip:
-                    self.thread_mode = cluster['thread_mode']
-        except Exception as error:
-            logging.info("Cannot load cluster.conf file. Running on NCP mode. Error: %s" % error)
+        if not virtual:
+            local_ip = get_local_ip().strip().split()[1]
+
+            try:
+                cluster_list = JsonFile.get_json('clusters.conf')['clusters']
+                for cluster in cluster_list:
+                    if cluster['ip'] == local_ip:
+                        self.thread_mode = cluster['thread_mode']
+            except Exception as error:
+                logging.info("Cannot load cluster.conf file. Running on NCP mode. Error: %s" % error)
 
         logging.debug('Thread Mode: {}'.format(self.thread_mode))
 
         # TODO: Check what platform Silk is running on. This will be addressed by issue ID #32
         self.wpantund_start_time = 30
 
-        if os.geteuid() != 0:
+        if not virtual and os.geteuid() != 0:
             logging.error('ERROR: {0} requires "sudo" access'.format(type(self).__name__))
             raise EnvironmentError
 
         # Acquire necessary hardware
-        self.device = None
-        self.device_path = None
-        if not virtual:
-            self.get_device(sw_version=sw_version)
-        else:
-            self.get_unclaimed_device(virtual_name)
+        self.device = device
+        self.device_path = device_path
+        if self.device is None and self.device_path is None:
+            if not virtual:
+                self.get_device(sw_version=sw_version)
+            else:
+                self.get_unclaimed_device(virtual_name)
         super(FifteenFourDevBoardNode, self).__init__(self.device.name())
 
         self.logger.info('Device interface: {}'.format(self.device.interface_serial()))

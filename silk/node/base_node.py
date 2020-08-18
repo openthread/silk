@@ -116,14 +116,14 @@ class BaseNode(object):
         """
         self._all_clear.wait(self._maxTimeout)
         if not self._all_clear.is_set():
-            print('Did not get an all-clear!')
+            self.log_debug('Did not get an all-clear!')
         return self.get_error()
 
     def store_data(self, value, field):
         with self._lock:
             assigned = False
 
-            print(field, value)
+            self.log_debug("Stored data: %s %s" % (field, value))
             if isinstance(value, str):
                 value = value.strip()
 

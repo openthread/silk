@@ -12,5 +12,7 @@ env/*
 
 *.out
 *.pcap
+*.replay
+.coverage
 *pb2.py
 *pb2_grpc.py

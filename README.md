@@ -1,3 +1,16 @@
+[![Build Status][build-actions-svg]][build-actions]
+[![Test Status][test-actions-svg]][test-actions]
+[![codecov][codecov-svg]][codecov-url]
+---
+
+# Silk
+[build-actions-svg]: https://github.com/openthread/silk/workflows/Build/badge.svg?branch=master&event=push
+[build-actions]: https://github.com/openthread/silk/actions?query=workflow%3ABuild+branch%3Amaster+event%3Apush
+[test-actions-svg]: https://github.com/openthread/silk/workflows/Test/badge.svg?branch=master&event=push
+[test-actions]: https://github.com/openthread/silk/actions?query=workflow%3ATest+branch%3Amaster+event%3Apush
+[codecov-svg]: https://codecov.io/gh/openthread/silk/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/openthread/silk
+
 ## Overview
 Silk is a fully automated test platform for validating OpenThread function, feature and system performance with real 
 devices. This codebase is Python 3 compatible.
