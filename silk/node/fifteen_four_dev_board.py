@@ -16,6 +16,7 @@ from builtins import str
 import logging
 import os
 import re
+import socket
 import time
 import datetime
 import traceback
@@ -48,12 +49,11 @@ IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
 
 
 def get_local_ip():
-    for ip_interface in IP_INTERFACES:
-        cmd = 'ifconfig ' + ip_interface
-        cmd += ' | grep "inet "'
-        config_data = os.popen(cmd).read()
-        if 'inet' in config_data:
-            return config_data
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.connect(("8.8.8.8", 80))
+    local_host = sock.getsockname()[0]
+    sock.close()
+    return local_host
 
 
 class WpantundMonitor(signal.Subscriber):
@@ -126,7 +126,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.wpantund_verbose_debug = wpantund_verbose_debug
         self.thread_mode = 'NCP'
         if not virtual:
-            local_ip = get_local_ip().strip().split()[1]
+            local_ip = get_local_ip()
 
             try:
                 cluster_list = JsonFile.get_json('clusters.conf')['clusters']
