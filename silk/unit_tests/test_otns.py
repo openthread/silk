@@ -12,25 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any, Dict, List, Tuple
 import random
 import time
 import unittest
-from typing import Any, Dict, List, Tuple
 
 from otns.cli import OTNS
 
 from silk.tools.otns_manager import OtnsManager
-from silk.unit_tests.testcase import SilkTestCase
 from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
+from silk.unit_tests.testcase import SilkTestCase
 
 
 class OTNSIntegrationTest(SilkTestCase):
     """Silk integration test case for OTNS.
-  """
+    """
 
     def setUp(self) -> None:
         """Test method set up.
-    """
+        """
         self.ns = OTNS(otns_args=["-raw", "-real", "-ot-cli", "otns-silk-proxy", "-listen", ":9000", "-log", "debug"])
         # wait for OTNS gRPC server to start
         time.sleep(0.3)
@@ -39,7 +39,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def tearDown(self) -> None:
         """Test method tear down.
-    """
+        """
         self.manager.unsubscribe_from_all_nodes()
         self.manager.remove_all_nodes()
         self.ns.close()
@@ -50,18 +50,17 @@ class OTNSIntegrationTest(SilkTestCase):
                                                                                                               int]]):
         """Helper method to assert auto layout position devices coordinates.
 
-    Args:
-      nodes_info (Dict[int, Dict[str, Any]]): nodes info dictionary
-      expected_coords (Dict[int, Tuple[int, int]]): dict mapping device
-        id to coodinates to check
-    """
+        Args:
+            nodes_info (Dict[int, Dict[str, Any]]): nodes info dictionary.
+            expected_coords (Dict[int, Tuple[int, int]]): dict mapping device id to coodinates to check.
+        """
         for device_id, coords in expected_coords.items():
             self.assertAlmostEqual(nodes_info[device_id]["x"], coords[0], delta=1)
             self.assertAlmostEqual(nodes_info[device_id]["y"], coords[1], delta=1)
 
     def testAddDevice(self):
         """Test adding device.
-    """
+        """
         ns = self.ns
         manager = self.manager
 
@@ -72,7 +71,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def testRemoveDevice(self):
         """Test removing device.
-    """
+        """
         ns = self.ns
         manager = self.manager
 
@@ -87,7 +86,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def testSetSpeed(self):
         """Test setting speed display.
-    """
+        """
         ns = self.ns
         manager = self.manager
 
@@ -101,14 +100,14 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def testAddFixedPositionDevices(self):
         """Test adding fixed position nodes.
-    """
+        """
 
         def assert_device_fixed_positions(devices: List[MockThreadDevBoard]):
             """Helper method to assert fixed position devices coordinates.
 
-      Args:
-        devices (List[MockThreadDevBoard]): list of devices to check
-      """
+        Args:
+            devices (List[MockThreadDevBoard]): list of devices to check.
+        """
             for device in devices:
                 self.assertEqual(nodes_info[device.id]["x"], device.x)
                 self.assertEqual(nodes_info[device.id]["y"], device.y)
@@ -148,7 +147,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def testAddAutoLayoutDevices(self):
         """Test adding auto layout nodes.
-    """
+        """
         ns = self.ns
         manager = self.manager
 
@@ -209,7 +208,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def testRemoveAutoLayoutDevices(self):
         """Test that removing nodes keeps other nodes stationary with auto layout.
-    """
+        """
         ns = self.ns
         manager = self.manager
 
@@ -302,8 +301,8 @@ class OTNSIntegrationTest(SilkTestCase):
     def testUpdateExtaddr(self):
         """Test updating node extended address.
 
-    Also tests updating before the OTNS manager subscribes to the node.
-    """
+        Also tests updating before the OTNS manager subscribes to the node.
+        """
         ns = self.ns
         manager = self.manager
 
@@ -332,8 +331,8 @@ class OTNSIntegrationTest(SilkTestCase):
     def testUpdateRLOC16(self):
         """Test updating node RLOC16.
 
-    Also tests updating before the OTNS manager subscribes to the node.
-    """
+        Also tests updating before the OTNS manager subscribes to the node.
+        """
         ns = self.ns
         manager = self.manager
 
@@ -361,7 +360,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
     def testFormPartition(self):
         """Test forming a partition.
-    """
+        """
         ns = self.ns
         manager = self.manager
 

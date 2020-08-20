@@ -243,6 +243,29 @@ class Event:
         """
         return struct.pack("<QBH", self.delay, self.event, self.length) + self.data
 
+    @staticmethod
+    def from_bytes(bytes: bytes):
+        """Unpack a UDP message into an Event object.
+
+        Args:
+            bytes (bytes): packed UDP message bytes.
+
+        Returns:
+            Event: a status event object with the message decoded from bytes.
+        """
+        delay, event, length = struct.unpack("<QBH", bytes[:12])
+        data = bytes[12:]
+        return Event(data, EventType(event), delay)
+
+    @property
+    def message(self) -> str:
+        """Get the event message string.
+
+        Returns:
+            str: event message string.
+        """
+        return self.data.decode("ascii")
+
 
 class OtnsNode(object):
     """Class that represents a Thread network node for OTNS integration.
@@ -817,7 +840,7 @@ class OtnsManager(object):
         Args:
             node (ThreadDevBoard): node to add, with dev board properties.
         """
-        assert isinstance(node.device, HwModule), ("Adding non HwModule node to OTNS manager.")
+        assert isinstance(node.device, HwModule), "Adding non HwModule node to OTNS manager."
 
         if node not in self.otns_node_map:
             otns_node = self.add_device(node.device)
@@ -844,7 +867,7 @@ class OtnsManager(object):
         if node.otns_manager is self:
             node.otns_manager = None
 
-            assert isinstance(node.device, HwModule), ("Removing non HwModule node from OTNS manager.")
+            assert isinstance(node.device, HwModule), "Removing non HwModule node from OTNS manager."
 
             if node in self.otns_node_map:
                 otns_node = self.otns_node_map[node]
