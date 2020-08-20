@@ -35,6 +35,7 @@ from silk.node.fifteen_four_dev_board import ThreadDevBoard
 from silk.tools.pb import visualize_grpc_pb2
 from silk.tools.pb import visualize_grpc_pb2_grpc
 from silk.utils import signal
+from silk.utils.network import get_local_ip
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S,%f"
 
@@ -799,10 +800,7 @@ class OtnsManager(object):
     self.max_node_count = 0
     self.node_summaries = {}
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.connect(("8.8.8.8", 80))
-    self.local_host = sock.getsockname()[0]
-    sock.close()
+    self.local_host = get_local_ip()
 
     self.logger = logger
     self.logger.info(

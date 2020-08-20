@@ -16,7 +16,6 @@ from builtins import str
 import logging
 import os
 import re
-import socket
 import time
 import datetime
 import traceback
@@ -38,19 +37,12 @@ from silk.utils.directorypath import DirectoryPath
 from silk.utils.process import Process
 from silk.postprocessing import ip as silk_ip
 from silk.utils.jsonfile import JsonFile
+from silk.utils.network import get_local_ip
 
 
 LOG_PATH = '/opt/openthread_test/results/'
 POSIX_PATH = '/opt/openthread_test/posix'
 RETRY = 3
-
-
-def get_local_ip():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.connect(("8.8.8.8", 80))
-    local_host = sock.getsockname()[0]
-    sock.close()
-    return local_host
 
 
 class WpantundMonitor(signal.Subscriber):
