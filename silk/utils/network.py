@@ -18,14 +18,12 @@ import socket
 
 
 def get_local_ip():
-  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  try:
-    # server does not need to be reachable
-    sock.connect(("8.8.8.8", 80))
-    local_host = sock.getsockname()[0]
-  except Exception:
-    # exception raised if interface does not exist
-    local_host = "127.0.0.1"
-  finally:
-    sock.close()
-  return local_host
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+        try:
+            # server does not need to be reachable
+            sock.connect(("8.8.8.8", 80))
+            local_host = sock.getsockname()[0]
+        except Exception:
+            # exception raised if interface does not exist
+            local_host = "127.0.0.1"
+    return local_host
