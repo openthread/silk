@@ -45,9 +45,6 @@ POSIX_PATH = '/opt/openthread_test/posix'
 RETRY = 3
 
 
-IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
-
-
 def get_local_ip():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.connect(("8.8.8.8", 80))
