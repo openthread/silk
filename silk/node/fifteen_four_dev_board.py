@@ -149,7 +149,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             self.log_info('Device Path: {}'.format(self.device_path))
 
             # Setup netns
-            NetnsController.__init__(self)
+            NetnsController.__init__(self, self.netns, self.device_path)
 
 #################################
 #   Logging functions
@@ -211,7 +211,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
             self.logger.critical(e.message)
             self.logger.debug('Cannot start wpantund on {}'.format(self.netns))
 
-        NetnsController.__init__(self)
+        NetnsController.__init__(self, self.netns, self.device_path)
 
         self.thread_interface = self.netns
         self.legacy_interface = self.netns + "-L"

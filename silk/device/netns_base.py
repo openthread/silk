@@ -190,14 +190,6 @@ class NetnsController(SystemCallManager):
                                                            via_addr, interface_name)
         self.make_netns_call_async(command, "", 1, None)
 
-    def log_info(self, log_line: str):
-        """Default implementation for log_info.
-
-        Args:
-            log_line (str): line to log.
-        """
-        print(log_line)
-
 
 class StandaloneNetworkNamespace(NetnsController, BaseNode):
     """
@@ -205,9 +197,9 @@ class StandaloneNetworkNamespace(NetnsController, BaseNode):
     with a development board.
     """
     def __init__(self, netns_name):
-        self.device_path = os.path.join("/dev", netns_name)
+        device_path = os.path.join("/dev", netns_name)
         BaseNode.__init__(self, netns_name)
-        NetnsController.__init__(self)
+        NetnsController.__init__(self, netns_name, device_path)
 
     def tear_down(self):
         self.cleanup_netns()
