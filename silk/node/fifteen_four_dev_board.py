@@ -37,23 +37,12 @@ from silk.utils.directorypath import DirectoryPath
 from silk.utils.process import Process
 from silk.postprocessing import ip as silk_ip
 from silk.utils.jsonfile import JsonFile
+from silk.utils.network import get_local_ip
 
 
 LOG_PATH = '/opt/openthread_test/results/'
 POSIX_PATH = '/opt/openthread_test/posix'
 RETRY = 3
-
-
-IP_INTERFACES = ('eth0', 'eno1', 'wlp0s20f3')
-
-
-def get_local_ip():
-    for ip_interface in IP_INTERFACES:
-        cmd = 'ifconfig ' + ip_interface
-        cmd += ' | grep "inet "'
-        config_data = os.popen(cmd).read()
-        if 'inet' in config_data:
-            return config_data
 
 
 class WpantundMonitor(signal.Subscriber):
@@ -126,7 +115,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         self.wpantund_verbose_debug = wpantund_verbose_debug
         self.thread_mode = 'NCP'
         if not virtual:
-            local_ip = get_local_ip().strip().split()[1]
+            local_ip = get_local_ip()
 
             try:
                 cluster_list = JsonFile.get_json('clusters.conf')['clusters']
