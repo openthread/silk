@@ -134,36 +134,36 @@ WPAN_CHANNEL_MANAGER_FAVORED_CHANNEL_MASK = "ChannelManager:FavoredChannelMask"
 #-------------------------------------------------------------------------------------------------------------------
 # Valid state values
 
-STATE_UNINITIALIZED = "uninitialized"
-STATE_FAULT = "uninitialized:fault"
-STATE_UPGRADING = "uninitialized:upgrading"
-STATE_DEEP_SLEEP = "offline:deep-sleep"
-STATE_OFFLINE = "offline"
-STATE_COMMISSIONED = "offline:commissioned"
-STATE_ASSOCIATING = "associating"
-STATE_CREDENTIALS_NEEDED = "associating:credentials-needed"
-STATE_ASSOCIATED = "associated"
-STATE_ISOLATED = "associated:no-parent"
-STATE_NETWAKE_ASLEEP = "associated:netwake-asleep"
-STATE_NETWAKE_WAKING = "associated:netwake-waking"
+STATE_UNINITIALIZED = "\"uninitialized\""
+STATE_FAULT = "\"uninitialized:fault\""
+STATE_UPGRADING = "\"uninitialized:upgrading\""
+STATE_DEEP_SLEEP = "\"offline:deep-sleep\""
+STATE_OFFLINE = "\"offline\""
+STATE_COMMISSIONED = "\"offline:commissioned\""
+STATE_ASSOCIATING = "\"associating\""
+STATE_CREDENTIALS_NEEDED = "\"associating:credentials-needed\""
+STATE_ASSOCIATED = "\"associated\""
+STATE_ISOLATED = "\"associated:no-parent\""
+STATE_NETWAKE_ASLEEP = "\"associated:netwake-asleep\""
+STATE_NETWAKE_WAKING = "\"associated:netwake-waking\""
 
 #--------------------------------------------------------------------------------------------------------------------
 # MCU Power state from `WPAN_NCP_MCU_POWER_STATE`
 
-MCU_POWER_STATE_ON = "on"
-MCU_POWER_STATE_LOW_POWER = "low-power"
-MCU_POWER_STATE_OFF = "off"
+MCU_POWER_STATE_ON = "\"on\""
+MCU_POWER_STATE_LOW_POWER = "\"low-power\""
+MCU_POWER_STATE_OFF = "\"off\""
 
 #--------------------------------------------------------------------------------------------------------------------
 # Node types (from `WPAN_NODE_TYPE` property)
 
-NODE_TYPE_UNKNOWN = "unknown"
-NODE_TYPE_LEADER = "leader"
-NODE_TYPE_ROUTER = "router"
-NODE_TYPE_END_DEVICE = "end-device"
-NODE_TYPE_SLEEPY_END_DEVICE = "sleepy-end-device"
-NODE_TYPE_COMMISSIONER = "commissioner"
-NODE_TYPE_NEST_LURKER = "nl-lurker"
+NODE_TYPE_UNKNOWN = "\"unknown\""
+NODE_TYPE_LEADER = "\"leader\""
+NODE_TYPE_ROUTER = "\"router\""
+NODE_TYPE_END_DEVICE = "\"end-device\""
+NODE_TYPE_SLEEPY_END_DEVICE = "\"sleepy-end-device\""
+NODE_TYPE_COMMISSIONER = "\"commissioner\""
+NODE_TYPE_NEST_LURKER = "\"nl-lurker\""
 
 #--------------------------------------------------------------------------------------------------------------------
 # Node types used by `Node.join()`

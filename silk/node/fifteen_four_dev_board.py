@@ -558,7 +558,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         NOTE: this method uses linux `ip` command.
         """
         interface = self.thread_interface
-        cmd = f"ip -6 address add {address} /{prefix_len} dev {interface}"
+        cmd = f"ip -6 address add {address}/{prefix_len} dev {interface}"
         result = self.make_netns_call(cmd, 15)
 
         return result
@@ -570,7 +570,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
         NOTE: this method uses linux `ip` command.
         """
         interface = self.thread_interface
-        cmd = f"ip -6 address del {address} /{prefix_len} dev {interface}"
+        cmd = f"ip -6 address del {address}/{prefix_len} dev {interface}"
         result = self.make_netns_call(cmd, 15)
 
         return result
