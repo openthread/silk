@@ -25,6 +25,33 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         if: "github.ref != 'refs/heads/master'"
   
+  unit-tests:
+    name: Integration Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        os: [ubuntu-latest]
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel coverage
+          pip install -r requirements.txt
+      - name: Compile Proto
+        run: python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+      - name: Install
+        run: python setup.py install
+      - name: Test
+        run: |
+          python -m coverage run silk/unit_tests/test_otns_manager.py
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+
   integration-tests:
     name: Integration Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
