@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import range
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-from silk.tools import wpan_table_parser
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.tools.wpan_util import verify, VerifyError, verify_within
-from silk.utils import process_cleanup
-
 import random
 import unittest
 import time
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, VerifyError, verify_within
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
+
 hwr.global_instance()
 
 WAIT_TIME = 30
@@ -44,7 +44,7 @@ class TestRouterTable(testcase.TestCase):
     #                    c1
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.r3 = ffdb.ThreadDevBoard()
@@ -57,7 +57,7 @@ class TestRouterTable(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in (cls.r1, cls.r2, cls.r3, cls.r4, cls.c1):
             cls.add_test_device(device)
@@ -66,12 +66,10 @@ class TestRouterTable(testcase.TestCase):
             device.set_logger(cls.logger)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".
-                format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -92,7 +90,7 @@ class TestRouterTable(testcase.TestCase):
     @testcase.test_method_decorator
     def test01_Form_Network(self):
         # Form the Network
-        self.r1.form(self.network_data, 'router')
+        self.r1.form(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         # whitelist all routers with each other
@@ -119,27 +117,27 @@ class TestRouterTable(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         for router in (self.r2, self.r3, self.r4):
-            router.join(self.network_data, 'router')
+            router.join(self.network_data, "router")
             self.wait_for_completion(self.device_list)
 
-        self.c1.join(self.network_data, 'sleepy-end-device')
+        self.c1.join(self.network_data, "sleepy-end-device")
         self.wait_for_completion(self.device_list)
         self.c1.set_sleep_poll_interval(2000)
 
         for _ in range(30):
-            r2_node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            r3_node_type = self.r3.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            r4_node_type = self.r4.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
+            r2_node_type = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            r3_node_type = self.r3.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            r4_node_type = self.r4.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
 
             for e in (r2_node_type, r3_node_type, r4_node_type):
                 print(e)
 
-            if all(e == 'router' for e in (r2_node_type, r3_node_type, r4_node_type)):
-                print('All End-node moved up to  Router.')
+            if all(e == "router" for e in (r2_node_type, r3_node_type, r4_node_type)):
+                print("All End-node moved up to  Router.")
                 break
             time.sleep(5)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 150 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 150 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_Verify_Node_Type(self):

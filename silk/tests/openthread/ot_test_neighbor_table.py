@@ -12,33 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import range
+import random
+import time
+import unittest
+
 from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
 from silk.node.wpan_node import WpanCredentials
 from silk.tools import wpan_table_parser
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
 from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
-import random
-import unittest
-import time
 hwr.global_instance()
 
 NUM_ROUTERS = 2
 NUM_CHILDREN = 1
 
-NEIGHBOR_TABLE_AS_VALMAP_ENTRY = ("Age", "AverageRssi", "ExtAddress", "FullFunction", "FullNetworkData",
-                                  "IsChild", "LastRssi", "LinkFrameCounter", "LinkQualityIn", "MleFrameCounter",
-                                  "RLOC16", "RxOnWhenIdle", "SecureDataRequest")
+NEIGHBOR_TABLE_AS_VALMAP_ENTRY = ("Age", "AverageRssi", "ExtAddress", "FullFunction", "FullNetworkData", "IsChild",
+                                  "LastRssi", "LinkFrameCounter", "LinkQualityIn", "MleFrameCounter", "RLOC16",
+                                  "RxOnWhenIdle", "SecureDataRequest")
 
 
 class TestNeighborTable(testcase.TestCase):
     # Minimum Three devices: One each for leader, router, sed
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.routers = []
         for num in range(NUM_ROUTERS):
             cls.routers.append(ffdb.ThreadDevBoard())
@@ -58,9 +58,9 @@ class TestNeighborTable(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
-        for device in cls.routers+cls.children+cls.ed[1:]:
+        for device in cls.routers + cls.children + cls.ed[1:]:
             cls.add_test_device(device)
 
         for device in cls.device_list:
@@ -71,11 +71,11 @@ class TestNeighborTable(testcase.TestCase):
         cls.network_data_list = []
 
         for i in range(total_networks):
-            cls.network_data_list.append(WpanCredentials(
-                network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-                psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-                channel=random.randint(11, 25),
-                fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff))))
+            cls.network_data_list.append(
+                WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                channel=random.randint(11, 25),
+                                fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff))))
 
         cls.thread_sniffer_init(cls.network_data_list[0].channel)
 
@@ -112,7 +112,7 @@ class TestNeighborTable(testcase.TestCase):
             self.routers[num].whitelist_node(self.ed[num])
 
         # Form the Network
-        self.routers[0].form(self.network_data_list[0], 'router')
+        self.routers[0].form(self.network_data_list[0], "router")
         self.wait_for_completion(self.device_list)
 
         self.logger.info(self.routers[0].ip6_lla)
@@ -122,28 +122,28 @@ class TestNeighborTable(testcase.TestCase):
         self.network_data_list[0].panid = self.routers[0].panid
 
         for i, router in enumerate(self.routers[1:]):
-            router.join(self.network_data_list[0], 'router')
+            router.join(self.network_data_list[0], "router")
             self.wait_for_completion(self.device_list)
 
         for num in range(1, NUM_ROUTERS):
-            self.ed[num].join(self.network_data_list[0], 'end-node')
+            self.ed[num].join(self.network_data_list[0], "end-node")
             self.wait_for_completion(self.device_list)
 
         for num in range(NUM_CHILDREN):
-            self.children[num].join(self.network_data_list[0], 'sleepy-end-device')
+            self.children[num].join(self.network_data_list[0], "sleepy-end-device")
             self.children[num].set_sleep_poll_interval(300)
             self.wait_for_completion(self.device_list)
 
         for _ in range(10):
-            node_type = self.routers[1].wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print(node_type == 'router')
+            node_type = self.routers[1].wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            print(node_type == "router")
 
-            if node_type == 'router':
-                print('End-node moved up to a Router.')
+            if node_type == "router":
+                print("End-node moved up to a Router.")
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 100 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 100 seconds timeout")
 
         for device in self.device_list:
             ret = device.wpanctl("get", "status", 2)
@@ -153,27 +153,28 @@ class TestNeighborTable(testcase.TestCase):
     def test02_Verify_Router_Type(self):
         for router in self.routers[1:]:
             node_type = router.get(wpan.WPAN_NODE_TYPE).strip()
-            self.assertEqual(node_type, wpan.NODE_TYPE_ROUTER, 'Node Type is: {} vs expected: {}'.format(node_type, wpan.NODE_TYPE_ROUTER))
+            self.assertEqual(node_type, wpan.NODE_TYPE_ROUTER,
+                             "Node Type is: {} vs expected: {}".format(node_type, wpan.NODE_TYPE_ROUTER))
 
     @testcase.test_method_decorator
     def test03_Verify_Children(self):
-        neighborTable = self.routers[0].wpanctl("get", "get "+wpan.WPAN_THREAD_NEIGHBOR_TABLE, 2)
-        neighborTable = wpan_table_parser.parse_neighbor_table_result(neighborTable)
+        neighbor_table = self.routers[0].wpanctl("get", "get " + wpan.WPAN_THREAD_NEIGHBOR_TABLE, 2)
+        neighbor_table = wpan_table_parser.parse_neighbor_table_result(neighbor_table)
 
-        print(neighborTable)
+        print(neighbor_table)
 
-        self.assertEqual(len(neighborTable), len(self.routers)-1+len(self.children))
+        self.assertEqual(len(neighbor_table), len(self.routers) - 1 + len(self.children))
 
         # Verify that all children are seen in the neighbor table
 
         for child in self.children:
             ext_addr = child.getprop(wpan.WPAN_EXT_ADDRESS)[1:-1]
 
-            for entry in neighborTable:
+            for entry in neighbor_table:
                 if entry.ext_address == ext_addr:
                     break
             else:
-                self.assertTrue(0, 'Failed to find a child entry for extended address {} in table'.format(ext_addr))
+                self.assertTrue(0, "Failed to find a child entry for extended address {} in table".format(ext_addr))
 
             self.assertEqual(int(entry.rloc16, 16), int(child.getprop(wpan.WPAN_THREAD_RLOC16), 16))
             self.assertFalse(entry.is_ftd())
@@ -183,41 +184,39 @@ class TestNeighborTable(testcase.TestCase):
     @testcase.test_method_decorator
     def test04_Verify_Router(self):
         # Verify that all other routers are seen in the neighbor table
-        neighborTable = self.routers[0].wpanctl("get", "get " + wpan.WPAN_THREAD_NEIGHBOR_TABLE, 2)
-        neighborTable = wpan_table_parser.parse_neighbor_table_result(neighborTable)
+        neighbor_table = self.routers[0].wpanctl("get", "get " + wpan.WPAN_THREAD_NEIGHBOR_TABLE, 2)
+        neighbor_table = wpan_table_parser.parse_neighbor_table_result(neighbor_table)
 
-        print(neighborTable)
+        print(neighbor_table)
 
-        self.assertEqual(len(neighborTable), len(self.routers)-1+len(self.children))
+        self.assertEqual(len(neighbor_table), len(self.routers) - 1 + len(self.children))
 
         # Verify that all children are seen in the neighbor table
 
         for router in self.routers[1:]:
             ext_addr = router.getprop(wpan.WPAN_EXT_ADDRESS)[1:-1]
 
-            for entry in neighborTable:
+            for entry in neighbor_table:
                 if entry.ext_address == ext_addr:
                     break
             else:
-                self.assertTrue(0, 'Failed to find a router entry for extended address {} in table'.format(
-                    ext_addr))
+                self.assertTrue(0, "Failed to find a router entry for extended address {} in table".format(ext_addr))
             self.assertEqual(int(entry.rloc16, 16), int(router.getprop(wpan.WPAN_THREAD_RLOC16), 16))
 
             self.assertTrue(entry.is_ftd())
             self.assertTrue(entry.is_rx_on_when_idle())
             self.assertFalse(entry.is_child())
 
-
     @testcase.test_method_decorator
     def test05_Verify_NeighborTable_AsValMap(self):
-        neighborTable = self.routers[0].wpanctl("get", "get "+wpan.WPAN_THREAD_NEIGHBOR_TABLE_ASVALMAP, 2)
+        neighbor_table = self.routers[0].wpanctl("get", "get " + wpan.WPAN_THREAD_NEIGHBOR_TABLE_ASVALMAP, 2)
 
-        print(neighborTable)
+        print(neighbor_table)
 
         total_neighbor_table_entry = len(self.routers) - 1 + len(self.children)
 
         for item in NEIGHBOR_TABLE_AS_VALMAP_ENTRY:
-            self.assertEqual(neighborTable.count(item), total_neighbor_table_entry)
+            self.assertEqual(neighbor_table.count(item), total_neighbor_table_entry)
 
 
 if __name__ == "__main__":

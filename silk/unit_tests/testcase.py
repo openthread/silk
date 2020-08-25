@@ -18,11 +18,13 @@ import unittest
 
 LOG_LINE_FORMAT = "[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s"
 
+
 class SilkTestCase(unittest.TestCase):
-  """Silk unit test base case.
-  """
-  @classmethod
-  def setUpClass(cls) -> None:
-    tracemalloc.start()
-    logging.basicConfig(level=logging.DEBUG, format=LOG_LINE_FORMAT)
-    cls.logger = logging.Logger(cls.__name__)
+    """Silk unit test base case.
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        tracemalloc.start()
+        logging.basicConfig(level=logging.DEBUG, format=LOG_LINE_FORMAT)
+        cls.logger = logging.Logger(cls.__name__)

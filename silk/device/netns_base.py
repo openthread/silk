@@ -21,9 +21,9 @@ from silk.node.base_node import BaseNode
 import silk.postprocessing.ip as silk_ip
 
 
-def createLinkPair(interface_1, interface_2):
+def create_link_pair(interface_1, interface_2):
     command = "sudo ip link add name %s " % interface_1
-    command += "type veth peer name %s"   % interface_2
+    command += "type veth peer name %s" % interface_2
 
     proc = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     return proc.communicate()[0]
@@ -40,7 +40,7 @@ class NetnsController(SystemCallManager):
 
     Classes that inherit from NetnsController
     1) Must provide a self.device_path attribute. (This is used to roll a
-       unique network namespace name.)
+        unique network namespace name.)
     2) Inheriting class must define the following logging methods
         a) log_debug(log_line)
         b) log_info(log_line)
@@ -49,7 +49,7 @@ class NetnsController(SystemCallManager):
         e) log_critical(log_line)
     """
 
-    _hwModel = None
+    _hw_model = None
 
     def __init__(self, netns: str = None, device_path: str = None):
         """
@@ -97,7 +97,7 @@ class NetnsController(SystemCallManager):
 
         command = "sudo ip netns pids %s" % self.netns
         output = self._make_system_call("netns-pids", command, 2).strip()
-        return output.split('\n')
+        return output.split("\n")
 
     def netns_killall(self):
         """
@@ -186,8 +186,7 @@ class NetnsController(SystemCallManager):
         self.make_netns_call_async(command, "", 1, None)
 
     def add_route(self, dest, dest_subnet_length, via_addr, interface_name):
-        command = "ip -6 route add %s/%s via %s dev %s" % (dest, dest_subnet_length,
-                                                           via_addr, interface_name)
+        command = "ip -6 route add %s/%s via %s dev %s" % (dest, dest_subnet_length, via_addr, interface_name)
         self.make_netns_call_async(command, "", 1, None)
 
 
@@ -196,6 +195,7 @@ class StandaloneNetworkNamespace(NetnsController, BaseNode):
     Class to control a standalone network namespace that is not associated
     with a development board.
     """
+
     def __init__(self, netns_name):
         device_path = os.path.join("/dev", netns_name)
         BaseNode.__init__(self, netns_name)
@@ -204,9 +204,11 @@ class StandaloneNetworkNamespace(NetnsController, BaseNode):
     def tear_down(self):
         self.cleanup_netns()
 
+
 #################################
 #   Logging functions
 #################################
+
     def set_logger(self, parent_logger):
         self.logger = parent_logger.getChild(self.netns)
 

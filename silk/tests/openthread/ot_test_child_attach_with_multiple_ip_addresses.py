@@ -12,37 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import str
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-from silk.tools import wpan_table_parser
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, verify_within, is_associated, verify_address
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import (verify, verify_within, is_associated, verify_address)
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
 WAIT_TIME = 10  # in seconds
 CHILD_SUPERVISION_CHECK_TIMEOUT = 1
 
-prefix1 = 'fd00:1::'
-prefix2 = 'fd00:2::'
-prefix3 = 'fd00:3::'
-prefix4 = 'fd00:4::'
+prefix1 = "fd00:1::"
+prefix2 = "fd00:2::"
+prefix3 = "fd00:3::"
+prefix4 = "fd00:4::"
 
 
 class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
-    # -----------------------------------------------------------------------------------------------------------------------
     # Test description:
     #
-    # This test covers the situation for SED child (re)attaching to a parent with multiple IPv6 addresses
-    # present on the child.
+    # This test covers the situation for SED child (re)attaching to a parent
+    # with multiple IPv6 addresses present on the child.
     #
     # Network topology:
     #
@@ -52,16 +50,20 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
     #              child (sleepy)
     #
     # Test covers the following situations:
-    # -verify adding 4 slaac prefixes on leader results in each prefix adding a slaac address on sed child too
-    # -verify removing child from parent's white-list results in child getting detached.
-    # -verify after parent recovers from a reset and gets associated the child ia also able to reattach to it
-    #  and all child addresses are seen on the parent
-    # -verify disabling supervision checkout on child results in quick child re-attach after a parent reset
+    # - Verify adding 4 slaac prefixes on leader results in each prefix adding
+    #   a slaac address on sed child too
+    # - Verify removing child from parent's white-list results in child getting
+    #   detached.
+    # - Verify after parent recovers from a reset and gets associated the child
+    #   ia also able to reattach to it and all child addresses are seen on the
+    #   parent.
+    # - Verify disabling supervision checkout on child results in quick child
+    #   re-attach after a parent reset.
 
     poll_interval = 400
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.leader = ffdb.ThreadDevBoard()
         cls.parent = ffdb.ThreadDevBoard()
         cls.child = ffdb.ThreadDevBoard()
@@ -72,7 +74,7 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.leader)
         cls.add_test_device(cls.parent)
@@ -82,12 +84,10 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
             device.set_logger(cls.logger)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".
-                format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -120,7 +120,7 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
         self.parent.whitelist_node(self.child)
         self.child.whitelist_node(self.parent)
 
-        self.leader.form(self.network_data, 'router')
+        self.leader.form(self.network_data, "router")
         self.parent.permit_join(120)
         self.wait_for_completion(self.device_list)
 
@@ -162,10 +162,11 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
         # Remove child from parent's white-list
         self.parent.remove(wpan.WPAN_MAC_WHITELIST_ENTRIES, self.child.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
         self.wait_for_completion(self.device_list)
-        # Enable supervision check on child, this ensures that child is detached soon.
+        # Enable supervision check on child, this ensures that child is detached
+        # soon.
         self.child.set(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
 
-        self.logger.info('verify child {} gets detached from parent {}'.format(self.child.name, self.parent.name))
+        self.logger.info("verify child {} gets detached from parent {}".format(self.child.name, self.parent.name))
 
         def check_child_is_detached():
             verify(not is_associated(self.child))
@@ -178,22 +179,25 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
         self.parent.reset_thread_radio()
         self.wait_for_completion(self.device_list)
 
-        self.logger.info('check parent {} is associated after reset'.format(self.parent.name))
+        self.logger.info("check parent {} is associated after reset".format(self.parent.name))
 
         def check_parent_is_associated():
             verify(is_associated(self.parent))
+
         verify_within(check_parent_is_associated, WAIT_TIME)
 
-        self.logger.info("verify that child attaches back by following full process"
-                         " starting from 'sending parent request to routers' ")
+        self.logger.info("verify that child attaches back by following full"
+                         " process starting from 'sending parent request to routers'")
 
-        self.logger.info('check child {} is associated after reset'.format(self.child.name))
+        self.logger.info("check child {} is associated after reset".format(self.child.name))
 
         def check_child_is_associated():
             verify(is_associated(self.child))
+
         verify_within(check_child_is_associated, WAIT_TIME)
 
-        self.logger.info("check all the child addresses are seen in the parent {} child table".format(self.parent.name))
+        self.logger.info("check all the child addresses are seen in the parent"
+                         " {} child table".format(self.parent.name))
         verify_within(self.check_child_addresses_on_parent, WAIT_TIME)
 
     @testcase.test_method_decorator
@@ -202,8 +206,8 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
         # achieved via "Child Update" exchange.
 
         self.logger.info("Disable supervision check on the child {}.".format(self.child.name))
-        self.child.set(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, '1000')
-        self.child.set(wpan.WPAN_POLL_INTERVAL, '10000')
+        self.child.set(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, "1000")
+        self.child.set(wpan.WPAN_POLL_INTERVAL, "10000")
         time.sleep(0.1)
 
         # We use the "stat:ncp" wpantund property to verify that child does not
@@ -219,10 +223,10 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
 
         verify_within(check_parent_is_associated, WAIT_TIME)
 
-        self.child.set(wpan.WPAN_POLL_INTERVAL, '100')
+        self.child.set(wpan.WPAN_POLL_INTERVAL, "100")
 
-        # Verify that we again see all the child addresses in the parent's child table.
-        # Note that child should register its addresses using "Child Update
+        # Verify that we again see all the child addresses in the parent's child
+        # table. Note that child should register its addresses using "Child Update
         # Request" exchange.
         verify_within(self.check_child_addresses_on_parent, WAIT_TIME)
 

@@ -11,13 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-this module is used to execute the shell script
+"""This module is used to execute the shell script.
 """
 
-from __future__ import absolute_import, print_function
-from builtins import object
 import os
 import subprocess
 import threading
@@ -39,8 +35,8 @@ class Process(object):
     def process_cmd_asyc_end(self, key_word):
         self.stop_thread.set()
         kill_cmd = "ps -ef | grep " + "'" + key_word + "'"  \
-                  + " | grep -v grep | awk '{print $2}'"         \
-                  + " | xargs kill"
+            + " | grep -v grep | awk '{print $2}'"          \
+            + " | xargs kill"
         print(kill_cmd)
         os.popen(kill_cmd)
 
@@ -54,15 +50,15 @@ class Process(object):
                                         shell=True)
         print(self.process.pid)
 
-        proc_thread = threading.Thread(target=self.read, args=(self.process, ))
+        proc_thread = threading.Thread(target=self.read, args=(self.process,))
         proc_thread.start()
 
     def read(self, process):
         while not self.stop_thread.is_set():
-            output = process.stdout.readline().decode('UTF-8')
+            output = process.stdout.readline().decode("UTF-8")
             # TODO: should add the logic to record the log info here. This will be addressed by issue ID #33
             print(output.strip())
-            if output == '' and self.process.poll() is not None:
+            if output == "" and self.process.poll() is not None:
                 break
 
     def get_process(self):
@@ -70,12 +66,12 @@ class Process(object):
 
     def get_process_result(self):
         self.process_cmd()
-        return self.process.communicate()[0].decode('UTF-8')
+        return self.process.communicate()[0].decode("UTF-8")
 
     def get_process_list(self):
         self.process_cmd()
-        res = self.process.communicate()[0].decode('UTF-8')
-        return res if res is not None else ''
+        res = self.process.communicate()[0].decode("UTF-8")
+        return res if res is not None else ""
 
     def get_process_content(self):
         self.process_cmd()

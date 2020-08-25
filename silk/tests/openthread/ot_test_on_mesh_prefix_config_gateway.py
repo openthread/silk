@@ -12,33 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import range
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
-from silk.tools.wpan_util import verify_address, verify_prefix, is_associated, verify
-
 import random
 import unittest
 import time
 
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools.wpan_util import verify_address, verify_prefix, is_associated, verify
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
+
 hwr.global_instance()
 
-prefix1 = 'fd00:abba:cafe::'
-prefix2 = 'fd00:1234::'
-prefix3 = 'fd00:deed::'
-prefix4 = 'fd00:abcd::'
+prefix1 = "fd00:abba:cafe::"
+prefix2 = "fd00:1234::"
+prefix3 = "fd00:deed::"
+prefix4 = "fd00:abcd::"
 
 
 class TestOnMeshPrefixConfigGateway(testcase.TestCase):
     poll_interval = 200
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
         cls.r2 = ffdb.ThreadDevBoard()
         cls.sc1 = ffdb.ThreadDevBoard()
@@ -52,7 +50,7 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in cls.all_nodes:
 
@@ -61,11 +59,10 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
 
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -101,7 +98,7 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.r2.join(self.network_data, 'router')
+        self.r2.join(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
         self.sc1.join(self.network_data, "sleepy-end-device")
@@ -113,15 +110,15 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
         self.sc2.set_sleep_poll_interval(self.poll_interval)
 
         for _ in range(18):
-            node_type = self.r2.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print(node_type == 'router')
+            node_type = self.r2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            print(node_type == "router")
 
-            if node_type == 'router':
-                print('Matched!!!!!!!!!!!!!')
+            if node_type == "router":
+                print("Matched!!!!!!!!!!!!!")
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 180 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 180 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_Verify_Prefix(self):
@@ -135,18 +132,23 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
         verify_address(self.all_nodes, prefix1)
 
         # Now add prefix2 with priority `high` on router r2 and check all nodes for the new prefix/address
-        self.r2.config_gateway1(prefix2, default_route=True, priority='1')
+        self.r2.config_gateway1(prefix2, default_route=True, priority="1")
         self.wait_for_completion(self.device_list)
         time.sleep(60)
-        verify_prefix(self.all_nodes, prefix2, stable=True, on_mesh=True, slaac=True, default_route=True,
-                      priority='high')
+        verify_prefix(self.all_nodes,
+                      prefix2,
+                      stable=True,
+                      on_mesh=True,
+                      slaac=True,
+                      default_route=True,
+                      priority="high")
         verify_address(self.all_nodes, prefix2)
 
         # Add prefix3 on sleepy end-device and check for it on all nodes
-        self.sc1.config_gateway1(prefix3, priority='-1')
+        self.sc1.config_gateway1(prefix3, priority="-1")
         self.wait_for_completion(self.device_list)
         time.sleep(60)
-        verify_prefix(self.all_nodes, prefix3, stable=True, on_mesh=True, slaac=True, priority='low')
+        verify_prefix(self.all_nodes, prefix3, stable=True, on_mesh=True, slaac=True, priority="low")
         verify_address(self.all_nodes, prefix3)
 
     @testcase.test_method_decorator
@@ -161,8 +163,8 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
         wait_time = 5
         while not is_associated(self.r1):
             if time.time() - start_time > wait_time:
-                print('Took too long for node to recover after reset ({}>{} sec)'.format(time.time() - start_time,
-                                                                                         wait_time))
+                print("Took too long for node to recover after reset ({}>{} sec)".format(
+                    time.time() - start_time, wait_time))
                 exit(1)
             time.sleep(0.25)
 
@@ -175,38 +177,57 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
     def test04_Verify_Add_Remove_Prefix(self):
         # Test `add-prefix` and `remove-prefix`
 
-        self.r1.add_prefix(prefix4, 48, priority="1", stable=False, on_mesh=True, slaac=False, dhcp=True,
-                           configure=False, default_route=True, preferred=False)
+        self.r1.add_prefix(prefix4,
+                           48,
+                           priority="1",
+                           stable=False,
+                           on_mesh=True,
+                           slaac=False,
+                           dhcp=True,
+                           configure=False,
+                           default_route=True,
+                           preferred=False)
 
-        verify_prefix([self.r1], prefix4, 48, priority="high", stable=False, on_mesh=True, slaac=False, dhcp=True,
-                      configure=False, default_route=True, preferred=False)
+        verify_prefix([self.r1],
+                      prefix4,
+                      48,
+                      priority="high",
+                      stable=False,
+                      on_mesh=True,
+                      slaac=False,
+                      dhcp=True,
+                      configure=False,
+                      default_route=True,
+                      preferred=False)
 
         # Remove prefix and verify that it is removed from list
         self.r1.remove_prefix(prefix4, 48)
         time.sleep(0.5)
         verify(self.r1.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES).find(prefix4) < 0)
 
-        self.r1.add_prefix(prefix4, 48, priority="-1", stable=True, on_mesh=False, slaac=True, dhcp=False,
-                           configure=True, default_route=False, preferred=True)
+        self.r1.add_prefix(prefix4,
+                           48,
+                           priority="-1",
+                           stable=True,
+                           on_mesh=False,
+                           slaac=True,
+                           dhcp=False,
+                           configure=True,
+                           default_route=False,
+                           preferred=True)
 
-        verify_prefix([self.r1], prefix4, 48, priority="low", stable=True, on_mesh=False, slaac=True, dhcp=False,
-                      configure=True, default_route=False, preferred=True)
+        verify_prefix([self.r1],
+                      prefix4,
+                      48,
+                      priority="low",
+                      stable=True,
+                      on_mesh=False,
+                      slaac=True,
+                      dhcp=False,
+                      configure=True,
+                      default_route=False,
+                      preferred=True)
 
 
 if __name__ == "__main__":
     unittest.main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

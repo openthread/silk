@@ -12,20 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import str
-from builtins import range
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-from silk.tools import wpan_table_parser
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.tools.wpan_util import verify, verify_within, is_associated
-from silk.utils import process_cleanup
-
 import random
 import time
 import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, verify_within, is_associated
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -38,9 +36,9 @@ class TestInformPreviousParent(testcase.TestCase):
     poll_interval = 300
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.parent1 = ffdb.ThreadDevBoard()
-        cls.parent2= ffdb.ThreadDevBoard()
+        cls.parent2 = ffdb.ThreadDevBoard()
         cls.child1 = ffdb.ThreadDevBoard()
 
     @classmethod
@@ -49,7 +47,7 @@ class TestInformPreviousParent(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.parent1)
         cls.add_test_device(cls.parent2)
@@ -59,11 +57,10 @@ class TestInformPreviousParent(testcase.TestCase):
             device.set_logger(cls.logger)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -99,7 +96,7 @@ class TestInformPreviousParent(testcase.TestCase):
         self.parent2.whitelist_node(self.parent1)
         self.parent2.whitelist_node(self.child1)
 
-        self.parent1.form(self.network_data, 'router')
+        self.parent1.form(self.network_data, "router")
         self.parent1.permit_join(120)
         self.wait_for_completion(self.device_list)
 
@@ -118,15 +115,15 @@ class TestInformPreviousParent(testcase.TestCase):
         self.child1.setprop(wpan.WPAN_THREAD_CHILD_TIMEOUT, str(CHILD_TIMEOUT))
 
         for _ in range(10):
-            node_type = self.parent2.wpanctl('get', 'get ' + wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-            print(node_type == 'router')
+            node_type = self.parent2.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+            print(node_type == "router")
 
-            if node_type == 'router':
-                print('End-node moved up to a Router.')
+            if node_type == "router":
+                print("End-node moved up to a Router.")
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 100 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 100 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):

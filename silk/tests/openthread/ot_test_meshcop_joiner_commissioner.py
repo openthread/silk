@@ -12,24 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-from silk.tools.wpan_util import verify, verify_within, is_associated
-
 import random
 import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.tools.wpan_util import verify, verify_within, is_associated
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 WAIT_TIME = 2  # seconds
 
-PSKd = '123456'
+PSKd = "123456"
 
 
 class TestMeshcopJoinerCommissioner(testcase.TestCase):
-    # -----------------------------------------------------------------------------------------------------------------------
     # Test description: Test MeshCop Joiner and Commissioner behavior
     #
     # This test covers Thread commissioning with a single commissioner and joiner device.
@@ -45,7 +44,7 @@ class TestMeshcopJoinerCommissioner(testcase.TestCase):
     # Verify after commissioning joiner device is able to attach to commissioner successfully.
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.commissioner = ffdb.ThreadDevBoard()
         cls.joiner = ffdb.ThreadDevBoard()
 
@@ -55,7 +54,7 @@ class TestMeshcopJoinerCommissioner(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.commissioner.set_logger(cls.logger)
         cls.joiner.set_logger(cls.logger)
@@ -84,10 +83,11 @@ class TestMeshcopJoinerCommissioner(testcase.TestCase):
     def test01_form_network_on_commissioner(self):
         self.network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff))
         cmd = "form {}".format(self.network_name)
-        self.commissioner.wpanctl_async('form', cmd, "Successfully formed!", 20)
+        self.commissioner.wpanctl_async("form", cmd, "Successfully formed!", 20)
         self.wait_for_completion(self.device_list)
-        leader_node_type = self.commissioner.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-        self.assertTrue(leader_node_type == 'leader', 'Leader is not created correctly!!!')
+        leader_node_type = self.commissioner.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE,
+                                                     2).split("=")[1].strip()[1:-1]
+        self.assertTrue(leader_node_type == "leader", "Leader is not created correctly!!!")
 
     @testcase.test_method_decorator
     def test02_start_commissioning(self):

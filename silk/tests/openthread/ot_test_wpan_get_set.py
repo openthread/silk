@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
 import random
 import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -43,7 +43,7 @@ all_gettable_props = [
     wpan.WPAN_NCP_COUNTER_TX_IP_DROPPED,
     wpan.WPAN_NCP_COUNTER_TX_PKT_ACKED,
     wpan.WPAN_IS_COMMISSIONED,
- #   wpan.WPAN_NCP_MCU_POWER_STATE,
+    # wpan.WPAN_NCP_MCU_POWER_STATE,
     wpan.WPAN_NETWORK_ALLOW_JOIN,
     wpan.WPAN_NETWORK_PASSTHRU_PORT,
     wpan.WPAN_IP6_LINK_LOCAL_ADDRESS,
@@ -122,7 +122,7 @@ all_gettable_props = [
 class TestWpanGetSet(testcase.TestCase):
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
 
     @classmethod
@@ -131,7 +131,7 @@ class TestWpanGetSet(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 
@@ -139,11 +139,10 @@ class TestWpanGetSet(testcase.TestCase):
             device.set_logger(cls.logger)
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899AAbbCCdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899AAbbCCdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
@@ -170,33 +169,33 @@ class TestWpanGetSet(testcase.TestCase):
 
         self.router.setprop(wpan.WPAN_NAME, self.network_data.name)
 
-        self.assertEqual(self.router.getprop(wpan.WPAN_NAME), '"'+self.network_data.name+'"')
+        self.assertEqual(self.router.getprop(wpan.WPAN_NAME), f"\"{self.network_data.name}\"")
 
-        self.router.setprop(wpan.WPAN_NAME, 'a')
-        self.assertEqual(self.router.getprop(wpan.WPAN_NAME), '"a"')
+        self.router.setprop(wpan.WPAN_NAME, "a")
+        self.assertEqual(self.router.getprop(wpan.WPAN_NAME), "\"a\"")
 
-        self.router.setprop(wpan.WPAN_PANID, '0xABBA')
-        self.assertEqual(self.router.getprop(wpan.WPAN_PANID), '0xABBA')
+        self.router.setprop(wpan.WPAN_PANID, "0xABBA")
+        self.assertEqual(self.router.getprop(wpan.WPAN_PANID), "0xABBA")
 
-        self.router.setprop(wpan.WPAN_XPANID, '1020031510006016')
-        self.assertEqual(self.router.getprop(wpan.WPAN_XPANID), '0x1020031510006016')
+        self.router.setprop(wpan.WPAN_XPANID, "1020031510006016")
+        self.assertEqual(self.router.getprop(wpan.WPAN_XPANID), "0x1020031510006016")
 
         self.router.setprop(wpan.WPAN_KEY, self.network_data.psk, data=True)
-        self.assertEqual(self.router.getprop(wpan.WPAN_KEY), '['+self.network_data.psk.upper()+']')
+        self.assertEqual(self.router.getprop(wpan.WPAN_KEY), f"[{self.network_data.psk.upper()}]")
 
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, '1')
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), 'true')
+        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "1")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "true")
 
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, '0')
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), 'false')
+        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "0")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "false")
 
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, 'true')
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), 'true')
+        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "true")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "true")
 
-        self.router.setprop(wpan.WPAN_THREAD_ROUTER_UPGRADE_THRESHOLD, '100')
+        self.router.setprop(wpan.WPAN_THREAD_ROUTER_UPGRADE_THRESHOLD, "100")
         self.assertEqual(int(self.router.getprop(wpan.WPAN_THREAD_ROUTER_UPGRADE_THRESHOLD), 0), 100)
 
-        self.router.setprop(wpan.WPAN_THREAD_ROUTER_DOWNGRADE_THRESHOLD, '40')
+        self.router.setprop(wpan.WPAN_THREAD_ROUTER_DOWNGRADE_THRESHOLD, "40")
         self.assertEqual(int(self.router.getprop(wpan.WPAN_THREAD_ROUTER_DOWNGRADE_THRESHOLD), 0), 40)
 
     @testcase.test_method_decorator
@@ -208,9 +207,9 @@ class TestWpanGetSet(testcase.TestCase):
             value = self.router.get(prop)
             print(value)
 
-            self.assertFalse('Property Not Found' in value, 'Property: {} was not found !!!'.format(prop))
+            self.assertFalse("Property Not Found" in value, f"Property: {prop} was not found !!!")
 
-            self.assertFalse('Error' in value, 'Getting property {} comes with error !!!! '.format(prop))
+            self.assertFalse("Error" in value, f"Getting property {prop} comes with error !!!! ")
 
 
 if __name__ == "__main__":

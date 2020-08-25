@@ -11,13 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-This module maintains the set of hardware resources available for testing.
+"""This module maintains the set of hardware resources available for testing.
 """
 
-from builtins import str
-from builtins import object
 import configparser
 from . import hw_module
 import os.path
@@ -27,23 +23,24 @@ DEFAULT_CONFIG_PATH = os.path.join(silk.tests.__path__[0], "hwconfig.ini")
 
 CLUSTER_NODE_LIMIT = 50
 CLUSTER_LIMIT = 20
-
 """HW Config file options"""
-clusterID = 'ClusterID'
-layoutCenter = 'LayoutCenter'
-layoutRadius = 'LayoutRadius'
+clusterID = "ClusterID"
+layoutCenter = "LayoutCenter"
+layoutRadius = "LayoutRadius"
 
 
 class HardwareNotFound(Exception):
+
     def __init__(self, model, name):
         self.model = model
         self.name = name
 
     def __str__(self):
-        return 'HW Model {0} not found for {1}'.format(self.model, self.name)
+        return "HW Model {0} not found for {1}".format(self.model, self.name)
 
 
 class HwResource(object):
+
     def __init__(self, filename=None, virtual=False, create=False):
         self._hw_modules = []
         self._thread_sniffer_pool = []
@@ -51,19 +48,20 @@ class HwResource(object):
         self._filename = filename or DEFAULT_CONFIG_PATH
         self._create = create
         if not os.path.isfile(self._filename):
-            print('ERROR: No hw config file found at {0}'.format(self._filename))
-        
+            print("ERROR: No hw config file found at {0}".format(self._filename))
+
         self._cluster_id = 1
         self._virtual = virtual
 
     def load_config(self):
-        """Returns a Config object from a given INI file"""
+        """Returns a Config object from a given INI file.
+        """
         self._create_config_if_needed()
 
         filenames = self._parser.read(self._filename)
         if len(filenames) == 0:
             raise RuntimeError("Failed to load objects from %s. Result %s" % (self._filename, str(filenames)))
-        
+
         self._cluster_id = int(self._parser["DEFAULT"].get(clusterID, "0")) % CLUSTER_LIMIT
 
         default_center_x = (self._cluster_id % 3 + 1) * 200
@@ -72,25 +70,26 @@ class HwResource(object):
         layout_center_string = self._parser["DEFAULT"].get(layoutCenter, default_center)
         layout_center_parts = layout_center_string.split(",")
         if len(layout_center_parts) != 2:
-            raise ValueError(
-                "Center position must have x and y coordinates. Provided: %s" % layout_center_string)
+            raise ValueError("Center position must have x and y coordinates. Provided: %s" % layout_center_string)
 
         self._layout_center = int(layout_center_parts[0]), int(layout_center_parts[1])
         self._layout_radius = int(self._parser["DEFAULT"].get(layoutRadius, "100"))
 
-        print('Found {0} HW Config Resources from {1}...'.format(len(self._parser.sections()), self._filename))
+        print("Found {0} HW Config Resources from {1}...".format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
-        print('Located {0} Physical Resources...'.format(len(self._hw_modules)))
+        print("Located {0} Physical Resources...".format(len(self._hw_modules)))
 
     def free_hw_module(self, module):
-        """Free a particular module"""
+        """Free a particular module.
+        """
         if module in self._hw_modules:
             module.free()
         else:
-            print('Module %s not found!' % module.name())
+            print("Module %s not found!" % module.name())
 
     def get_hw_module(self, model, sw_version=None, name=None):
-        """Get a particular hardware module"""
+        """Get a particular hardware module.
+        """
         if name is None:
             name = model
 
@@ -108,7 +107,8 @@ class HwResource(object):
         return m
 
     def add_hw_module(self, module_name, model, interface_serial, interface_number):
-        """Add a hardware module to the list of modules"""
+        """Add a hardware module to the list of modules.
+        """
         self._create_config_if_needed()
 
         if not self._parser.has_section(module_name):
@@ -141,13 +141,12 @@ class HwResource(object):
                 node_id = i + 1 + self._cluster_id * CLUSTER_NODE_LIMIT
                 try:
                     self._add_hw_module(
-                            hw_module.HwModule(
-                                    name=device_name,
-                                    parser=self._parser,
-                                    node_id=node_id,
-                                    layout_center=self._layout_center,
-                                    layout_radius=self._layout_radius,
-                                    virtual=self._virtual))
+                        hw_module.HwModule(name=device_name,
+                                           parser=self._parser,
+                                           node_id=node_id,
+                                           layout_center=self._layout_center,
+                                           layout_radius=self._layout_radius,
+                                           virtual=self._virtual))
                 except RuntimeError as e:
                     print("Failed to add %s" % device_name)
 
@@ -172,24 +171,25 @@ class HwResource(object):
                 retval = m
 
         return retval
-    
+
     def get_hw_module_names(self):
         """Get the list of names of hardware modules.
 
         Returns:
-            List[str]: list of hardware module names.
+        List[str]: list of hardware module names.
         """
         return [module.name() for module in self._hw_modules]
+
 
 _global_instance = None
 
 
 def global_instance(filename=None, virtual=False):
-    """ Get the common global instance """
+    """Get the common global instance.
+    """
     global _global_instance
 
     if _global_instance is None:
         _global_instance = HwResource(filename, virtual)
 
     return _global_instance
-

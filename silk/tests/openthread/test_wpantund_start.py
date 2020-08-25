@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import silk.node.fifteen_four_dev_board as ffdb
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
-import unittest
 import time
+import unittest
+
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -27,7 +27,7 @@ class TestWpantundStart(testcase.TestCase):
     poll_interval = 1000
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
         cls.joiner_list = []
 
@@ -43,10 +43,11 @@ class TestWpantundStart(testcase.TestCase):
     @classmethod
     @testcase.setup_class_decorator
     def setUpClass(cls):
-        # Check and clean up wpantund process if any left over
+        """Check and clean up wpantund process if any left over.
+    """
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 

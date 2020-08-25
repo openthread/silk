@@ -11,11 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Directory path utility.
+"""
 
-from builtins import object
-import os
 import inspect
+import os
 import time
+
 WAIT_TIME = 5
 
 
@@ -27,10 +29,10 @@ class DirectoryPath(object):
         timeout = time.time() + WAIT_TIME
         while True:
             if time.time() > timeout:
-                raise RuntimeError("folder_name {} not found".format(folder_name))
-            if file_abs_path.split('/')[-1] != folder_name:
+                raise RuntimeError(f"folder_name {folder_name} not found")
+            if file_abs_path.split("/")[-1] != folder_name:
                 file_abs_path = os.path.dirname(file_abs_path)
                 time.sleep(1)
             else:
-                dir_path = file_abs_path + '/' + path + '/'
+                dir_path = file_abs_path + "/" + path + "/"
                 return dir_path

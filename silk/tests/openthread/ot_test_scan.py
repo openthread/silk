@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import range
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.tools import wpan_table_parser
-from silk.config import wpan_constants as wpan
-from silk.utils import process_cleanup
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -34,7 +33,7 @@ class TestScan(testcase.TestCase):
     poll_interval = 1000
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.scanner = ffdb.ThreadDevBoard()
 
         cls.leader_list = []
@@ -54,7 +53,7 @@ class TestScan(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.scanner)
 
@@ -69,12 +68,11 @@ class TestScan(testcase.TestCase):
 
         cls.network_data_list = []
         for i in range(total_networks):
-            cls.network_data_list.append(WpanCredentials(
-                network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-                psk = "00112233445566778899aabbccdd{0:04x}".
-                    format(random.randint(0, 0xffff)),
-                channel = random.randint(11, 25),
-                fabric_id = "{0:06x}dead".format(random.randint(0, 0xffffff))))
+            cls.network_data_list.append(
+                WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                channel=random.randint(11, 25),
+                                fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff))))
 
         cls.thread_sniffer_init(cls.network_data_list[0].channel)
 
@@ -97,7 +95,7 @@ class TestScan(testcase.TestCase):
         for i, device in enumerate(self.device_list):
             if i == 0:
                 continue
-            device.form(self.network_data_list[i], 'router')
+            device.form(self.network_data_list[i], "router")
             self.wait_for_completion(self.device_list)
 
         for device in self.device_list:
@@ -116,7 +114,7 @@ class TestScan(testcase.TestCase):
 
         for device in self.device_list[1:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                            'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                            "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
     @testcase.test_method_decorator
     def test03_PermitJoin_Scan(self):
@@ -137,7 +135,7 @@ class TestScan(testcase.TestCase):
 
         for device in self.device_list[1:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                            'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                            "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
     @testcase.test_method_decorator
     def test04_Scan_from_Associated(self):
@@ -151,7 +149,7 @@ class TestScan(testcase.TestCase):
 
         for device in self.device_list[2:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                            'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                            "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
         # Scan on a specific channel
         channel = self.device_list[1].get(wpan.WPAN_CHANNEL)
@@ -165,7 +163,7 @@ class TestScan(testcase.TestCase):
 
         device = self.device_list[1]
         self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                        'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                        "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
     @testcase.test_method_decorator
     def test05_Discovery_Scan(self):
@@ -179,7 +177,7 @@ class TestScan(testcase.TestCase):
 
         for device in self.device_list[1:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                            'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                            "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
     @testcase.test_method_decorator
     def test06_Discover_Scan_from_Associated(self):
@@ -193,7 +191,7 @@ class TestScan(testcase.TestCase):
 
         for device in self.device_list[2:]:
             self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                            'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                            "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
         # Scan on a specific channel
 
@@ -207,7 +205,7 @@ class TestScan(testcase.TestCase):
 
         device = self.device_list[1]
         self.assertTrue(wpan_table_parser.is_in_scan_result(device, scan_result),
-                        'Device: {} is not seen in the scan result'.format(device.get(wpan.WPAN_NAME)[1:-1]))
+                        "Device: {} is not seen in the scan result".format(device.get(wpan.WPAN_NAME)[1:-1]))
 
     #TODO add tc for energy scan, discover scan for joiner with xpanid as filter
 

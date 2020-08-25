@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import object
-import functools
 import collections
+import functools
 
 
 class memoized(object):
-    '''Decorator. Caches a function's return value each time it is called.
-    If called later with the same arguments, the cached value is returned
-    (not reevaluated).
-    '''
+    """Decorator. Caches a function's return value each time it is called.
+    If called later with the same arguments, the cached value is returned (not reevaluated).
+    """
+
     def __init__(self, func):
         self.func = func
         self.cache = {}
@@ -39,22 +38,22 @@ class memoized(object):
             return value
 
     def __repr__(self):
-        '''Return the function's docstring.'''
+        """Return the function"s docstring."""
         return self.func.__doc__
 
     def __get__(self, obj, objtype):
-        '''Support instance methods.'''
+        """Support instance methods."""
         return functools.partial(self.__call__, obj)
 
 
 def ignore_attribute_error(func):
+    """Decorator function that ignores AttributeError.
     """
-    Decorator function that ignores AttributeError.
-    """
+
     def wrapped_func(*args, **kwargs):
         try:
             func(*args, **kwargs)
         except AttributeError:
             pass
-    return wrapped_func
 
+    return wrapped_func

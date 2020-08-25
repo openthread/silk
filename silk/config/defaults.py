@@ -11,7 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Config defaults.
+"""
 
 DEFAULT_LOG_OUTPUT_DIRECTORY = "/tmp/silk"
-WPANTUND_PATH = "/usr/local/sbin/wpantund "
-WPANCTL_PATH = "/usr/local/bin/wpanctl "
+WPANTUND_PATH = "/usr/local/sbin/wpantund"
+WPANCTL_PATH = "/usr/local/bin/wpanctl"

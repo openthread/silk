@@ -11,27 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Base node profile for 6LowPAN networks (Thread, CIP)
+"""Base node profile for 6LowPAN networks (Thread, CIP).
 """
 
-from builtins import zip
-from builtins import object
 from . import base_node
 from .base_node import not_implemented
-
-import silk.tools.watchable as watchable
-
 import silk.postprocessing.wpan as mp_wpan
+import silk.tools.watchable as watchable
 
 
 class WpanCredentials(object):
+    """Class for storing WPAN credentials.
     """
-    Class for storing WPAN credentials
-    """
-    def __init__(self, network_name='wpan', psk='0', channel=0, 
-                 fabric_id='abdefabcdef', xpanid='000000000', panid=0):
+
+    def __init__(self, network_name="wpan", psk="0", channel=0, fabric_id="abdefabcdef", xpanid="000000000", panid=0):
         self.name = network_name
         self.psk = psk
         self.channel = channel
@@ -51,19 +44,19 @@ class WpanCredentials(object):
 
 
 class WpanNode(base_node.BaseNode):
+    """Define the WPAN base node interface.
     """
-    Define the WPAN base node interface
-    """
-    def __init__(self, name='WpanNode'):
+
+    def __init__(self, name="WpanNode"):
         super(WpanNode, self).__init__(name)
 
-        wpan_network_state_watchable = watchable.WatchableWithHistory(name = "WPAN network state", logger = self.logger)
+        wpan_network_state_watchable = watchable.WatchableWithHistory(name="WPAN network state", logger=self.logger)
         self.store_data(wpan_network_state_watchable, self.wpan_network_state_label)
-        wpan_network_version_watchable = watchable.WatchableWithHistory(name = "WPAN radio version", logger = self.logger)
+        wpan_network_version_watchable = watchable.WatchableWithHistory(name="WPAN radio version", logger=self.logger)
         self.store_data(wpan_network_version_watchable, self.wpan_version_label)
 
         for address_type in mp_wpan.WPAN_ADDRESS_TYPES:
-            address_watchable = watchable.WatchableWithHistory(name = address_type, logger = self.logger)
+            address_watchable = watchable.WatchableWithHistory(name=address_type, logger=self.logger)
             self.store_data(address_watchable, self.__wpan_address_label(address_type))
 
     def reboot_trigger_invoked(self):
@@ -74,25 +67,25 @@ class WpanNode(base_node.BaseNode):
 
     @property
     def wpan_network_state_label(self):
-        return 'wpan_network_state'
+        return "wpan_network_state"
 
     @property
     def wpan_network_state(self):
         return self.get_data(self.wpan_network_state_label)
-    
+
     def wpan_network_state_clear(self):
         return self.wpan_network_state.set(mp_wpan.NETWORK_STATE_NO_NETWORK)
 
     @property
     def wpan_version_label(self):
-        return 'wpan_version'
+        return "wpan_version"
 
     @property
     def wpan_version(self):
         return self.get_data(self.wpan_version_label)
 
     def __wpan_address_label(self, address_type):
-        return 'wpan_address(%s)' % address_type
+        return "wpan_address(%s)" % address_type
 
     def _wpan_address(self, address_type):
         return self.get_data(self.__wpan_address_label(address_type))
@@ -103,8 +96,7 @@ class WpanNode(base_node.BaseNode):
 
     @property
     def ip6_legacy_ula(self):
-        """
-        Legacy ULA Address (subnet 2).
+        """Legacy ULA Address (subnet 2).
 
         Used for alarming. This address starts with 0xFD and has the weave
         prefix.
@@ -117,8 +109,7 @@ class WpanNode(base_node.BaseNode):
 
     @property
     def ip6_thread_ula(self):
-        """
-        Thread ULA Address (subnet 6).
+        """Thread ULA Address (subnet 6).
 
         This address starts with 0xFD and has the weave prefix.
         """
@@ -130,12 +121,11 @@ class WpanNode(base_node.BaseNode):
 
     @property
     def wpan_mac_addr(self):
-        """
-        MAC Address (Device HW address) for WPAN device.
+        """MAC Address (Device HW address) for WPAN device.
 
-        Removes any ':' from string
+        Removes any ":" from string
         """
-        return self.get_data(self.wpan_mac_addr_label, default = '').replace(':','')
+        return self.get_data(self.wpan_mac_addr_label, default="").replace(":", "")
 
     @property
     def network_name_label(self):
@@ -151,7 +141,7 @@ class WpanNode(base_node.BaseNode):
 
     @property
     def panid(self):
-        return self.get_data(self.panid_label, 'hex-int', default=-1)
+        return self.get_data(self.panid_label, "hex-int", default=-1)
 
     @property
     def xpanid_label(self):
@@ -194,8 +184,8 @@ class WpanNode(base_node.BaseNode):
         return self.get_data(self.ip6_postfix_label)
 
     def ip6_postfix_process(self):
-        mac_addr = self.get_data(self.ip6_postfix_label).split(':')
-        postfix = ':'.join([i+j for i, j in zip(mac_addr[::2], mac_addr[1::2])])
+        mac_addr = self.get_data(self.ip6_postfix_label).split(":")
+        postfix = ":".join([i + j for i, j in zip(mac_addr[::2], mac_addr[1::2])])
         self.store_data(postfix[2:], self.ip6_postfix_label)
 
     @not_implemented
@@ -216,18 +206,18 @@ class WpanNode(base_node.BaseNode):
         appropriate for the device role.
         """
         pass
-    
+
     @not_implemented
     def provisional_join(self, network, role):
         """
-        Join a specified network without PSK
-        """
+    Join a specified network without PSK
+    """
 
     @not_implemented
     def complete_provisional_joining(self, network, role):
         """
-        Completely join a provisionally-joined network 
-        """
+    Completely join a provisionally-joined network 
+    """
 
     @not_implemented
     def leave(self):

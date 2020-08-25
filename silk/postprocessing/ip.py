@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import str
-import re
-import silk.postprocessing.util
 import ipaddress
+import re
 
 from silk.postprocessing import hwaddr as mp_hwaddr
+import silk.postprocessing.util
 
 # e.g fd26:644d:c77f:0002:1ab4:3000:002d:d2c0
 IPV6_REGEX_CHUNK = "%s{1,4}" % silk.postprocessing.util.REGEX_HEX
@@ -26,9 +25,7 @@ IPV6_REGEX = "(%s:?:){1,7}(%s)" % (IPV6_REGEX_CHUNK, IPV6_REGEX_CHUNK)
 IPV6_ALL_NODES_BROADCAST = "FF02:0000:0000:0000:0000:0000:0000:0001"
 IPV6_ALL_NODES_BROADCAST_SHORT = "FF02::1"
 
-IPV6_CROSS_IGNORE_DESTS = [
-    "FF02:0000:0000:0000:0000:0000:0000:0002"
-]
+IPV6_CROSS_IGNORE_DESTS = ["FF02:0000:0000:0000:0000:0000:0000:0002"]
 
 
 def ipv6_address_reformat(addr):
@@ -76,8 +73,7 @@ def lla_to_hwaddr(lla):
 
 
 def ipv6_assemble(prefix, subnet, iid):
-    """
-    Build an IPv6 address string
+    """Build an IPv6 address string.
 
     prefix must be a string containing a 48-bit hex value
     subnet must be a string containing a 16-bit hex value
@@ -87,34 +83,34 @@ def ipv6_assemble(prefix, subnet, iid):
 
     """
 
-    prefix = prefix.replace(':', '')
-    iid = iid.replace(':', '')
-    
+    prefix = prefix.replace(":", "")
+    iid = iid.replace(":", "")
+
     if len(prefix) != 12:
         raise ValueError("prefix must be length 12, %u given" % len(prefix))
-    
+
     if len(subnet) != 4:
         raise ValueError("subnet must be length 4, %u given" % len(subnet))
 
     if len(iid) != 16:
         #QK TODO
-        print('iid={}'.format(iid))
+        print("iid={}".format(iid))
         raise ValueError("iid must be length 16, %u given" % len(iid))
 
-    lower64 = int(iid, 16) | ( 1 << 57 )
+    lower64 = int(iid, 16) | (1 << 57)
 
     addr = [prefix, subnet, "%016x" % lower64]
     # clean up input strings
-    addr = [x.strip().replace('0x','') for x in addr]
-    addr = [x.replace(':','') for x in addr]
+    addr = [x.strip().replace("0x", "") for x in addr]
+    addr = [x.replace(":", "") for x in addr]
 
-    # Join and Insert ':'s
-    addr = ''.join(addr)
-    addr = ':'.join(re.findall(r"[0-9A-Fa-f]{4}", addr))
+    # Join and Insert ":"s
+    addr = "".join(addr)
+    addr = ":".join(re.findall(r"[0-9A-Fa-f]{4}", addr))
 
     return addr
 
 
 def assemble(fabric_id, subnet, iid):
-    prefix = 'fd' + fabric_id
+    prefix = "fd" + fabric_id
     return ipv6_assemble(prefix, subnet, iid)
