@@ -93,7 +93,7 @@ class OTNSUnitTest(SilkTestCase):
         self.wait_for_expect(expect_thread)
 
     def testRemoveDevice(self):
-        """Test adding device.
+        """Test removing device.
         """
         device_id = random.randint(1, 10)
         device = MockThreadDevBoard("device", device_id)

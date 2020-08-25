@@ -26,7 +26,7 @@ jobs:
         if: "github.ref != 'refs/heads/master'"
   
   unit-tests:
-    name: Integration Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    name: Unit Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

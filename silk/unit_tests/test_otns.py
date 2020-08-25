@@ -17,8 +17,6 @@ import random
 import time
 import unittest
 
-from otns.cli import OTNS
-
 from silk.tools.otns_manager import OtnsManager
 from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
 from silk.unit_tests.testcase import SilkTestCase
@@ -105,9 +103,9 @@ class OTNSIntegrationTest(SilkTestCase):
         def assert_device_fixed_positions(devices: List[MockThreadDevBoard]):
             """Helper method to assert fixed position devices coordinates.
 
-        Args:
-            devices (List[MockThreadDevBoard]): list of devices to check.
-        """
+            Args:
+                devices (List[MockThreadDevBoard]): list of devices to check.
+            """
             for device in devices:
                 self.assertEqual(nodes_info[device.id]["x"], device.x)
                 self.assertEqual(nodes_info[device.id]["y"], device.y)
