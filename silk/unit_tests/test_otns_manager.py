@@ -18,8 +18,6 @@ import random
 import threading
 import unittest
 
-from otns.cli import OTNS
-
 from silk.tools.otns_manager import OtnsManager
 from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
 from silk.unit_tests.mock_service import MockGrpcClient, MockUDPServer
@@ -80,6 +78,20 @@ class OTNSUnitTest(SilkTestCase):
         expect_thread.start()
         return expect_thread
 
+    def expect_udp_message(self, message: str, source_port: int) -> threading.Thread:
+        """Create a thread for an expecting UDP message.
+
+        Args:
+            message (str): expecting UDP message.
+            source_port (int): expecting UDP message source port.
+
+        Returns:
+            threading.Thread: thread running the expectation.
+        """
+        expect_thread = threading.Thread(target=self.udp_server.expect_message, args=(message, source_port))
+        expect_thread.start()
+        return expect_thread
+
     def testAddDevice(self):
         """Test adding device.
         """
@@ -102,6 +114,19 @@ class OTNSUnitTest(SilkTestCase):
         self.manager.add_node(device)
         self.manager.remove_node(device)
         self.wait_for_expect(expect_thread)
+
+    def testUpdateExtaddr(self):
+        """Test updating node extaddr.
+        """
+        device_id = random.randint(1, 10)
+        device_extaddr = random.getrandbits(64)
+        device = MockThreadDevBoard("device", device_id)
+        wpantund_process = MockWpantundProcess()
+        device.wpantund_process = wpantund_process
+
+        self.manager.add_node(device)
+        device_otns_node = self.manager.otns_node_map[device]
+        wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
 
 
 if __name__ == "__main__":

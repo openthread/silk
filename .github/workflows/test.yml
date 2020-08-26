@@ -49,6 +49,7 @@ jobs:
       - name: Test
         run: |
           python -m coverage run silk/unit_tests/test_otns_manager.py
+          python -m coverage run silk/unit_tests/test_log_replay.py
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 

@@ -17,6 +17,8 @@ import random
 import time
 import unittest
 
+from otns.cli import OTNS
+
 from silk.tools.otns_manager import OtnsManager
 from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
 from silk.unit_tests.testcase import SilkTestCase
