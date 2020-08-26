@@ -103,7 +103,7 @@ class MockGrpcClient(GRpcClient):
             for unseen_command in list(unseen_commands):
                 for command in self.command_buffer:
                     if self._command_almost_equal(unseen_command, command):
-                        unseen_commands.remove(unseen_command)
+                        unseen_commands.discard(unseen_command)
             self.command_buffer.clear()
             time.sleep(0.1)
 

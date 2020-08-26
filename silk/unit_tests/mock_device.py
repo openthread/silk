@@ -83,6 +83,7 @@ class MockThreadDevBoard(ThreadDevBoard):
 
     Attributes:
         _hw_model (str): device hardware model.
+        mock_extaddr (int): mock device extended address.
     """
     _hw_model = "Mock"
 
@@ -97,6 +98,9 @@ class MockThreadDevBoard(ThreadDevBoard):
         FifteenFourDevBoardNode.__init__(self, virtual=True, device=mock_device, device_path=mock_device.port())
         if self.logger:
             self.logger.setLevel(logging.WARN)
+
+        self.mock_extaddr = random.getrandbits(64)
+        self.wpantund_process = MockWpantundProcess()
 
     @property
     def id(self) -> int:

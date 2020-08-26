@@ -19,7 +19,7 @@ import string
 import threading
 import unittest
 
-from silk.tools.otns_manager import OtnsManager, RoleType
+from silk.tools.otns_manager import Event, EventType, OtnsManager, RoleType
 from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
 from silk.unit_tests.mock_service import MockGrpcClient, MockUDPServer
 from silk.unit_tests.testcase import SilkTestCase
@@ -79,41 +79,54 @@ class OTNSUnitTest(SilkTestCase):
         expect_thread.start()
         return expect_thread
 
-    def expect_udp_message(self, message: str, source_port: int) -> threading.Thread:
+    def expect_udp_message(self, message: str, source_id: int) -> threading.Thread:
         """Create a thread for an expecting UDP message.
 
         Args:
             message (str): expecting UDP message.
-            source_port (int): expecting UDP message source port.
+            source_id (int): expecting UDP message source node ID.
 
         Returns:
             threading.Thread: thread running the expectation.
         """
+        source_port = 9000 + source_id
         expect_thread = threading.Thread(target=self.udp_server.expect_message, args=(message, source_port))
         expect_thread.start()
         return expect_thread
 
+    def testEventEncodeDecode(self):
+        """Test encoding and decoing an OTNS status event.
+        """
+        message = ''.join(random.choice(string.ascii_letters) for i in range(10))
+        encoded_event = Event.status_event(message)
+        self.assertEqual(encoded_event.event, EventType.OTNS_STATUS_PUSH.value)
+
+        event_bytes = encoded_event.to_bytes()
+        self.assertEqual(len(event_bytes), 11 + len(message))
+
+        decoded_event = Event.from_bytes(event_bytes)
+        self.assertEqual(encoded_event.data, decoded_event.data)
+        self.assertEqual(message, decoded_event.message)
+
     def testAddDevice(self):
         """Test adding device.
         """
-        device_id = random.randint(1, 10)
-        device = MockThreadDevBoard("device", device_id)
+        device = MockThreadDevBoard("device", random.randint(1, 10))
         device_x, device_y = random.randint(100, 200), random.randint(100, 200)
         device.device.set_otns_vis_position(device_x, device_y)
 
-        expect_thread = self.expect_grpc_commands([f"add router x {device_x} y {device_y} id {device_id}"])
+        expect_thread = self.expect_grpc_commands([f"add router x {device_x} y {device_y} id {device.id}"])
         self.manager.add_node(device)
         self.wait_for_expect(expect_thread)
 
     def testRemoveDevice(self):
         """Test removing device.
         """
-        device_id = random.randint(1, 10)
-        device = MockThreadDevBoard("device", device_id)
+        device = MockThreadDevBoard("device", random.randint(1, 10))
 
         self.manager.add_node(device)
 
-        expect_thread = self.expect_grpc_commands([f"del {device_id}"])
+        expect_thread = self.expect_grpc_commands([f"del {device.id}"])
         self.manager.remove_node(device)
         self.wait_for_expect(expect_thread)
 
@@ -163,23 +176,26 @@ class OTNSUnitTest(SilkTestCase):
             commands = [f"move {node_id} {x} {y}" for node_id, (x, y) in expected_coords.items()]
             return self.expect_grpc_commands(commands)
 
+        def expect_node_vis_positions(devices: List[MockThreadDevBoard], expected_coords: Dict[int, Tuple[int, int]]):
+            for device in devices:
+                if device.id in expected_coords:
+                    otns_node = self.manager.otns_node_map[device]
+                    self.assertAlmostEqual(expected_coords[device.id][0], otns_node.vis_x, delta=1)
+                    self.assertAlmostEqual(expected_coords[device.id][1], otns_node.vis_y, delta=1)
+
         layout_center_x = random.randint(100, 200)
         layout_center_y = random.randint(100, 200)
         layout_radius = random.randint(50, 100)
 
-        device_1_id = 1
-        device_2_id = 2
-        device_3_id = 3
-        device_4_id = 4
-        device_1 = MockThreadDevBoard("device_1", device_1_id)
-        device_2 = MockThreadDevBoard("device_2", device_2_id)
-        device_3 = MockThreadDevBoard("device_3", device_3_id)
-        device_4 = MockThreadDevBoard("device_4", device_4_id)
+        device_1 = MockThreadDevBoard("device_1", 1)
+        device_2 = MockThreadDevBoard("device_2", 2)
+        device_3 = MockThreadDevBoard("device_3", 3)
+        device_4 = MockThreadDevBoard("device_4", 4)
 
-        device_1.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_2.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_3.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_4.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
+        devices = [device_1, device_2, device_3, device_4]
+
+        for device in devices:
+            device.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
 
         self.manager.add_node(device_1)
 
@@ -190,6 +206,7 @@ class OTNSUnitTest(SilkTestCase):
         expect_thread = expect_grpc_move_commands(expected_coords)
         self.manager.add_node(device_2)
         self.wait_for_expect(expect_thread)
+        expect_node_vis_positions(devices, expected_coords)
 
         expected_coords = {
             device_1.id: (layout_center_x, layout_center_y + layout_radius),
@@ -201,45 +218,185 @@ class OTNSUnitTest(SilkTestCase):
         self.manager.add_node(device_3)
         self.manager.add_node(device_4)
         self.wait_for_expect(expect_thread)
+        expect_node_vis_positions(devices, expected_coords)
+
+        expected_coords = {
+            device_1.id: (layout_center_x, layout_center_y + layout_radius),
+            device_2.id: (layout_center_x - layout_radius, layout_center_y),
+            device_3.id: (layout_center_x, layout_center_y - layout_radius)
+        }
+        self.manager.remove_node(device_4)
+        expect_node_vis_positions(devices, expected_coords)
+
+        expected_coords = {
+            device_1.id: (layout_center_x, layout_center_y + layout_radius),
+            device_2.id: (layout_center_x - layout_radius, layout_center_y)
+        }
+        self.manager.remove_node(device_3)
+        expect_node_vis_positions(devices, expected_coords)
 
     def testUpdateExtaddr(self):
         """Test updating node extaddr.
         """
-        device_id = random.randint(1, 10)
-        device = MockThreadDevBoard("device", device_id)
-        wpantund_process = MockWpantundProcess()
-        device.wpantund_process = wpantund_process
+        device = MockThreadDevBoard("device", random.randint(1, 10))
 
         self.manager.add_node(device)
         self.manager.subscribe_to_node(device)
-        device_otns_node = self.manager.otns_node_map[device]
 
         for _ in range(3):
-            device_extaddr = random.getrandbits(64)
-            expect_thread = self.expect_udp_message(f"extaddr={device_extaddr:016x}", 9000 + device_id)
-            wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
+            extaddr = random.getrandbits(64)
+            expect_thread = self.expect_udp_message(f"extaddr={extaddr:016x}", device.id)
+            device.wpantund_process.emit_status(f"extaddr={extaddr:016x}")
             self.wait_for_expect(expect_thread)
-            self.assertEqual(device_otns_node.extaddr, device_extaddr)
+            self.assertEqual(self.manager.otns_node_map[device].extaddr, extaddr)
+
+    def testUpdateMode(self):
+        """Test updating node mode, one of the properties OTNS manager does not track.
+        """
+        device = MockThreadDevBoard("device", random.randint(1, 10))
+
+        self.manager.add_node(device)
+        self.manager.subscribe_to_node(device)
+
+        mode = "sn"
+        expect_thread = self.expect_udp_message(f"mode={mode}", device.id)
+        device.wpantund_process.emit_status(f"mode={mode}")
+        self.wait_for_expect(expect_thread)
 
     def testUpdateRole(self):
         """Test updating node role.
         """
-        device_id = random.randint(1, 10)
-        device = MockThreadDevBoard("device", device_id)
-        wpantund_process = MockWpantundProcess()
-        device.wpantund_process = wpantund_process
+        device = MockThreadDevBoard("device", random.randint(1, 10))
 
         self.manager.add_node(device)
         self.manager.subscribe_to_node(device)
-        device_otns_node = self.manager.otns_node_map[device]
 
-        wpantund_process.emit_status(f"role={RoleType.LEADER.value:1d}")
+        device.wpantund_process.emit_status(f"role={RoleType.LEADER.value:1d}")
 
         for role in RoleType:
-            expect_thread = self.expect_udp_message(f"role={role.value:1d}", 9000 + device_id)
-            wpantund_process.emit_status(f"role={role.value:1d}")
+            expect_thread = self.expect_udp_message(f"role={role.value:1d}", device.id)
+            device.wpantund_process.emit_status(f"role={role.value:1d}")
             self.wait_for_expect(expect_thread)
-            self.assertEqual(device_otns_node.role, role)
+            self.assertEqual(self.manager.otns_node_map[device].role, role)
+
+    def testUpdateRoleMultipleNodes(self):
+        """Test updating role for multiple nodes.
+        """
+        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
+        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
+
+        self.manager.add_node(device_1)
+        self.manager.add_node(device_2)
+        self.manager.subscribe_to_node(device_1)
+        self.manager.subscribe_to_node(device_2)
+
+        device_1.wpantund_process.emit_status(f"role={RoleType.LEADER.value:1d}")
+        device_2.wpantund_process.emit_status(f"role={RoleType.LEADER.value:1d}")
+
+        for role in RoleType:
+            for device in [device_1, device_2]:
+                expect_thread = self.expect_udp_message(f"role={role.value:1d}", device.id)
+                device.wpantund_process.emit_status(f"role={role.value:1d}")
+                self.wait_for_expect(expect_thread)
+                self.assertEqual(self.manager.otns_node_map[device].role, role)
+
+    def testUpdateRLOC16(self):
+        """Test updating node RLOC16.
+        """
+        device = MockThreadDevBoard("device", random.randint(1, 10))
+
+        self.manager.add_node(device)
+        self.manager.subscribe_to_node(device)
+
+        for _ in range(3):
+            rloc16 = random.getrandbits(16)
+            expect_thread = self.expect_udp_message(f"rloc16={rloc16}", device.id)
+            device.wpantund_process.emit_status(f"rloc16={rloc16}")
+            self.wait_for_expect(expect_thread)
+
+    def testAddRemoveChildren(self):
+        """Test adding and removing children.
+        """
+        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
+        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
+        device_3 = MockThreadDevBoard("device_3", random.randint(21, 30))
+        devices = [device_1, device_2, device_3]
+
+        for device in devices:
+            self.manager.add_node(device)
+            self.manager.subscribe_to_node(device)
+            device.wpantund_process.emit_status(f"extaddr={device.mock_extaddr:016x}")
+
+        device_1_otns_node = self.manager.otns_node_map[device_1]
+        expect_thread = self.expect_udp_message(f"child_added={device_2.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"child_added={device_2.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.children), 1)
+        self.assertTrue(device_2.mock_extaddr in device_1_otns_node.children)
+        self.assertTrue(device_3.mock_extaddr not in device_1_otns_node.children)
+
+        expect_thread = self.expect_udp_message(f"child_added={device_3.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"child_added={device_3.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.children), 2)
+        self.assertTrue(device_2.mock_extaddr in device_1_otns_node.children)
+        self.assertTrue(device_3.mock_extaddr in device_1_otns_node.children)
+
+        expect_thread = self.expect_udp_message(f"child_removed={device_3.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"child_removed={device_3.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.children), 1)
+        self.assertTrue(device_2.mock_extaddr in device_1_otns_node.children)
+        self.assertTrue(device_3.mock_extaddr not in device_1_otns_node.children)
+
+        expect_thread = self.expect_udp_message(f"child_removed={device_2.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"child_removed={device_2.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.children), 0)
+        self.assertTrue(device_2.mock_extaddr not in device_1_otns_node.children)
+        self.assertTrue(device_3.mock_extaddr not in device_1_otns_node.children)
+
+    def testAddRemoveNeighbors(self):
+        """Test adding and removing neighbors.
+        """
+        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
+        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
+        device_3 = MockThreadDevBoard("device_3", random.randint(21, 30))
+        devices = [device_1, device_2, device_3]
+
+        for device in devices:
+            self.manager.add_node(device)
+            self.manager.subscribe_to_node(device)
+            device.wpantund_process.emit_status(f"extaddr={device.mock_extaddr:016x}")
+
+        device_1_otns_node = self.manager.otns_node_map[device_1]
+        expect_thread = self.expect_udp_message(f"router_added={device_2.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"router_added={device_2.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.neighbors), 1)
+        self.assertTrue(device_2.mock_extaddr in device_1_otns_node.neighbors)
+        self.assertTrue(device_3.mock_extaddr not in device_1_otns_node.neighbors)
+
+        expect_thread = self.expect_udp_message(f"router_added={device_3.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"router_added={device_3.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.neighbors), 2)
+        self.assertTrue(device_2.mock_extaddr in device_1_otns_node.neighbors)
+        self.assertTrue(device_3.mock_extaddr in device_1_otns_node.neighbors)
+
+        expect_thread = self.expect_udp_message(f"router_removed={device_3.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"router_removed={device_3.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.neighbors), 1)
+        self.assertTrue(device_2.mock_extaddr in device_1_otns_node.neighbors)
+        self.assertTrue(device_3.mock_extaddr not in device_1_otns_node.neighbors)
+
+        expect_thread = self.expect_udp_message(f"router_removed={device_2.mock_extaddr:016x}", device_1.id)
+        device_1.wpantund_process.emit_status(f"router_removed={device_2.mock_extaddr:016x}")
+        self.wait_for_expect(expect_thread)
+        self.assertEqual(len(device_1_otns_node.neighbors), 0)
+        self.assertTrue(device_2.mock_extaddr not in device_1_otns_node.neighbors)
+        self.assertTrue(device_3.mock_extaddr not in device_1_otns_node.neighbors)
 
 
 if __name__ == "__main__":

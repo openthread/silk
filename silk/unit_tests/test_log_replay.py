@@ -51,7 +51,7 @@ class OTNSLogReplayTest(SilkTestCase):
         self.udp_server.close()
 
     def testLogReplay(self):
-        
+        pass
 
 
 if __name__ == "__main__":

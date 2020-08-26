@@ -115,14 +115,12 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device_1_id, device_2_id = random.randint(1, 10), random.randint(11, 20)
-        device_1 = MockThreadDevBoard("device_1", device_1_id)
-        device_2 = MockThreadDevBoard("device_2", device_2_id)
+        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
+        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
+        device_3 = MockThreadDevBoard("device_3", random.randint(21, 30))
 
-        device_1_x, device_1_y = random.randint(100, 200), random.randint(100, 200)
-        device_2_x, device_2_y = random.randint(100, 200), random.randint(100, 200)
-        device_1.device.set_otns_vis_position(device_1_x, device_1_y)
-        device_2.device.set_otns_vis_position(device_2_x, device_2_y)
+        for device in [device_1, device_2, device_3]:
+            device.device.set_otns_vis_position(random.randint(100, 200), random.randint(100, 200))
 
         manager.add_node(device_1)
         manager.add_node(device_2)
@@ -131,12 +129,6 @@ class OTNSIntegrationTest(SilkTestCase):
         nodes_info = ns.nodes()
         self.assertEqual(len(nodes_info), 2)
         assert_device_fixed_positions([device_1, device_2])
-
-        device_3_id = random.randint(21, 30)
-        device_3 = MockThreadDevBoard("device_3", device_3_id)
-
-        device_3_x, device_3_y = random.randint(100, 200), random.randint(100, 200)
-        device_3.device.set_otns_vis_position(device_3_x, device_3_y)
 
         manager.add_node(device_3)
         ns.go(0.1)
@@ -155,19 +147,13 @@ class OTNSIntegrationTest(SilkTestCase):
         layout_center_y = random.randint(100, 200)
         layout_radius = random.randint(50, 100)
 
-        device_1_id = 1
-        device_2_id = 2
-        device_3_id = 3
-        device_4_id = 4
-        device_1 = MockThreadDevBoard("device_1", device_1_id)
-        device_2 = MockThreadDevBoard("device_2", device_2_id)
-        device_3 = MockThreadDevBoard("device_3", device_3_id)
-        device_4 = MockThreadDevBoard("device_4", device_4_id)
+        device_1 = MockThreadDevBoard("device_1", 1)
+        device_2 = MockThreadDevBoard("device_2", 2)
+        device_3 = MockThreadDevBoard("device_3", 3)
+        device_4 = MockThreadDevBoard("device_4", 4)
 
-        device_1.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_2.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_3.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_4.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
+        for device in [device_1, device_2, device_3, device_4]:
+            device.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
 
         manager.add_node(device_1)
         ns.go(0.1)
@@ -216,24 +202,15 @@ class OTNSIntegrationTest(SilkTestCase):
         layout_center_y = random.randint(100, 200)
         layout_radius = random.randint(50, 100)
 
-        device_1_id = 1
-        device_2_id = 2
-        device_3_id = 3
-        device_4_id = 4
-        device_1 = MockThreadDevBoard("device_1", device_1_id)
-        device_2 = MockThreadDevBoard("device_2", device_2_id)
-        device_3 = MockThreadDevBoard("device_3", device_3_id)
-        device_4 = MockThreadDevBoard("device_4", device_4_id)
+        device_1 = MockThreadDevBoard("device_1", 1)
+        device_2 = MockThreadDevBoard("device_2", 2)
+        device_3 = MockThreadDevBoard("device_3", 3)
+        device_4 = MockThreadDevBoard("device_4", 4)
 
-        device_1.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_2.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_3.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
-        device_4.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
+        for device in [device_1, device_2, device_3, device_4]:
+            device.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
+            manager.add_node(device)
 
-        manager.add_node(device_1)
-        manager.add_node(device_2)
-        manager.add_node(device_3)
-        manager.add_node(device_4)
         ns.go(0.1)
 
         nodes_info = ns.nodes()
@@ -306,24 +283,21 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device_id = random.randint(1, 10)
         device_extaddr = random.getrandbits(64)
-        device = MockThreadDevBoard("device", device_id)
-        wpantund_process = MockWpantundProcess()
-        device.wpantund_process = wpantund_process
+        device = MockThreadDevBoard("device", random.randint(1, 10))
 
         manager.add_node(device)
         ns.go(0.1)
 
         self.assertEqual(ns.nodes()[device.id]["extaddr"], device.id)
 
-        wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
+        device.wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
         ns.go(0.1)
 
         self.assertEqual(ns.nodes()[device.id]["extaddr"], device.id)
 
         manager.subscribe_to_node(device)
-        wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
+        device.wpantund_process.emit_status(f"extaddr={device_extaddr:016x}")
         ns.go(0.1)
 
         self.assertEqual(ns.nodes()[device.id]["extaddr"], device_extaddr)
@@ -336,24 +310,21 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device_id = random.randint(1, 10)
         device_rloc16 = random.getrandbits(16)
-        device = MockThreadDevBoard("device", device_id)
-        wpantund_process = MockWpantundProcess()
-        device.wpantund_process = wpantund_process
+        device = MockThreadDevBoard("device", random.randint(1, 10))
 
         manager.add_node(device)
         ns.go(0.1)
 
         original_rloc16 = ns.nodes()[device.id]["rloc16"]
 
-        wpantund_process.emit_status(f"rloc16={device_rloc16}")
+        device.wpantund_process.emit_status(f"rloc16={device_rloc16}")
         ns.go(0.1)
 
         self.assertEqual(ns.nodes()[device.id]["rloc16"], original_rloc16)
 
         manager.subscribe_to_node(device)
-        wpantund_process.emit_status(f"rloc16={device_rloc16}")
+        device.wpantund_process.emit_status(f"rloc16={device_rloc16}")
         ns.go(0.1)
 
         self.assertEqual(ns.nodes()[device.id]["rloc16"], device_rloc16)
@@ -364,17 +335,11 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device_1_id = random.randint(1, 10)
         device_1_parid = random.getrandbits(16)
-        device_1 = MockThreadDevBoard("device_1", device_1_id)
-        wpantund_process_1 = MockWpantundProcess()
-        device_1.wpantund_process = wpantund_process_1
+        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
 
-        device_2_id = random.randint(11, 20)
         device_2_parid = random.getrandbits(16)
-        device_2 = MockThreadDevBoard("device_2", device_2_id)
-        wpantund_process_2 = MockWpantundProcess()
-        device_2.wpantund_process = wpantund_process_2
+        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
 
         manager.add_node(device_1)
         manager.add_node(device_2)
@@ -382,8 +347,8 @@ class OTNSIntegrationTest(SilkTestCase):
         manager.subscribe_to_node(device_1)
         manager.subscribe_to_node(device_2)
 
-        wpantund_process_1.emit_status(f"parid={device_1_parid:08x}")
-        wpantund_process_2.emit_status(f"parid={device_2_parid:08x}")
+        device_1.wpantund_process.emit_status(f"parid={device_1_parid:08x}")
+        device_2.wpantund_process.emit_status(f"parid={device_2_parid:08x}")
         ns.go(0.1)
 
         partitions_info = ns.partitions()
@@ -393,7 +358,7 @@ class OTNSIntegrationTest(SilkTestCase):
         self.assertEqual(partitions_info[device_1_parid][0], device_1.id)
         self.assertEqual(partitions_info[device_2_parid][0], device_2.id)
 
-        wpantund_process_2.emit_status(f"parid={device_1_parid:08x}")
+        device_2.wpantund_process.emit_status(f"parid={device_1_parid:08x}")
         ns.go(0.1)
 
         partitions_info = ns.partitions()
@@ -402,7 +367,7 @@ class OTNSIntegrationTest(SilkTestCase):
         self.assertTrue(device_1.id in partitions_info[device_1_parid])
         self.assertTrue(device_2.id in partitions_info[device_1_parid])
 
-        wpantund_process_2.emit_status(f"parid={device_2_parid:08x}")
+        device_2.wpantund_process.emit_status(f"parid={device_2_parid:08x}")
         ns.go(0.1)
 
         partitions_info = ns.partitions()
