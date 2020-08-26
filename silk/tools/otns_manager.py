@@ -253,8 +253,8 @@ class Event:
         Returns:
             Event: a status event object with the message decoded from bytes.
         """
-        delay, event, length = struct.unpack("<QBH", bytes[:12])
-        data = bytes[12:]
+        delay, event, length = struct.unpack("<QBH", bytes[:11])
+        data = bytes[11:]
         return Event(data, EventType(event), delay)
 
     @property

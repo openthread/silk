@@ -14,6 +14,7 @@
 """This module contains mock service classes for tests.
 """
 
+from typing import List
 import queue
 import socket
 import time
@@ -39,26 +40,73 @@ class MockGrpcClient(GRpcClient):
     """
 
     def __init__(self, exception_queue: queue.Queue):
+        """Initialize a mock gRPC client.
+
+        Args:
+            exception_queue (queue.Queue): queue to put exception into.
+        """
         self.exception_queue = exception_queue
         self.command_buffer = []
 
-    def expect_command(self, command: str, timeout: int = 10):
-        """Listen for expected gRPC.
+    def _command_almost_equal(self, command1: str, command2: str, delta: float = 1.0) -> bool:
+        """Check if two commands are almost equal.
+
+        Almost equal means we allow numerical parts in the commands to differ by the defined delta.
 
         Args:
-            message (str): expected gRPC command.
+            command1 (str): first command.
+            command2 (str): second command.
+            delta (float): allowed numerical delta.
+
+        Returns:
+            bool: if the two commands are almost equal.
+        """
+        if command1 == command2:
+            return True
+
+        command1_parts, command2_parts = command1.split(), command2.split()
+
+        if len(command1_parts) != len(command2_parts):
+            return False
+
+        for part1, part2 in zip(command1_parts, command2_parts):
+            if part1 == part2:
+                continue
+            else:
+                try:
+                    part1_int = int(part1)
+                    part2_int = int(part2)
+                    if abs(part1_int - part2_int) <= delta:
+                        continue
+                    else:
+                        return False
+                except ValueError:
+                    return False
+        
+        return True
+
+    def expect_commands(self, commands: List[str], timeout: int = 10):
+        """Listen for expected gRPC commands.
+
+        Args:
+            message (List[str]): expected gRPC commands.
             timeout (int, optional): wait timeout. Defaults to 10.
         """
+        unseen_commands = set(commands)
         start_time = time.time()
         while True:
             if time.time() - start_time > timeout:
                 self.exception_queue.put(ExpectationError("Expectation not fulfilled within time limit"))
                 return
-            if command in self.command_buffer:
+            if not unseen_commands:
                 return
-            else:
-                self.command_buffer.clear()
-                time.sleep(0.1)
+            for unseen_command in list(unseen_commands):
+                for command in self.command_buffer:
+                    if self._command_almost_equal(unseen_command, command):
+                        unseen_commands.remove(unseen_command)
+            self.command_buffer.clear()
+            time.sleep(0.1)
+
 
     def _send_command(self, command: str):
         """Send a Command gRPC request.
@@ -77,9 +125,10 @@ class MockUDPServer(object):
         """Initialize a mock UDP server.
 
         Args:
-            exception_queue (queue.Queue): queue to put exception onto.
+            exception_queue (queue.Queue): queue to put exception into.
         """
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.settimeout(0.2)
         server_address = ("localhost", 9000)
         self.sock.bind(server_address)
         self._running = True
@@ -104,8 +153,11 @@ class MockUDPServer(object):
             if time.time() - start_time > timeout:
                 self.exception_queue.put(ExpectationError("Expectation not fulfilled within time limit"))
                 return
-            data, address = self.sock.recvfrom(0xff)
-            if message == Event.from_bytes(data).message and address[1] == source_port:
-                return
-            else:
-                time.sleep(0.1)
+            try:
+                data, address = self.sock.recvfrom(0xfff)
+                if message == Event.from_bytes(data).message and address[1] == source_port:
+                    return
+                else:
+                    time.sleep(0.1)
+            except socket.timeout:
+                pass
