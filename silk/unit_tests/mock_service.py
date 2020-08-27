@@ -20,6 +20,7 @@ import socket
 import time
 
 from silk.tools.otns_manager import Event, GRpcClient
+from silk.unit_tests.test_utils import commands_almost_equal
 
 
 class ExpectationError(Exception):
@@ -32,7 +33,7 @@ class ExpectationError(Exception):
         Args:
             error (str): error message.
         """
-        super(ExpectationError, self).__init__(error)
+        super().__init__(error)
 
 
 class MockGrpcClient(GRpcClient):
@@ -47,43 +48,6 @@ class MockGrpcClient(GRpcClient):
         """
         self.exception_queue = exception_queue
         self.command_buffer = []
-
-    def _command_almost_equal(self, command1: str, command2: str, delta: float = 1.0) -> bool:
-        """Check if two commands are almost equal.
-
-        Almost equal means we allow numerical parts in the commands to differ by the defined delta.
-
-        Args:
-            command1 (str): first command.
-            command2 (str): second command.
-            delta (float): allowed numerical delta.
-
-        Returns:
-            bool: if the two commands are almost equal.
-        """
-        if command1 == command2:
-            return True
-
-        command1_parts, command2_parts = command1.split(), command2.split()
-
-        if len(command1_parts) != len(command2_parts):
-            return False
-
-        for part1, part2 in zip(command1_parts, command2_parts):
-            if part1 == part2:
-                continue
-            else:
-                try:
-                    part1_int = int(part1)
-                    part2_int = int(part2)
-                    if abs(part1_int - part2_int) <= delta:
-                        continue
-                    else:
-                        return False
-                except ValueError:
-                    return False
-        
-        return True
 
     def expect_commands(self, commands: List[str], timeout: int = 10):
         """Listen for expected gRPC commands.
@@ -102,11 +66,10 @@ class MockGrpcClient(GRpcClient):
                 return
             for unseen_command in list(unseen_commands):
                 for command in self.command_buffer:
-                    if self._command_almost_equal(unseen_command, command):
+                    if commands_almost_equal(unseen_command, command):
                         unseen_commands.discard(unseen_command)
             self.command_buffer.clear()
             time.sleep(0.1)
-
 
     def _send_command(self, command: str):
         """Send a Command gRPC request.

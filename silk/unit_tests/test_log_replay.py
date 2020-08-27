@@ -16,6 +16,7 @@ from pathlib import Path
 import queue
 import unittest
 
+from silk.tests import silk_replay
 from silk.tools.otns_manager import OtnsManager
 from silk.unit_tests.mock_service import MockGrpcClient, MockUDPServer
 from silk.unit_tests.testcase import SilkTestCase
@@ -36,6 +37,9 @@ class OTNSLogReplayTest(SilkTestCase):
 
         self.udp_server = MockUDPServer(self.exception_queue)
 
+        hwconfig_path = Path(__file__).parent / "fixture/hwconfig.ini"
+        self.args = ["tests/silk_replay.py", "-v2", "-c", str(hwconfig_path), "-s", "localhost", "-p", "100"]
+
     def tearDown(self):
         """Test method tear down. Clean up fixtures.
         """
@@ -44,13 +48,43 @@ class OTNSLogReplayTest(SilkTestCase):
         self.udp_server.close()
 
     def get_log_path(self, basename: str) -> Path:
+        """Generate path to a log file.
+
+        Args:
+            basename (str): log file basename.
+
+        Returns:
+            Path: Path to the log file.
+        """
         return Path(__file__).parent / f"fixture/{basename}"
 
     def testReplayFormNetwork(self):
-        log_path = self.get_log_path("form_network_log.txt")
-        with log_path.open() as log:
-            for line in log:
-                pass
+        """Test replaying the form network test case log.
+        """
+        log_path = str(self.get_log_path("form_network_log.txt"))
+        replayer = silk_replay.SilkReplayer(argv=self.args + [log_path], run_now=False)
+        replayer.otns_manager = self.manager
+        # setting up
+        line_number = replayer.run(stop_regex=r"Sent cmd: title \"TestFormNetwork.set_up\"")
+        # pairing
+        line_number = replayer.run(start_line=line_number,
+                                   stop_regex=r"Sent cmd: title \"TestFormNetwork.test01_Pairing\"")
+        # get WPAN status
+        line_number = replayer.run(start_line=line_number,
+                                   stop_regex=r"Sent cmd: title \"TestFormNetwork.test02_GetWpanStatus\"")
+        # ping LLA
+        line_number = replayer.run(start_line=line_number,
+                                   stop_regex=r"Sent cmd: title \"TestFormNetwork.test03_PingRouterLLA\"")
+        # ping MLA
+        line_number = replayer.run(start_line=line_number,
+                                   stop_regex=r"Sent cmd: title \"TestFormNetwork.test04_PingRouterMLA\"")
+        # ping ULA
+        line_number = replayer.run(start_line=line_number,
+                                   stop_regex=r"Sent cmd: title \"TestFormNetwork.test05_PingRouterULA\"")
+        # tearing down
+        line_number = replayer.run(start_line=line_number, stop_regex=r"Sent cmd: title \"TestFormNetwork.tear_down\"")
+        # finish
+        replayer.run(start_line=line_number)
 
 
 if __name__ == "__main__":
