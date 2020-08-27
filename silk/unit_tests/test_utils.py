@@ -28,7 +28,7 @@ def random_string(length: int) -> str:
     """
     return ''.join(random.choice(string.ascii_letters) for i in range(length))
 
-def commands_almost_equal(self, command1: str, command2: str, delta: float = 1.0) -> bool:
+def commands_almost_equal(command1: str, command2: str, delta: float = 1.0) -> bool:
         """Check if two commands are almost equal.
 
         Almost equal means we allow numerical parts in the commands to differ by the defined delta.

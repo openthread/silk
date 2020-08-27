@@ -15,6 +15,7 @@
 """
 
 from typing import List
+import logging
 import queue
 import socket
 import time
@@ -40,12 +41,14 @@ class MockGrpcClient(GRpcClient):
     """Mock gRPC Client for testing dependency injection.
     """
 
-    def __init__(self, exception_queue: queue.Queue):
+    def __init__(self, exception_queue: queue.Queue, logger: logging.Logger):
         """Initialize a mock gRPC client.
 
         Args:
             exception_queue (queue.Queue): queue to put exception into.
+            logger (logging.Logger): logger for the client.
         """
+        super().__init__("localhost", logger)
         self.exception_queue = exception_queue
         self.command_buffer = []
 

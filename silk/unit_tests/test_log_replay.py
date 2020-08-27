@@ -32,7 +32,7 @@ class OTNSLogReplayTest(SilkTestCase):
         self.exception_queue = queue.Queue()
 
         self.manager = OtnsManager("localhost", self.logger.getChild("OtnsManager"))
-        self.grpc_client = MockGrpcClient(self.exception_queue)
+        self.grpc_client = MockGrpcClient(self.exception_queue, self.logger.getChild("MockGrpcClient"))
         self.manager.grpc_client = self.grpc_client
 
         self.udp_server = MockUDPServer(self.exception_queue)
@@ -47,23 +47,24 @@ class OTNSLogReplayTest(SilkTestCase):
         self.manager.remove_all_nodes()
         self.udp_server.close()
 
-    def get_log_path(self, basename: str) -> Path:
-        """Generate path to a log file.
+    def create_replayer(self, log_filename: str) -> Path:
+        """Prepare a replayer for a test.
 
         Args:
-            basename (str): log file basename.
+            log_filename (str): log file basename.
 
         Returns:
-            Path: Path to the log file.
+            SilkReplayer: a SilkReplayer prepared for a test.
         """
-        return Path(__file__).parent / f"fixture/{basename}"
+        log_path = str(Path(__file__).parent / f"fixture/{log_filename}")
+        replayer = silk_replay.SilkReplayer(argv=self.args + [log_path], run_now=False)
+        replayer.otns_manager = self.manager
+        return replayer
 
     def testReplayFormNetwork(self):
         """Test replaying the form network test case log.
         """
-        log_path = str(self.get_log_path("form_network_log.txt"))
-        replayer = silk_replay.SilkReplayer(argv=self.args + [log_path], run_now=False)
-        replayer.otns_manager = self.manager
+        replayer = self.create_replayer("form_network_log.txt")
         # setting up
         line_number = replayer.run(stop_regex=r"Sent cmd: title \"TestFormNetwork.set_up\"")
         # pairing

@@ -36,7 +36,7 @@ class OTNSUnitTest(SilkTestCase):
         self.exception_queue = queue.Queue()
 
         self.manager = OtnsManager("localhost", self.logger.getChild("OtnsManager"))
-        self.grpc_client = MockGrpcClient(self.exception_queue)
+        self.grpc_client = MockGrpcClient(self.exception_queue, self.logger.getChild("MockGrpcClient"))
         self.manager.grpc_client = self.grpc_client
 
         self.udp_server = MockUDPServer(self.exception_queue)
