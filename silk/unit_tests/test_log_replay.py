@@ -25,13 +25,6 @@ class OTNSLogReplayTest(SilkTestCase):
     """Silk unit test case for log replayer.
     """
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        super(OTNSLogReplayTest, cls).setUpClass()
-
-        path = Path(__file__).parent / "fixture/form_network_log.txt"
-        cls.log_file = path.open()
-
     def setUp(self) -> None:
         """Test method set up.
         """
@@ -50,8 +43,14 @@ class OTNSLogReplayTest(SilkTestCase):
         self.manager.remove_all_nodes()
         self.udp_server.close()
 
-    def testLogReplay(self):
-        pass
+    def get_log_path(self, basename: str) -> Path:
+        return Path(__file__).parent / f"fixture/{basename}"
+
+    def testReplayFormNetwork(self):
+        log_path = self.get_log_path("form_network_log.txt")
+        with log_path.open() as log:
+            for line in log:
+                
 
 
 if __name__ == "__main__":
