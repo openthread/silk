@@ -16,7 +16,7 @@ from pathlib import Path
 import queue
 import unittest
 
-from silk.tests import silk_replay
+from silk.tests.silk_replay import SilkReplayer
 from silk.tools.otns_manager import OtnsManager
 from silk.unit_tests.mock_service import MockGrpcClient, MockUDPServer
 from silk.unit_tests.testcase import SilkTestCase
@@ -47,7 +47,7 @@ class OTNSLogReplayTest(SilkTestCase):
         self.manager.remove_all_nodes()
         self.udp_server.close()
 
-    def create_replayer(self, log_filename: str) -> silk_replay.SilkReplayer:
+    def create_replayer(self, log_filename: str) -> SilkReplayer:
         """Prepare a replayer for a test.
 
         Args:
@@ -57,7 +57,7 @@ class OTNSLogReplayTest(SilkTestCase):
             SilkReplayer: a SilkReplayer prepared for a test.
         """
         log_path = str(Path(__file__).parent / f"fixture/{log_filename}")
-        replayer = silk_replay.SilkReplayer(argv=self.args + [log_path], run_now=False)
+        replayer = SilkReplayer(argv=self.args + [log_path], run_now=False)
         replayer.otns_manager = self.manager
         return replayer
 
