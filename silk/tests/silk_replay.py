@@ -71,8 +71,12 @@ class SilkReplayer(object):
             run_now (bool, optional): if the replayer should start running immediately. Useful to set to False to
                 run tests on this class.
         """
-        args = self.parse_args(argv)
+        args = SilkReplayer.parse_args(argv)
         self.verbosity = args.verbosity
+        self.logger = logging.getLogger("silk_replay")
+        self.device_names = None
+        self.device_name_map = None
+
         self.input_path = args.path
         self.log_filename = os.path.basename(args.path)
         self.speed = float(args.playback_speed)
@@ -96,6 +100,8 @@ class SilkReplayer(object):
         Args:
             result_dir (str): output directory of log.
         """
+        self.logger.setLevel(logging.DEBUG)
+
         if self.verbosity == 0:
             stream_level = logging.CRITICAL
         elif self.verbosity == 1:
@@ -104,9 +110,6 @@ class SilkReplayer(object):
             stream_level = logging.DEBUG
 
         logging.basicConfig(format=LOG_LINE_FORMAT, level=stream_level)
-
-        self.logger = logging.getLogger("silk_replay")
-        self.logger.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter(LOG_LINE_FORMAT)
 
@@ -120,7 +123,8 @@ class SilkReplayer(object):
             self.logger.handlers.clear()
         self.logger.addHandler(file_handler)
 
-    def parse_args(self, argv):
+    @staticmethod
+    def parse_args(argv):
         """Parse arguments.
 
         Args:

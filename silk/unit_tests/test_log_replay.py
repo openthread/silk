@@ -47,7 +47,7 @@ class OTNSLogReplayTest(SilkTestCase):
         self.manager.remove_all_nodes()
         self.udp_server.close()
 
-    def create_replayer(self, log_filename: str) -> Path:
+    def create_replayer(self, log_filename: str) -> silk_replay.SilkReplayer:
         """Prepare a replayer for a test.
 
         Args:

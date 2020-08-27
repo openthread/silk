@@ -15,12 +15,11 @@
 from typing import Dict, List, Tuple
 import queue
 import random
-import string
 import threading
 import unittest
 
 from silk.tools.otns_manager import Event, EventType, OtnsManager, RoleType
-from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
+from silk.unit_tests.mock_device import MockThreadDevBoard
 from silk.unit_tests.mock_service import MockGrpcClient, MockUDPServer
 from silk.unit_tests.test_utils import random_string
 from silk.unit_tests.testcase import SilkTestCase
@@ -71,7 +70,7 @@ class OTNSUnitTest(SilkTestCase):
         """Create a thread for an expecting gRPC commands.
 
         Args:
-            command (List[str]): expecting gRPC commands.
+            commands (List[str]): expecting gRPC commands.
 
         Returns:
             threading.Thread: thread running the expectation.
@@ -96,7 +95,7 @@ class OTNSUnitTest(SilkTestCase):
         return expect_thread
 
     def testEventEncodeDecode(self):
-        """Test encoding and decoing an OTNS status event.
+        """Test encoding and decoding an OTNS status event.
         """
         message = random_string(10)
         encoded_event = Event.status_event(message)
@@ -174,16 +173,16 @@ class OTNSUnitTest(SilkTestCase):
         """Test OTNS manager auto layout feature.
         """
 
-        def expect_grpc_move_commands(expected_coords: Dict[int, Tuple[int, int]]):
-            commands = [f"move {node_id} {x} {y}" for node_id, (x, y) in expected_coords.items()]
+        def expect_grpc_move_commands(coords: Dict[int, Tuple[int, int]]):
+            commands = [f"move {node_id} {x} {y}" for node_id, (x, y) in coords.items()]
             return self.expect_grpc_commands(commands)
 
-        def expect_node_vis_positions(devices: List[MockThreadDevBoard], expected_coords: Dict[int, Tuple[int, int]]):
+        def expect_node_vis_positions(devices: List[MockThreadDevBoard], coords: Dict[int, Tuple[int, int]]):
             for device in devices:
-                if device.id in expected_coords:
+                if device.id in coords:
                     otns_node = self.manager.otns_node_map[device]
-                    self.assertAlmostEqual(expected_coords[device.id][0], otns_node.vis_x, delta=1)
-                    self.assertAlmostEqual(expected_coords[device.id][1], otns_node.vis_y, delta=1)
+                    self.assertAlmostEqual(coords[device.id][0], otns_node.vis_x, delta=1)
+                    self.assertAlmostEqual(coords[device.id][1], otns_node.vis_y, delta=1)
 
         layout_center_x = random.randint(100, 200)
         layout_center_y = random.randint(100, 200)

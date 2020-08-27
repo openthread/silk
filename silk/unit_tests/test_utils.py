@@ -17,6 +17,7 @@
 import random
 import string
 
+
 def random_string(length: int) -> str:
     """Generate a random string with defined length.
 
@@ -28,8 +29,9 @@ def random_string(length: int) -> str:
     """
     return ''.join(random.choice(string.ascii_letters) for i in range(length))
 
+
 def commands_almost_equal(command1: str, command2: str, delta: float = 1.0) -> bool:
-        """Check if two commands are almost equal.
+    """Check if two commands are almost equal.
 
         Almost equal means we allow numerical parts in the commands to differ by the defined delta.
 
@@ -41,26 +43,26 @@ def commands_almost_equal(command1: str, command2: str, delta: float = 1.0) -> b
         Returns:
             bool: if the two commands are almost equal.
         """
-        if command1 == command2:
-            return True
-
-        command1_parts, command2_parts = command1.split(), command2.split()
-
-        if len(command1_parts) != len(command2_parts):
-            return False
-
-        for part1, part2 in zip(command1_parts, command2_parts):
-            if part1 == part2:
-                continue
-            else:
-                try:
-                    part1_int = int(part1)
-                    part2_int = int(part2)
-                    if abs(part1_int - part2_int) <= delta:
-                        continue
-                    else:
-                        return False
-                except ValueError:
-                    return False
-        
+    if command1 == command2:
         return True
+
+    command1_parts, command2_parts = command1.split(), command2.split()
+
+    if len(command1_parts) != len(command2_parts):
+        return False
+
+    for part1, part2 in zip(command1_parts, command2_parts):
+        if part1 == part2:
+            continue
+        else:
+            try:
+                part1_int = int(part1)
+                part2_int = int(part2)
+                if abs(part1_int - part2_int) <= delta:
+                    continue
+                else:
+                    return False
+            except ValueError:
+                return False
+
+    return True

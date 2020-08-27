@@ -164,7 +164,7 @@ class GRpcClient:
         Args:
             node_id (int): node ID of the node to be moved.
             x (int): new x coordinate of the node.
-            y (int): new y coordianate of the node.
+            y (int): new y coordinate of the node.
         """
         self._send_command(f"move {node_id} {x} {y}")
 
@@ -244,17 +244,17 @@ class Event:
         return struct.pack("<QBH", self.delay, self.event, self.length) + self.data
 
     @staticmethod
-    def from_bytes(bytes: bytes):
+    def from_bytes(event_bytes: bytes):
         """Unpack a UDP message into an Event object.
 
         Args:
-            bytes (bytes): packed UDP message bytes.
+            event_bytes (bytes): packed UDP message bytes.
 
         Returns:
             Event: a status event object with the message decoded from bytes.
         """
-        delay, event, length = struct.unpack("<QBH", bytes[:11])
-        data = bytes[11:]
+        delay, event, length = struct.unpack("<QBH", event_bytes[:11])
+        data = event_bytes[11:]
         return Event(data, EventType(event), delay)
 
     @property
@@ -340,7 +340,7 @@ class OtnsNode(object):
         """Send event bytes packet.
 
         Args:
-            event_packet (bytes): pacakged event content in bytes.
+            event_packet (bytes): packaged event content in bytes.
         """
         self.sock.sendto(event_packet, self.dest_addr)
 
@@ -496,8 +496,17 @@ class WpantundOtnsMonitor(signal.Subscriber):
         otns_manager (OtnsManager): OTNS manager instance the monitor was created from.
     """
 
-    node = None
-    otns_manager = None
+    def __init__(self, publisher: signal.Publisher, node: OtnsNode, otns_manager: "OtnsManager"):
+        """Initialize a wpantund monitor.
+
+        Args:
+            publisher (signal.Publisher): wpantund process.
+            node (OtnsNode): node the wpantund process is attached to.
+            otns_manager (OtnsManager): the OTNS manager this monitor belongs to.
+        """
+        super().__init__(publisher)
+        self.node = node
+        self.otns_manager = otns_manager
 
     def process_log_line(self, line: str):
         """Process a single line of wpantund log.
@@ -512,7 +521,7 @@ class WpantundOtnsMonitor(signal.Subscriber):
         """Handle messages from Publisher, a wpantund process.
 
         Args:
-            sender (singal.Publisher): publisher of signal.
+            sender (signal.Publisher): publisher of signal.
             **kwargs (str): published signal.
         """
         line = kwargs["line"]
@@ -630,7 +639,7 @@ class OtnsNodeSummary(object):
         Returns:
             List[Tuple[datetime, str]]: list of neighbors history, in the format of a tuple containing
                 the time of the event and the formatted string.
-    """
+        """
         history = []
         for time, added, neighbor in self.neighbors_history:
             action = "added" if added else "removed"
@@ -650,8 +659,7 @@ class OtnsNodeSummary(object):
         Returns:
             str: string representation of the summary.
         """
-        lines = []
-        lines.append(f"OTNS Summary for node {self.node_id}")
+        lines = [f"OTNS Summary for node {self.node_id}"]
 
         if self.extaddr_history:
             lines.append("Extended address changes:")
@@ -712,8 +720,7 @@ class OtnsNodeSummaryCollection(object):
             events.extend([(time, summary.node_id, string) for time, string in node_events])
         events.sort(key=lambda event: event[0])
 
-        lines = []
-        lines.append("OTNS Summary")
+        lines = ["OTNS Summary"]
 
         for event in events:
             lines.append(f"[{event[0].strftime(DATE_FORMAT)[:-3]}]" f" node {event[1]}: {event[2]}")
@@ -1013,9 +1020,9 @@ class OtnsManager(object):
         """
         if node in self.otns_node_map:
             self.logger.debug(f"Subscribing to node {self.otns_node_map[node].node_id}")
-            wpantund_otns_monitor = WpantundOtnsMonitor(publisher=node.wpantund_process)
-            wpantund_otns_monitor.node = self.otns_node_map[node]
-            wpantund_otns_monitor.otns_manager = self
+            wpantund_otns_monitor = WpantundOtnsMonitor(publisher=node.wpantund_process,
+                                                        node=self.otns_node_map[node],
+                                                        otns_manager=self)
             self.otns_monitor_map[node] = wpantund_otns_monitor
 
     def unsubscribe_from_node(self, node: ThreadDevBoard):
@@ -1081,9 +1088,10 @@ class OtnsManager(object):
             group_radius = radius / (i + 1)
             for node in group:
                 angle = angle_step * node.node_id
-                self.layout_node(node, center_x, center_y, group_radius, angle)
+                OtnsManager.layout_node(node, center_x, center_y, group_radius, angle)
 
-    def layout_node(self, node: OtnsNode, center_x: int, center_y: int, radius: float, angle: float):
+    @staticmethod
+    def layout_node(node: OtnsNode, center_x: int, center_y: int, radius: float, angle: float):
         """Update a single node's visualization position.
 
         Args:

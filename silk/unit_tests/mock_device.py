@@ -83,7 +83,6 @@ class MockThreadDevBoard(ThreadDevBoard):
     """Mock ThreadDevBoard for unit testing.
 
     Attributes:
-        _hw_model (str): device hardware model.
         mock_extaddr (int): mock device extended address.
     """
     _hw_model = "Mock"

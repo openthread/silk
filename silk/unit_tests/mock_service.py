@@ -56,7 +56,7 @@ class MockGrpcClient(GRpcClient):
         """Listen for expected gRPC commands.
 
         Args:
-            message (List[str]): expected gRPC commands.
+            commands (List[str]): expected gRPC commands.
             timeout (int, optional): wait timeout. Defaults to 10.
         """
         unseen_commands = set(commands)

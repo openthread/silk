@@ -20,7 +20,7 @@ import unittest
 from otns.cli import OTNS
 
 from silk.tools.otns_manager import OtnsManager
-from silk.unit_tests.mock_device import MockThreadDevBoard, MockWpantundProcess
+from silk.unit_tests.mock_device import MockThreadDevBoard
 from silk.unit_tests.testcase import SilkTestCase
 
 
@@ -52,7 +52,7 @@ class OTNSIntegrationTest(SilkTestCase):
 
         Args:
             nodes_info (Dict[int, Dict[str, Any]]): nodes info dictionary.
-            expected_coords (Dict[int, Tuple[int, int]]): dict mapping device id to coodinates to check.
+            expected_coords (Dict[int, Tuple[int, int]]): dict mapping device id to coordinates to check.
         """
         for device_id, coords in expected_coords.items():
             self.assertAlmostEqual(nodes_info[device_id]["x"], coords[0], delta=1)
