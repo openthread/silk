@@ -64,7 +64,7 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device = MockThreadDevBoard("device", 1)
+        device = MockThreadDevBoard(1)
         manager.add_node(device)
         ns.go(0.1)
         self.assertEqual(len(ns.nodes()), 1)
@@ -75,7 +75,7 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device = MockThreadDevBoard("device", 1)
+        device = MockThreadDevBoard(1)
         manager.add_node(device)
         ns.go(0.1)
         self.assertEqual(len(ns.nodes()), 1)
@@ -115,9 +115,9 @@ class OTNSIntegrationTest(SilkTestCase):
         ns = self.ns
         manager = self.manager
 
-        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
-        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
-        device_3 = MockThreadDevBoard("device_3", random.randint(21, 30))
+        device_1 = MockThreadDevBoard(random.randint(1, 10))
+        device_2 = MockThreadDevBoard(random.randint(11, 20))
+        device_3 = MockThreadDevBoard(random.randint(21, 30))
 
         for device in [device_1, device_2, device_3]:
             device.device.set_otns_vis_position(random.randint(100, 200), random.randint(100, 200))
@@ -147,10 +147,10 @@ class OTNSIntegrationTest(SilkTestCase):
         layout_center_y = random.randint(100, 200)
         layout_radius = random.randint(50, 100)
 
-        device_1 = MockThreadDevBoard("device_1", 1)
-        device_2 = MockThreadDevBoard("device_2", 2)
-        device_3 = MockThreadDevBoard("device_3", 3)
-        device_4 = MockThreadDevBoard("device_4", 4)
+        device_1 = MockThreadDevBoard(1)
+        device_2 = MockThreadDevBoard(2)
+        device_3 = MockThreadDevBoard(3)
+        device_4 = MockThreadDevBoard(4)
 
         for device in [device_1, device_2, device_3, device_4]:
             device.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
@@ -202,10 +202,10 @@ class OTNSIntegrationTest(SilkTestCase):
         layout_center_y = random.randint(100, 200)
         layout_radius = random.randint(50, 100)
 
-        device_1 = MockThreadDevBoard("device_1", 1)
-        device_2 = MockThreadDevBoard("device_2", 2)
-        device_3 = MockThreadDevBoard("device_3", 3)
-        device_4 = MockThreadDevBoard("device_4", 4)
+        device_1 = MockThreadDevBoard(1)
+        device_2 = MockThreadDevBoard(2)
+        device_3 = MockThreadDevBoard(3)
+        device_4 = MockThreadDevBoard(4)
 
         for device in [device_1, device_2, device_3, device_4]:
             device.device.set_otns_layout_parameter(layout_center_x, layout_center_y, layout_radius)
@@ -284,7 +284,7 @@ class OTNSIntegrationTest(SilkTestCase):
         manager = self.manager
 
         device_extaddr = random.getrandbits(64)
-        device = MockThreadDevBoard("device", random.randint(1, 10))
+        device = MockThreadDevBoard(random.randint(1, 10))
 
         manager.add_node(device)
         ns.go(0.1)
@@ -311,7 +311,7 @@ class OTNSIntegrationTest(SilkTestCase):
         manager = self.manager
 
         device_rloc16 = random.getrandbits(16)
-        device = MockThreadDevBoard("device", random.randint(1, 10))
+        device = MockThreadDevBoard(random.randint(1, 10))
 
         manager.add_node(device)
         ns.go(0.1)
@@ -336,10 +336,10 @@ class OTNSIntegrationTest(SilkTestCase):
         manager = self.manager
 
         device_1_parid = random.getrandbits(16)
-        device_1 = MockThreadDevBoard("device_1", random.randint(1, 10))
+        device_1 = MockThreadDevBoard(random.randint(1, 10))
 
         device_2_parid = random.getrandbits(16)
-        device_2 = MockThreadDevBoard("device_2", random.randint(11, 20))
+        device_2 = MockThreadDevBoard(random.randint(11, 20))
 
         manager.add_node(device_1)
         manager.add_node(device_2)
@@ -364,8 +364,8 @@ class OTNSIntegrationTest(SilkTestCase):
         partitions_info = ns.partitions()
         self.assertEqual(len(partitions_info), 1)
         self.assertEqual(len(partitions_info[device_1_parid]), 2)
-        self.assertTrue(device_1.id in partitions_info[device_1_parid])
-        self.assertTrue(device_2.id in partitions_info[device_1_parid])
+        self.assertIn(device_1.id, partitions_info[device_1_parid])
+        self.assertIn(device_2.id, partitions_info[device_1_parid])
 
         device_2.wpantund_process.emit_status(f"parid={device_2_parid:08x}")
         ns.go(0.1)

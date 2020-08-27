@@ -50,7 +50,7 @@ class OTNSLogReplayTest(SilkTestCase):
         log_path = self.get_log_path("form_network_log.txt")
         with log_path.open() as log:
             for line in log:
-                
+                pass
 
 
 if __name__ == "__main__":
