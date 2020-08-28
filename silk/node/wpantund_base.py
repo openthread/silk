@@ -18,13 +18,9 @@ import silk.hw.hw_resource
 
 
 def role_is_thread(role):
-    if type(role) is not int:
+    if not isinstance(role, int):
         role = getattr(wpan, "ROLES")[role]
-
-    if role in [2, 3, 4]:
-        return True
-    else:
-        return False
+    return role in [2, 3, 4]
 
 
 class WpantundWpanNode(wpan_node.WpanNode):

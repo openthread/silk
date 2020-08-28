@@ -55,7 +55,7 @@ def set_output_directory(path):
     os.environ[OUTPUT_DIRECTORY_KEY] = path
 
 
-def setOtnsHost(host: str):
+def set_otns_host(host: str):
     """Set the OTNS server host for the test case.
 
     Args:

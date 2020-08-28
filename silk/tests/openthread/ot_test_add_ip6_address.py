@@ -84,7 +84,6 @@ class TestAddIPV6Address(testcase.TestCase):
         cls.hardware_select()
 
         for device in cls.all_nodes:
-
             device.set_logger(cls.logger)
             cls.add_test_device(device)
 
@@ -136,12 +135,12 @@ class TestAddIPV6Address(testcase.TestCase):
                     if p.prefix == prefix:
                         verify(p.prefix_len == "64")
                         verify(p.is_stable())
-                        verify(p.is_on_mesh() == True)
-                        verify(p.is_preferred() == True)
-                        verify(p.is_def_route() == False)
-                        verify(p.is_slaac() == False)
-                        verify(p.is_dhcp() == False)
-                        verify(p.is_config() == False)
+                        verify(p.is_on_mesh())
+                        verify(p.is_preferred())
+                        verify(not p.is_def_route())
+                        verify(not p.is_slaac())
+                        verify(not p.is_dhcp())
+                        verify(not p.is_config())
                         verify(p.priority == "med")
                         break
                 else:  # `for` loop finished without finding the prefix.

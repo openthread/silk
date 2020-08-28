@@ -169,7 +169,7 @@ class TestSlaacAddressNcp(testcase.TestCase):
         self.wait_for_completion(self.device_list)
 
         # Verify that all nodes get the prefix and add the SLAAC address.
-        # r1 should add 2 entries for prefix, 1 as origin:ncp (with rloc16 of r1), 2nd as origin:user (with rloc:0x0000)
+        # r1 should add 2 entries for prefix, 1 as origin:ncp (with rloc16 of r1), 2 as origin:user (with rloc:0x0000)
         # r2 and fed1 should have 1 related prefix entry seen as origin:ncp (with rloc16 of r1)
         # Due to slaac=True prefix all the nodes should add related ip address.
         verify_within(self.check_prefix_and_slaac_address_are_added, WAIT_INTERVAL)

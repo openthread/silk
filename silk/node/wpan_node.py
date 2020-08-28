@@ -48,7 +48,7 @@ class WpanNode(base_node.BaseNode):
     """
 
     def __init__(self, name="WpanNode"):
-        super(WpanNode, self).__init__(name)
+        super().__init__(name)
 
         wpan_network_state_watchable = watchable.WatchableWithHistory(name="WPAN network state", logger=self.logger)
         self.store_data(wpan_network_state_watchable, self.wpan_network_state_label)
@@ -60,10 +60,10 @@ class WpanNode(base_node.BaseNode):
             self.store_data(address_watchable, self.__wpan_address_label(address_type))
 
     def reboot_trigger_invoked(self):
-        super(WpanNode, self).reboot_trigger_invoked()
         self.wpan_network_state_clear()
 
-    """ Data labels and getters """
+    """Data labels and getters
+    """
 
     @property
     def wpan_network_state_label(self):
@@ -209,15 +209,13 @@ class WpanNode(base_node.BaseNode):
 
     @not_implemented
     def provisional_join(self, network, role):
+        """Join a specified network without PSK.
         """
-    Join a specified network without PSK
-    """
 
     @not_implemented
     def complete_provisional_joining(self, network, role):
+        """Completely join a provisionally-joined network.
         """
-    Completely join a provisionally-joined network 
-    """
 
     @not_implemented
     def leave(self):

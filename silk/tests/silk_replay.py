@@ -180,7 +180,7 @@ class SilkReplayer(object):
         hw_resource.global_instance().load_config()
         self.device_names = set(hw_resource.global_instance().get_hw_module_names())
         self.device_name_map = dict()
-        self.logger.debug("Loaded devices {}".format(self.device_names))
+        self.logger.debug("Loaded devices %s" % self.device_names)
 
     def execute_message(self, entity_name: str, message: str, timestamp: datetime):
         """Execute the intended action represented by the message.
@@ -274,9 +274,9 @@ class SilkReplayer(object):
 
     def run(self, start_line: int = 0, stop_regex: str = None) -> int:
         """Run the Silk log replayer.
-        
+
         This method provides two optional arguments to allow for unit testing.
-        
+
         Args:
             start_line (int, optional): start reading the log file at the specified line number. Defaults to 0.
             stop_regex (str, optional): stop running if the pattern matches a log line. Defaults to None.

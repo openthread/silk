@@ -20,8 +20,8 @@ import threading
 from . import deadline as silk_deadline
 
 
-def is_watchable(object):
-    return (isinstance(object, WatchableWithHistory) or isinstance(object, Watchable))
+def is_watchable(object_to_check):
+    return isinstance(object_to_check, (WatchableWithHistory, Watchable))
 
 
 # An object whose state can be watched

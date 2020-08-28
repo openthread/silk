@@ -42,10 +42,10 @@ class TestParentResetChildRecovery(testcase.TestCase):
         cls.sleepy_children = []
         cls.rx_on_children = []
 
-        for num in range(NUM_SLEEP_CHILDREN):
+        for _ in range(NUM_SLEEP_CHILDREN):
             cls.sleepy_children.append(ffdb.ThreadDevBoard())
 
-        for num in range(NUM_RX_ON_CHILDREN):
+        for _ in range(NUM_RX_ON_CHILDREN):
             cls.rx_on_children.append(ffdb.ThreadDevBoard())
 
         cls.all_children = cls.sleepy_children + cls.rx_on_children

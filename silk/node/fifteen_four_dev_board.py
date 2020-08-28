@@ -142,9 +142,9 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
                 self.get_device(sw_version=sw_version)
             else:
                 self.get_unclaimed_device(virtual_name)
-        super(FifteenFourDevBoardNode, self).__init__(self.device.name())
+        super().__init__(self.device.name())
 
-        self.logger.info(f"Device interface: {self.device.interface_serial()}")
+        self.log_info(f"Device interface: {self.device.interface_serial()}")
         if not virtual:
             self.log_info(f"Device Path: {self.device_path}")
 

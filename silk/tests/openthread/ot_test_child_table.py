@@ -159,18 +159,18 @@ class TestChildTable(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test03_Verify_ChildTableAddress(self):
-        childAddrTable = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE_ADDRESSES, 2)
-        childAddrTable = wpan_table_parser.parse_child_table_address_result(childAddrTable)
+        child_addr_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE_ADDRESSES, 2)
+        child_addr_table = wpan_table_parser.parse_child_table_address_result(child_addr_table)
 
-        print(childAddrTable)
+        print(child_addr_table)
 
-        self.assertEqual(len(childAddrTable), len(self.joiner_list))
+        self.assertEqual(len(child_addr_table), len(self.joiner_list))
 
         counter = 0
         for child in self.joiner_list:
             ext_addr = child.getprop(wpan.WPAN_EXT_ADDRESS)[1:-1]
 
-            for entry in childAddrTable:
+            for entry in child_addr_table:
                 if entry.ext_address == ext_addr:
                     self.assertEqual(int(entry.rloc16, 16), int(child.getprop(wpan.WPAN_THREAD_RLOC16), 16))
                     counter += 1
@@ -180,13 +180,13 @@ class TestChildTable(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test04_Verify_ChildTable_AsValMap(self):
-        childTable = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE_ASVALMAP, 2)
+        child_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE_ASVALMAP, 2)
 
-        print(childTable)
+        print(child_table)
 
         total_child_table_entry = len(self.joiner_list)
         for item in CHILD_TABLE_AS_VALMAP_ENTRY:
-            self.assertEqual(childTable.count(item), total_child_table_entry)
+            self.assertEqual(child_table.count(item), total_child_table_entry)
 
 
 if __name__ == "__main__":

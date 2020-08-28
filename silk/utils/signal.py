@@ -121,7 +121,7 @@ class Publisher(SignalLogger):
     def __init__(self):
         """Setups signaling object.
         """
-        super(Publisher, self).__init__()
+        super().__init__()
         self._signal = Signal()
 
     def subscribe(self, handle):
@@ -152,7 +152,7 @@ class Subscriber(SignalLogger):
             publisher (Publisher): Publisher instance to subscribe to.
             source_name (str): the source of the log lines. If provided, the source will be printed with each log.
         """
-        super(Subscriber, self).__init__()
+        super().__init__()
 
         self.publishers = []
         self.source_name = source_name
@@ -176,7 +176,7 @@ class Subscriber(SignalLogger):
         self.publishers.append(publisher)
 
     def unsubscribe(self, publisher=None):
-        """Unsubscribe from the pubisher.
+        """Unsubscribe from the publisher.
 
         If publisher argument is None (default), this function will unsubscribe from all publishers.
         """
@@ -184,8 +184,8 @@ class Subscriber(SignalLogger):
         # this object is destroyed via __del__ before __init__ was called.
         publishers = getattr(self, "publishers", [])
         if publisher is None:
-            for publisher in publishers:
-                publisher.unsubscribe(self.subscribe_handle)
+            for a_publisher in publishers:
+                a_publisher.unsubscribe(self.subscribe_handle)
             self.publishers = []
         else:
             if publisher in publishers:
