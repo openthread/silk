@@ -20,6 +20,7 @@ import random
 
 from silk.hw.hw_module import HwModule
 from silk.node.fifteen_four_dev_board import FifteenFourDevBoardNode, ThreadDevBoard
+from silk.unit_tests.test_utils import random_string
 from silk.utils import signal
 
 
@@ -82,21 +83,23 @@ class MockThreadDevBoard(ThreadDevBoard):
     """Mock ThreadDevBoard for unit testing.
 
     Attributes:
-        _hw_model (str): device hardware model.
+        mock_extaddr (int): mock device extended address.
     """
     _hw_model = "Mock"
 
-    def __init__(self, name: str, node_id: int):
+    def __init__(self, node_id: int):
         """Initialize a mock ThreadDevBoard.
 
         Args:
-            name (str): name of the node.
             node_id (int): ID of the node.
         """
-        mock_device = MockHwModule(name, node_id)
+        mock_device = MockHwModule(random_string(10), node_id)
         FifteenFourDevBoardNode.__init__(self, virtual=True, device=mock_device, device_path=mock_device.port())
         if self.logger:
             self.logger.setLevel(logging.WARN)
+
+        self.mock_extaddr = random.getrandbits(64)
+        self.wpantund_process = MockWpantundProcess()
 
     @property
     def id(self) -> int:

@@ -63,14 +63,20 @@ class SilkReplayer(object):
         last_time (datetime.datetime): timestamp of the last line of log processed.
     """
 
-    def __init__(self, argv=None):
+    def __init__(self, argv=None, run_now: bool = True):
         """Initialize a Silk log replayer.
 
         Args:
-        argv (List[str], optional): command line arguments. Defaults to None.
+            argv (List[str], optional): command line arguments. Defaults to None.
+            run_now (bool, optional): if the replayer should start running immediately. Useful to set to False to
+                run tests on this class.
         """
-        args = self.parse_args(argv)
+        args = SilkReplayer.parse_args(argv)
         self.verbosity = args.verbosity
+        self.logger = logging.getLogger("silk_replay")
+        self.device_names = None
+        self.device_name_map = None
+
         self.input_path = args.path
         self.log_filename = os.path.basename(args.path)
         self.speed = float(args.playback_speed)
@@ -81,17 +87,21 @@ class SilkReplayer(object):
         self.otns_manager = OtnsManager(server_host=args.otns_server, logger=self.logger.getChild("otnsManager"))
 
         self.last_time = None
-        self.run()
 
-        result_path = os.path.join(args.results_dir, f"silk_replay_summary_for_{self.log_filename}.csv")
-        self.output_summary(coalesced=True, csv_path=result_path)
+        if run_now:
+            self.run()
+            if args.results_dir:
+                result_path = os.path.join(args.results_dir, f"silk_replay_summary_for_{self.log_filename}.csv")
+                self.output_summary(coalesced=True, csv_path=result_path)
 
     def set_up_logger(self, result_dir: str):
         """Set up logger for the replayer.
 
         Args:
-        result_dir (str): output directory of log.
+            result_dir (str): output directory of log.
         """
+        self.logger.setLevel(logging.DEBUG)
+
         if self.verbosity == 0:
             stream_level = logging.CRITICAL
         elif self.verbosity == 1:
@@ -100,9 +110,6 @@ class SilkReplayer(object):
             stream_level = logging.DEBUG
 
         logging.basicConfig(format=LOG_LINE_FORMAT, level=stream_level)
-
-        self.logger = logging.getLogger("silk_replay")
-        self.logger.setLevel(logging.DEBUG)
 
         formatter = logging.Formatter(LOG_LINE_FORMAT)
 
@@ -116,14 +123,15 @@ class SilkReplayer(object):
             self.logger.handlers.clear()
         self.logger.addHandler(file_handler)
 
-    def parse_args(self, argv):
+    @staticmethod
+    def parse_args(argv):
         """Parse arguments.
 
         Args:
-        argv (List[str]): command line arguments.
+            argv (List[str]): command line arguments.
 
         Returns:
-        argparse.Namespace: parsed arguments attributes.
+            argparse.Namespace: parsed arguments attributes.
         """
         parser = argparse.ArgumentParser(description="Replay a Silk test log")
         parser.add_argument("-r",
@@ -166,7 +174,7 @@ class SilkReplayer(object):
         """Acquire devices from hwconfig.ini file.
 
         Args:
-        config_file (str): path to hwconfig.ini file.
+            config_file (str): path to hwconfig.ini file.
         """
         hw_resource.global_instance(config_file, virtual=True)
         hw_resource.global_instance().load_config()
@@ -178,9 +186,9 @@ class SilkReplayer(object):
         """Execute the intended action represented by the message.
 
         Args:
-        entity_name (str): name of the entity carrying out the action.
-        message (str): message content of the action.
-        timestamp (datetime.datetime): timestamp of the message.
+            entity_name (str): name of the entity carrying out the action.
+            message (str): message content of the action.
+            timestamp (datetime.datetime): timestamp of the message.
         """
         parts = entity_name.split(".")
         if len(parts) == 1 and parts[0] == "silk":
@@ -246,8 +254,8 @@ class SilkReplayer(object):
         """Print summary of the replayed log.
 
         Args:
-        coalesced (bool): if the summary should be printed grouped by time.
-        csv_path (str): path to CSV output file
+            coalesced (bool): if the summary should be printed grouped by time.
+            csv_path (str): path to CSV output file
         """
         extaddr_map = {}
         for summary in self.otns_manager.node_summaries.values():
@@ -264,12 +272,25 @@ class SilkReplayer(object):
             for summary in self.otns_manager.node_summaries.values():
                 self.logger.debug(summary.to_string(extaddr_map))
 
-    def run(self):
+    def run(self, start_line: int = 0, stop_regex: str = None) -> int:
         """Run the Silk log replayer.
+        
+        This method provides two optional arguments to allow for unit testing.
+        
+        Args:
+            start_line (int, optional): start reading the log file at the specified line number. Defaults to 0.
+            stop_regex (str, optional): stop running if the pattern matches a log line. Defaults to None.
+
+        Returns:
+            int: the last processed line number.
         """
         self.otns_manager.set_replay_speed(self.speed)
         with open(file=self.input_path, mode="r") as file:
-            for line in file:
+            for line_number, line in enumerate(file):
+                if line_number < start_line:
+                    continue
+                if stop_regex and re.search(stop_regex, line):
+                    return line_number
                 line_match = re.search(RegexType.LOG_LINE.value, line)
                 if line_match:
                     timestamp = datetime.strptime(line_match.group(1), DATE_FORMAT)
@@ -286,6 +307,8 @@ class SilkReplayer(object):
                     if delay > 0:
                         time.sleep(delay)
                     self.execute_message(entity_name, message, timestamp)
+
+            return line_number
 
 
 if __name__ == "__main__":

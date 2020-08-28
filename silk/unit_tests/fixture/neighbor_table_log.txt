@@ -1,0 +1,1614 @@
+[2020-08-27 16:18:22,284] [silk] [INFO] Log dest: /opt/openthread_test/results/silk_run_08-27/test_run_on_08-27-16:07/2020-08-27_16.18.22_TestNeighborTable
+[2020-08-27 16:18:22,284] [silk] [INFO] SET UP CLASS TestNeighborTable
+[2020-08-27 16:18:22,284] [silk.otnsManager.gRPCClient] [DEBUG] Starting gRPC client with address localhost:8999
+[2020-08-27 16:18:22,284] [silk.otnsManager] [INFO] OTNS manager created, connect 192.168.1.78 to localhost.
+[2020-08-27 16:18:22,284] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.set_up" x 0 y 20 fs 20
+[2020-08-27 16:18:22,293] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.set_up" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:18:22,293] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: speed 1.0
+[2020-08-27 16:18:22,304] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: speed 1.0, resp: output: "Done"
+[2020-08-27 16:18:22,483] [silk.otnsManager.OtnsNode2] [DEBUG] Node 2 socket from 192.168.1.78:9002 to localhost:9000
+[2020-08-27 16:18:22,483] [silk.otnsManager] [DEBUG] Adding new node 2 to OTNS
+[2020-08-27 16:18:22,483] [silk.otnsManager.OtnsNode2] [DEBUG] Adding node 2 to OTNS at (300,300)
+[2020-08-27 16:18:22,483] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: add router x 300 y 300 id 2
+[2020-08-27 16:18:22,490] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: add router x 300 y 300 id 2, resp: output: "2"
+output: "Done"
+[2020-08-27 16:18:22,490] [silk.otnsManager.OtnsNode2] [DEBUG] Node 2 sending extaddr=0000000000000002
+[2020-08-27 16:18:22,490] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:22,490] [silk.otnsManager.OtnsNode2] [DEBUG] Moving node 2 to OTNS at (500,299)
+[2020-08-27 16:18:22,490] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 2 500 299
+[2020-08-27 16:18:22,501] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 2 500 299, resp: output: "Done"
+[2020-08-27 16:18:22,502] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 socket from 192.168.1.78:9003 to localhost:9000
+[2020-08-27 16:18:22,503] [silk.otnsManager] [DEBUG] Adding new node 3 to OTNS
+[2020-08-27 16:18:22,503] [silk.otnsManager.OtnsNode3] [DEBUG] Adding node 3 to OTNS at (200,100)
+[2020-08-27 16:18:22,503] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: add router x 200 y 100 id 3
+[2020-08-27 16:18:22,518] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: add router x 200 y 100 id 3, resp: output: "3"
+output: "Done"
+[2020-08-27 16:18:22,519] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 sending extaddr=0000000000000003
+[2020-08-27 16:18:22,520] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:22,520] [silk.otnsManager.OtnsNode3] [DEBUG] Moving node 3 to OTNS at (100,300)
+[2020-08-27 16:18:22,520] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 3 100 300
+[2020-08-27 16:18:22,528] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 3 100 300, resp: output: "Done"
+[2020-08-27 16:18:22,528] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 socket from 192.168.1.78:9004 to localhost:9000
+[2020-08-27 16:18:22,529] [silk.otnsManager] [DEBUG] Adding new node 4 to OTNS
+[2020-08-27 16:18:22,529] [silk.otnsManager.OtnsNode4] [DEBUG] Adding node 4 to OTNS at (300,100)
+[2020-08-27 16:18:22,529] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: add router x 300 y 100 id 4
+[2020-08-27 16:18:22,544] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: add router x 300 y 100 id 4, resp: output: "4"
+output: "Done"
+[2020-08-27 16:18:22,544] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 sending extaddr=0000000000000004
+[2020-08-27 16:18:22,544] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:22,544] [silk.otnsManager.OtnsNode2] [DEBUG] Moving node 2 to OTNS at (199,126)
+[2020-08-27 16:18:22,544] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 2 199 126
+[2020-08-27 16:18:22,555] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 2 199 126, resp: output: "Done"
+[2020-08-27 16:18:22,555] [silk.otnsManager.OtnsNode3] [DEBUG] Moving node 3 to OTNS at (500,299)
+[2020-08-27 16:18:22,556] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 3 500 299
+[2020-08-27 16:18:22,565] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 3 500 299, resp: output: "Done"
+[2020-08-27 16:18:22,566] [silk.otnsManager.OtnsNode4] [DEBUG] Moving node 4 to OTNS at (200,473)
+[2020-08-27 16:18:22,566] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 4 200 473
+[2020-08-27 16:18:22,575] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 4 200 473, resp: output: "Done"
+[2020-08-27 16:18:22,575] [silk.otnsManager.OtnsNode5] [DEBUG] Node 5 socket from 192.168.1.78:9005 to localhost:9000
+[2020-08-27 16:18:22,575] [silk.otnsManager] [DEBUG] Adding new node 5 to OTNS
+[2020-08-27 16:18:22,575] [silk.otnsManager.OtnsNode5] [DEBUG] Adding node 5 to OTNS at (100,200)
+[2020-08-27 16:18:22,575] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: add router x 100 y 200 id 5
+[2020-08-27 16:18:22,601] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: add router x 100 y 200 id 5, resp: output: "5"
+output: "Done"
+[2020-08-27 16:18:22,602] [silk.otnsManager.OtnsNode5] [DEBUG] Node 5 sending extaddr=0000000000000005
+[2020-08-27 16:18:22,603] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:22,603] [silk.otnsManager.OtnsNode2] [DEBUG] Moving node 2 to OTNS at (100,300)
+[2020-08-27 16:18:22,603] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 2 100 300
+[2020-08-27 16:18:22,611] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 2 100 300, resp: output: "Done"
+[2020-08-27 16:18:22,611] [silk.otnsManager.OtnsNode3] [DEBUG] Moving node 3 to OTNS at (299,100)
+[2020-08-27 16:18:22,611] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 3 299 100
+[2020-08-27 16:18:22,622] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 3 299 100, resp: output: "Done"
+[2020-08-27 16:18:22,623] [silk.otnsManager.OtnsNode4] [DEBUG] Moving node 4 to OTNS at (500,299)
+[2020-08-27 16:18:22,623] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 4 500 299
+[2020-08-27 16:18:22,632] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 4 500 299, resp: output: "Done"
+[2020-08-27 16:18:22,633] [silk.otnsManager.OtnsNode5] [DEBUG] Moving node 5 to OTNS at (300,500)
+[2020-08-27 16:18:22,633] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: move 5 300 500
+[2020-08-27 16:18:22,642] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: move 5 300 500, resp: output: "Done"
+[2020-08-27 16:18:22,642] [silk.Dev-9119] [INFO] Stopping wpantund
+[2020-08-27 16:18:22,642] [silk.Dev-9119] [INFO] No wpantund process to stop
+[2020-08-27 16:18:22,642] [silk.Dev-9119] [DEBUG] Device Interface Serial: E66268BF9119
+[2020-08-27 16:18:22,642] [silk.Dev-9119] [DEBUG] Device Port: /dev/ttyACM8
+[2020-08-27 16:18:22,642] [silk.Dev-9119] [INFO] Starting wpantund with command sudo ip netns exec ttyACM8 /usr/local/sbin/wpantund -o Config:NCP:SocketPath /dev/ttyACM8 -I ttyACM8
+[2020-08-27 16:18:22,642] [silk.otnsManager] [DEBUG] Subscribing to node 2
+[2020-08-27 16:18:23,074] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Starting wpantund 0.08.00d (Jun 26 2020 17:03:46) . . .
+[2020-08-27 16:18:23,090] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: 	SOURCE_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:23,117] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: 	BUILD_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:23,500] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Configuration file "/usr/local/etc/wpantund.conf" read.
+[2020-08-27 16:18:23,768] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Ready. Using DBUS bus ":1.8727"
+[2020-08-27 16:18:23,884] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Running as root without dropping privileges!
+[2020-08-27 16:18:24,098] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:24,202] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:24,203] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:24,232] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:24,363] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:24,390] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Network is not joinable
+[2020-08-27 16:18:24,499] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:24,516] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Resetting interface(s). . .
+[2020-08-27 16:18:24,767] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Finished initializing NCP
+[2020-08-27 16:18:29,785] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:29,786] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:29,786] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:18:29,787] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:29,788] [silk.Dev-9119] [INFO] Adding network namespace for /dev/ttyACM8
+[2020-08-27 16:18:29,789] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:29,789] [silk.Dev-9119] [DEBUG] Making system call for netns-add
+[2020-08-27 16:18:29,789] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop NCP:HardwareAddress
+[2020-08-27 16:18:29,789] [silk.Dev-9119] [DEBUG] sudo ip netns add ttyACM8
+[2020-08-27 16:18:29,859] [silk.Dev-9119] [DEBUG] [stdout] Cannot create namespace file "/run/netns/ttyACM8": File exists
+[2020-08-27 16:18:29,862] [silk.Dev-9119] [DEBUG] [stdout] NCP:HardwareAddress = [F4CE362EFD0D44D1]
+[2020-08-27 16:18:29,865] [silk.Dev-9119] [DEBUG] Stored data: wpan_mac_addr F4CE362EFD0D44D1
+[2020-08-27 16:18:29,866] [silk.Dev-9119] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:31,814] [silk.Dev-9119] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:31,814] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 leave"
+[2020-08-27 16:18:31,815] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:31,815] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:18:31,816] [silk.Dev-9119] [DEBUG] Stored data: role None
+[2020-08-27 16:18:31,816] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 leave"
+[2020-08-27 16:18:31,817] [silk.Dev-9119] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:18:31,817] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:31,817] [silk.Dev-9119] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:18:31,818] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 leave
+[2020-08-27 16:18:31,818] [silk.Dev-9119] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:18:31,818] [silk.Dev-9119] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:18:31,825] [silk.Dev-9119] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:18:31,826] [silk.Dev-9119] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:18:31,826] [silk.Dev-9119] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:18:31,827] [silk.Dev-4456] [INFO] Stopping wpantund
+[2020-08-27 16:18:31,827] [silk.Dev-4456] [INFO] No wpantund process to stop
+[2020-08-27 16:18:31,827] [silk.Dev-4456] [DEBUG] Device Interface Serial: EB0EFD344456
+[2020-08-27 16:18:31,828] [silk.Dev-4456] [DEBUG] Device Port: /dev/ttyACM1
+[2020-08-27 16:18:31,828] [silk.Dev-4456] [INFO] Starting wpantund with command sudo ip netns exec ttyACM1 /usr/local/sbin/wpantund -o Config:NCP:SocketPath /dev/ttyACM1 -I ttyACM1
+[2020-08-27 16:18:31,828] [silk.otnsManager] [DEBUG] Subscribing to node 3
+[2020-08-27 16:18:32,065] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Starting wpantund 0.08.00d (Jun 26 2020 17:03:46) . . .
+[2020-08-27 16:18:32,183] [silk.Dev-9119] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:18:32,194] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: 	SOURCE_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:32,238] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: 	BUILD_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:32,430] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Configuration file "/usr/local/etc/wpantund.conf" read.
+[2020-08-27 16:18:32,618] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Ready. Using DBUS bus ":1.8738"
+[2020-08-27 16:18:32,646] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:18:32,652] [silk.Dev-9119] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:32,700] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Running as root without dropping privileges!
+[2020-08-27 16:18:32,743] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:32,900] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:18:32,980] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:32,986] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:33,025] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:33,067] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:33,323] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:33,334] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:33,346] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:33,369] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Network is not joinable
+[2020-08-27 16:18:33,375] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:33,523] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:33,681] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:33,688] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Network is not joinable
+[2020-08-27 16:18:33,737] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Resetting interface(s). . .
+[2020-08-27 16:18:33,790] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Finished initializing NCP
+[2020-08-27 16:18:33,802] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:33,803] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Resetting interface(s). . .
+[2020-08-27 16:18:33,804] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Finished initializing NCP
+[2020-08-27 16:18:38,805] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:38,806] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:38,806] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:18:38,806] [silk.Dev-4456] [INFO] Adding network namespace for /dev/ttyACM1
+[2020-08-27 16:18:38,807] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:38,807] [silk.Dev-4456] [DEBUG] Making system call for netns-add
+[2020-08-27 16:18:38,807] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:38,808] [silk.Dev-4456] [DEBUG] sudo ip netns add ttyACM1
+[2020-08-27 16:18:38,808] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop NCP:HardwareAddress
+[2020-08-27 16:18:38,877] [silk.Dev-4456] [DEBUG] [stdout] Cannot create namespace file "/run/netns/ttyACM1": File exists
+[2020-08-27 16:18:38,887] [silk.Dev-4456] [DEBUG] [stdout] NCP:HardwareAddress = [F4CE36CA5AF28D89]
+[2020-08-27 16:18:38,890] [silk.Dev-4456] [DEBUG] Stored data: wpan_mac_addr F4CE36CA5AF28D89
+[2020-08-27 16:18:38,890] [silk.Dev-4456] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:40,822] [silk.Dev-4456] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:40,823] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 leave"
+[2020-08-27 16:18:40,824] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:40,824] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:18:40,824] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 leave"
+[2020-08-27 16:18:40,825] [silk.Dev-4456] [DEBUG] Stored data: role None
+[2020-08-27 16:18:40,825] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:40,825] [silk.Dev-4456] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:18:40,825] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 leave
+[2020-08-27 16:18:40,826] [silk.Dev-4456] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:18:40,826] [silk.Dev-4456] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:18:40,834] [silk.Dev-4456] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:18:40,835] [silk.Dev-4456] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:18:40,835] [silk.Dev-4456] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:18:40,836] [silk.Dev-4456] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:18:40,836] [silk.Dev-C179] [INFO] Stopping wpantund
+[2020-08-27 16:18:40,837] [silk.Dev-C179] [INFO] No wpantund process to stop
+[2020-08-27 16:18:40,837] [silk.Dev-C179] [DEBUG] Device Interface Serial: E101F96BC179
+[2020-08-27 16:18:40,837] [silk.Dev-C179] [DEBUG] Device Port: /dev/ttyACM3
+[2020-08-27 16:18:40,838] [silk.Dev-C179] [INFO] Starting wpantund with command sudo ip netns exec ttyACM3 /usr/local/sbin/wpantund -o Config:NCP:SocketPath /dev/ttyACM3 -I ttyACM3
+[2020-08-27 16:18:40,839] [silk.otnsManager] [DEBUG] Subscribing to node 4
+[2020-08-27 16:18:41,094] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Starting wpantund 0.08.00d (Jun 26 2020 17:03:46) . . .
+[2020-08-27 16:18:41,138] [silk.Dev-4456] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:18:41,315] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: 	SOURCE_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:41,654] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: 	BUILD_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:41,654] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:18:41,660] [silk.Dev-4456] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:41,761] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Configuration file "/usr/local/etc/wpantund.conf" read.
+[2020-08-27 16:18:41,897] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:18:41,897] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Ready. Using DBUS bus ":1.8746"
+[2020-08-27 16:18:42,065] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Running as root without dropping privileges!
+[2020-08-27 16:18:42,066] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:42,261] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:42,376] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:42,392] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:42,404] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:42,574] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:42,579] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:42,607] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:42,753] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:42,932] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:42,975] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Network is not joinable
+[2020-08-27 16:18:43,076] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Network is not joinable
+[2020-08-27 16:18:43,081] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:43,148] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:43,254] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Resetting interface(s). . .
+[2020-08-27 16:18:43,282] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Resetting interface(s). . .
+[2020-08-27 16:18:43,377] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Finished initializing NCP
+[2020-08-27 16:18:43,377] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Finished initializing NCP
+[2020-08-27 16:18:48,399] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:48,400] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:48,401] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:18:48,402] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:48,403] [silk.Dev-C179] [INFO] Adding network namespace for /dev/ttyACM3
+[2020-08-27 16:18:48,404] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:48,404] [silk.Dev-C179] [DEBUG] Making system call for netns-add
+[2020-08-27 16:18:48,405] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop NCP:HardwareAddress
+[2020-08-27 16:18:48,406] [silk.Dev-C179] [DEBUG] sudo ip netns add ttyACM3
+[2020-08-27 16:18:48,476] [silk.Dev-C179] [DEBUG] [stdout] Cannot create namespace file "/run/netns/ttyACM3": File exists
+[2020-08-27 16:18:48,497] [silk.Dev-C179] [DEBUG] [stdout] NCP:HardwareAddress = [F4CE36F1856CBD5C]
+[2020-08-27 16:18:48,498] [silk.Dev-C179] [DEBUG] Stored data: wpan_mac_addr F4CE36F1856CBD5C
+[2020-08-27 16:18:48,498] [silk.Dev-C179] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:50,432] [silk.Dev-C179] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:50,433] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 leave"
+[2020-08-27 16:18:50,433] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:50,433] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:18:50,433] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 leave"
+[2020-08-27 16:18:50,433] [silk.Dev-C179] [DEBUG] Stored data: role None
+[2020-08-27 16:18:50,434] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:50,434] [silk.Dev-C179] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:18:50,434] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 leave
+[2020-08-27 16:18:50,434] [silk.Dev-C179] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:18:50,435] [silk.Dev-C179] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:18:50,442] [silk.Dev-C179] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:18:50,442] [silk.Dev-C179] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:18:50,442] [silk.Dev-C179] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:18:50,442] [silk.Dev-C179] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:18:50,443] [silk.Dev-BB23] [INFO] Stopping wpantund
+[2020-08-27 16:18:50,443] [silk.Dev-BB23] [INFO] No wpantund process to stop
+[2020-08-27 16:18:50,443] [silk.Dev-BB23] [DEBUG] Device Interface Serial: C6EADB56BB23
+[2020-08-27 16:18:50,444] [silk.Dev-BB23] [DEBUG] Device Port: /dev/ttyACM7
+[2020-08-27 16:18:50,444] [silk.Dev-BB23] [INFO] Starting wpantund with command sudo ip netns exec ttyACM7 /usr/local/sbin/wpantund -o Config:NCP:SocketPath /dev/ttyACM7 -I ttyACM7
+[2020-08-27 16:18:50,445] [silk.otnsManager] [DEBUG] Subscribing to node 5
+[2020-08-27 16:18:50,697] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Starting wpantund 0.08.00d (Jun 26 2020 17:03:46) . . .
+[2020-08-27 16:18:50,778] [silk.Dev-C179] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:18:50,876] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: 	SOURCE_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:51,177] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: 	BUILD_VERSION = 0.07.01-344-gffe7898-dirty
+[2020-08-27 16:18:51,262] [silk.Dev-C179] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:51,289] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Configuration file "/usr/local/etc/wpantund.conf" read.
+[2020-08-27 16:18:51,306] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:18:51,501] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Ready. Using DBUS bus ":1.8750"
+[2020-08-27 16:18:51,507] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:18:51,706] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:51,822] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Running as root without dropping privileges!
+[2020-08-27 16:18:51,839] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:51,839] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:51,840] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:51,838] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:51,848] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:51,851] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:51,852] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:51,857] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Network is not joinable
+[2020-08-27 16:18:51,858] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:51,859] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Resetting interface(s). . .
+[2020-08-27 16:18:51,859] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Finished initializing NCP
+[2020-08-27 16:18:51,863] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:51,865] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:51,866] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Network is not joinable
+[2020-08-27 16:18:51,867] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:51,867] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Resetting interface(s). . .
+[2020-08-27 16:18:51,868] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Finished initializing NCP
+[2020-08-27 16:18:56,865] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:56,866] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:56,867] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:18:56,868] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop NCP:HardwareAddress"
+[2020-08-27 16:18:56,869] [silk.Dev-BB23] [INFO] Adding network namespace for /dev/ttyACM7
+[2020-08-27 16:18:56,869] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:56,869] [silk.Dev-BB23] [DEBUG] Making system call for netns-add
+[2020-08-27 16:18:56,870] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop NCP:HardwareAddress
+[2020-08-27 16:18:56,870] [silk.Dev-BB23] [DEBUG] sudo ip netns add ttyACM7
+[2020-08-27 16:18:56,966] [silk.Dev-BB23] [DEBUG] [stdout] Cannot create namespace file "/run/netns/ttyACM7": File exists
+[2020-08-27 16:18:56,978] [silk.Dev-BB23] [DEBUG] [stdout] NCP:HardwareAddress = [F4CE368BD8B90284]
+[2020-08-27 16:18:56,982] [silk.Dev-BB23] [DEBUG] Stored data: wpan_mac_addr F4CE368BD8B90284
+[2020-08-27 16:18:56,983] [silk.Dev-BB23] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:58,899] [silk.Dev-BB23] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:58,899] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 leave"
+[2020-08-27 16:18:58,900] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:18:58,900] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:18:58,900] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 leave"
+[2020-08-27 16:18:58,901] [silk.Dev-BB23] [DEBUG] Stored data: role None
+[2020-08-27 16:18:58,901] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:58,901] [silk.Dev-BB23] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:18:58,901] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 leave
+[2020-08-27 16:18:58,902] [silk.Dev-BB23] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:18:58,902] [silk.Dev-BB23] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:18:58,902] [silk.Dev-BB23] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:18:58,908] [silk.Dev-BB23] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:18:58,909] [silk.Dev-BB23] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:18:58,909] [silk.Dev-BB23] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:18:58,929] [silk] [DEBUG] No more Thread sniffers for channel 25
+[2020-08-27 16:18:58,930] [silk] [DEBUG] Starting Thread sniffer on channel 25
+[2020-08-27 16:18:58,930] [silk.MissingSniffer] [DEBUG] Start failed. No sniffer present for channel 25.
+[2020-08-27 16:18:58,931] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:58,931] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:18:58,971] [silk.Dev-BB23] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:18:59,002] [silk.Dev-9119] [DEBUG] [stdout] [C22FBB08EA274ED3]
+[2020-08-27 16:18:59,005] [silk.otnsManager.OtnsNode2] [DEBUG] Node 2 sending extaddr=c22fbb08ea274ed3
+[2020-08-27 16:18:59,006] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:59,006] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,007] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:18:59,073] [silk.Dev-4456] [DEBUG] [stdout] [C617342D94BAD2D3]
+[2020-08-27 16:18:59,077] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 sending extaddr=c617342d94bad2d3
+[2020-08-27 16:18:59,078] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:59,078] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,078] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:18:59,147] [silk.Dev-C179] [DEBUG] [stdout] [0A40B26EFD74525C]
+[2020-08-27 16:18:59,149] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 sending extaddr=0a40b26efd74525c
+[2020-08-27 16:18:59,150] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:59,151] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,151] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:18:59,585] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:18:59,587] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:18:59,686] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:18:59,687] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:18:59,688] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:18:59,700] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:18:59,701] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:18:59,702] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Network is not joinable
+[2020-08-27 16:18:59,703] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:18:59,703] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Resetting interface(s). . .
+[2020-08-27 16:18:59,704] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Finished initializing NCP
+[2020-08-27 16:18:59,705] [silk.Dev-BB23] [DEBUG] [stdout] [9A5A3D4C822C720C]
+[2020-08-27 16:18:59,708] [silk.Dev-BB23] [DEBUG] Setting all-clear to True
+[2020-08-27 16:18:59,709] [silk.otnsManager.OtnsNode5] [DEBUG] Node 5 sending extaddr=9a5a3d4c822c720c
+[2020-08-27 16:18:59,710] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:18:59,711] [silk] [INFO] SET UP TestNeighborTable.test01_Form_Network
+[2020-08-27 16:18:59,712] [silk] [INFO] RUNNING TEST TestNeighborTable.test01_Form_Network
+[2020-08-27 16:18:59,713] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.test01_Form_Network" x 0 y 20 fs 20
+[2020-08-27 16:18:59,721] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.test01_Form_Network" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:18:59,722] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,722] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:18:59,788] [silk.Dev-4456] [DEBUG] [stdout] [C617342D94BAD2D3]
+[2020-08-27 16:18:59,792] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,792] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v C617342D94BAD2D3
+[2020-08-27 16:18:59,859] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,860] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:18:59,927] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,927] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:18:59,995] [silk.Dev-9119] [DEBUG] [stdout] [C22FBB08EA274ED3]
+[2020-08-27 16:18:59,998] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:18:59,999] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v C22FBB08EA274ED3
+[2020-08-27 16:19:00,073] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,073] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:19:00,137] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,138] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:19:00,203] [silk.Dev-9119] [DEBUG] [stdout] [C22FBB08EA274ED3]
+[2020-08-27 16:19:00,207] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,207] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v C22FBB08EA274ED3
+[2020-08-27 16:19:00,279] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,280] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:19:00,351] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,352] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:19:00,421] [silk.Dev-C179] [DEBUG] [stdout] [0A40B26EFD74525C]
+[2020-08-27 16:19:00,424] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,425] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 0A40B26EFD74525C
+[2020-08-27 16:19:00,498] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,498] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:19:00,574] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,575] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:19:00,644] [silk.Dev-4456] [DEBUG] [stdout] [C617342D94BAD2D3]
+[2020-08-27 16:19:00,647] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,648] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v C617342D94BAD2D3
+[2020-08-27 16:19:00,720] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,720] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:19:00,790] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,791] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
+[2020-08-27 16:19:00,865] [silk.Dev-BB23] [DEBUG] [stdout] [9A5A3D4C822C720C]
+[2020-08-27 16:19:00,869] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,869] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 9A5A3D4C822C720C
+[2020-08-27 16:19:00,946] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:00,947] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:19:01,018] [silk.Dev-9119] [DEBUG] Stored data: fabric-id e8a95fdead
+[2020-08-27 16:19:01,019] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:01,019] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,019] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,020] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:01,020] [silk.Dev-9119] [DEBUG] Stored data: role 2
+[2020-08-27 16:19:01,021] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:01,021] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 form SILK-3F69 -T 2 -c 25"
+[2020-08-27 16:19:01,022] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 setprop Network:Key --data 00112233445566778899aabbccdde2f2
+[2020-08-27 16:19:01,022] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,022] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,027] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop channel"
+[2020-08-27 16:19:01,028] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,029] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,029] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop panid"
+[2020-08-27 16:19:01,029] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,030] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,030] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop xpanid"
+[2020-08-27 16:19:01,030] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,031] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,032] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:01,032] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,032] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,033] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:01,034] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,035] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,035] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop Network:Key"
+[2020-08-27 16:19:01,036] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,036] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,036] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 status"
+[2020-08-27 16:19:01,036] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,036] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,037] [silk.Dev-9119] [DEBUG] Stored data: wpan_address(Weave Thread) fde8:a95f:dead:0006:f6ce:362e:fd0d:44d1
+[2020-08-27 16:19:01,037] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 ip addr add fde8:a95f:dead:0006:f6ce:362e:fd0d:44d1/64 dev ttyACM8"
+[2020-08-27 16:19:01,037] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,037] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,038] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 ifconfig"
+[2020-08-27 16:19:01,038] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,038] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,038] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:01,039] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,039] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,039] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:01,039] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,039] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:01,092] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:01,092] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 form SILK-3F69 -T 2 -c 25"
+[2020-08-27 16:19:01,093] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:01,093] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 form SILK-3F69 -T 2 -c 25
+[2020-08-27 16:19:01,159] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "offline" -> "associating"
+[2020-08-27 16:19:01,336] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000231450][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:01,337] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000231451][EMRG]-CORE----: [OTNS] role=1
+[2020-08-27 16:19:01,338] [silk.otnsManager.OtnsNode2] [DEBUG] Node 2 sending role=1
+[2020-08-27 16:19:01,339] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:02,056] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000232171][EMRG]-CORE----: [OTNS] transmit=25,d841,20,ffff
+[2020-08-27 16:19:02,807] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000232921][EMRG]-CORE----: [OTNS] transmit=25,d841,21,ffff
+[2020-08-27 16:19:04,061] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000234171][EMRG]-CORE----: [OTNS] rloc16=9216
+[2020-08-27 16:19:04,064] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000234173][EMRG]-CORE----: [OTNS] role=4
+[2020-08-27 16:19:04,066] [silk.otnsManager.OtnsNode2] [DEBUG] Node 2 sending role=4
+[2020-08-27 16:19:04,069] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:04,070] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000234174][EMRG]-CORE----: [OTNS] parid=2cd0987d
+[2020-08-27 16:19:04,072] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "associating" -> "associated"
+[2020-08-27 16:19:04,079] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Node type change: "unknown" -> "leader"
+[2020-08-27 16:19:04,083] [silk.Dev-9119] [DEBUG] [stdout] Forming WPAN "SILK-3F69" as node type "router", channel:25
+[2020-08-27 16:19:04,083] [silk.Dev-9119] [DEBUG] [stdout] Successfully formed!
+[2020-08-27 16:19:04,084] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,085] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop channel"
+[2020-08-27 16:19:04,086] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,087] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop channel
+[2020-08-27 16:19:04,099] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000234176][EMRG]-CORE----: [OTNS] transmit=25,d841,22,ffff
+[2020-08-27 16:19:04,168] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: PropGet: Property "channel" is deprecated. Please use "NCP:Channel" instead.
+[2020-08-27 16:19:04,169] [silk.Dev-9119] [DEBUG] [stdout] channel = 25
+[2020-08-27 16:19:04,172] [silk.Dev-9119] [DEBUG] Stored data: channel  25
+[2020-08-27 16:19:04,173] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,173] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop panid"
+[2020-08-27 16:19:04,174] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,174] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop panid
+[2020-08-27 16:19:04,236] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: PropGet: Property "panid" is deprecated. Please use "Network:PANID" instead.
+[2020-08-27 16:19:04,237] [silk.Dev-9119] [DEBUG] [stdout] panid = 0xABD7
+[2020-08-27 16:19:04,239] [silk.Dev-9119] [DEBUG] Stored data: panid 0xABD7
+[2020-08-27 16:19:04,240] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,240] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop xpanid"
+[2020-08-27 16:19:04,240] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,241] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop xpanid
+[2020-08-27 16:19:04,303] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: PropGet: Property "xpanid" is deprecated. Please use "Network:XPANID" instead.
+[2020-08-27 16:19:04,305] [silk.Dev-9119] [DEBUG] [stdout] xpanid = 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:04,308] [silk.Dev-9119] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:04,309] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,309] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:04,309] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,309] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:04,374] [silk.Dev-9119] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::c02f:bb08:ea27:4ed3"
+[2020-08-27 16:19:04,377] [silk.Dev-9119] [DEBUG] Stored data: ip6_lla fe80::c02f:bb08:ea27:4ed3
+[2020-08-27 16:19:04,377] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,377] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:04,378] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,378] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:04,440] [silk.Dev-9119] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb"
+[2020-08-27 16:19:04,442] [silk.Dev-9119] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb
+[2020-08-27 16:19:04,443] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,443] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop Network:Key"
+[2020-08-27 16:19:04,443] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,443] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop Network:Key
+[2020-08-27 16:19:04,509] [silk.Dev-9119] [DEBUG] [stdout] Network:Key = [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:04,512] [silk.Dev-9119] [DEBUG] Stored data: psk [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:04,512] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,512] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 status"
+[2020-08-27 16:19:04,513] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,513] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 status
+[2020-08-27 16:19:04,578] [silk.Dev-9119] [DEBUG] [stdout] ttyACM8 => [
+[2020-08-27 16:19:04,579] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:04,580] [silk.Dev-9119] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:04,581] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE362EFD0D44D1]
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:NodeType" => "leader"
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:04,582] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:04,583] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:04,583] [silk.Dev-9119] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::c02f:bb08:ea27:4ed3"
+[2020-08-27 16:19:04,583] [silk.Dev-9119] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb"
+[2020-08-27 16:19:04,583] [silk.Dev-9119] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:04,583] [silk.Dev-9119] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:04,583] [silk.Dev-9119] [DEBUG] [stdout] ]
+[2020-08-27 16:19:04,584] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,584] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 ip addr add fde8:a95f:dead:0006:f6ce:362e:fd0d:44d1/64 dev ttyACM8"
+[2020-08-27 16:19:04,584] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,584] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 ip addr add fde8:a95f:dead:0006:f6ce:362e:fd0d:44d1/64 dev ttyACM8
+[2020-08-27 16:19:04,644] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Adding address "fde8:a95f:dead:6:f6ce:362e:fd0d:44d1/64" to NCP
+[2020-08-27 16:19:04,646] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Adding on-mesh prefix "fde8:a95f:dead:6::/64" to NCP
+[2020-08-27 16:19:04,647] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,648] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 ifconfig"
+[2020-08-27 16:19:04,648] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,648] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 ifconfig
+[2020-08-27 16:19:04,655] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000234765][EMRG]-CORE----: [OTNS] transmit=25,d841,23,ffff
+[2020-08-27 16:19:04,706] [silk.Dev-9119] [DEBUG] [stdout] ttyACM8: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1280
+[2020-08-27 16:19:04,708] [silk.Dev-9119] [DEBUG] [stdout]         inet6 fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:04,708] [silk.Dev-9119] [DEBUG] [stdout]         inet6 fe80::c02f:bb08:ea27:4ed3  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         inet6 fe80::d4c5:ae61:c381:57bc  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         inet6 fde8:a95f:dead:6:f6ce:362e:fd0d:44d1  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         RX packets 0  bytes 0 (0.0 B)
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         RX errors 0  dropped 0  overruns 0  frame 0
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         TX packets 5  bytes 712 (712.0 B)
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout]         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+[2020-08-27 16:19:04,709] [silk.Dev-9119] [DEBUG] [stdout] 
+[2020-08-27 16:19:04,710] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,710] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:04,710] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,710] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:04,775] [silk.Dev-9119] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::c02f:bb08:ea27:4ed3"
+[2020-08-27 16:19:04,779] [silk.Dev-9119] [DEBUG] Stored data: ip6_lla fe80::c02f:bb08:ea27:4ed3
+[2020-08-27 16:19:04,780] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,780] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:04,781] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,781] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:04,852] [silk.Dev-9119] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb"
+[2020-08-27 16:19:04,853] [silk.Dev-9119] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb
+[2020-08-27 16:19:04,854] [silk.Dev-9119] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:04,854] [silk] [INFO] fe80::c02f:bb08:ea27:4ed3
+[2020-08-27 16:19:04,854] [silk] [INFO] fde8:a95f:dead:0006:f6ce:362e:fd0d:44d1
+[2020-08-27 16:19:04,855] [silk.Dev-4456] [DEBUG] Stored data: fabric-id e8a95fdead
+[2020-08-27 16:19:04,855] [silk.Dev-4456] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:04,855] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:04,855] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,855] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,855] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:04,856] [silk.Dev-4456] [DEBUG] Stored data: role 2
+[2020-08-27 16:19:04,856] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,856] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 join SILK-3F69 -T 2 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7"
+[2020-08-27 16:19:04,856] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 setprop Network:Key --data 00112233445566778899aabbccdde2f2
+[2020-08-27 16:19:04,857] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,857] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,865] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop channel"
+[2020-08-27 16:19:04,866] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,867] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,867] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop panid"
+[2020-08-27 16:19:04,868] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,868] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,868] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop xpanid"
+[2020-08-27 16:19:04,868] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,869] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,869] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:04,869] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,869] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,870] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:04,870] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,870] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,870] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop Network:Key"
+[2020-08-27 16:19:04,870] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,870] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,871] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 status"
+[2020-08-27 16:19:04,871] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,871] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,871] [silk.Dev-4456] [DEBUG] Stored data: wpan_address(Weave Thread) fde8:a95f:dead:0006:f6ce:36ca:5af2:8d89
+[2020-08-27 16:19:04,872] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 ip addr add fde8:a95f:dead:0006:f6ce:36ca:5af2:8d89/64 dev ttyACM1"
+[2020-08-27 16:19:04,872] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,873] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,873] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 ifconfig"
+[2020-08-27 16:19:04,874] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,874] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,874] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:04,874] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,875] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,875] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:04,875] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,875] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:04,928] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:04,928] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 join SILK-3F69 -T 2 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7"
+[2020-08-27 16:19:04,929] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:04,929] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 join SILK-3F69 -T 2 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7
+[2020-08-27 16:19:05,027] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000235142][EMRG]-CORE----: [OTNS] transmit=25,d841,24,ffff
+[2020-08-27 16:19:05,162] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "offline" -> "associating"
+[2020-08-27 16:19:05,176] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000235273][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:05,178] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000235273][EMRG]-CORE----: [OTNS] role=1
+[2020-08-27 16:19:05,179] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 sending role=1
+[2020-08-27 16:19:05,181] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:05,658] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000235756][EMRG]-CORE----: [OTNS] transmit=25,d841,221,ffff
+[2020-08-27 16:19:06,004] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000236119][EMRG]-CORE----: [OTNS] transmit=25,dc61,25,c617342d94bad2d3
+[2020-08-27 16:19:06,409] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000236507][EMRG]-CORE----: [OTNS] transmit=25,dc61,222,c22fbb08ea274ed3
+[2020-08-27 16:19:06,418] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000236531][EMRG]-CORE----: [OTNS] child_added=c617342d94bad2d3
+[2020-08-27 16:19:06,420] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000236533][EMRG]-CORE----: [OTNS] transmit=25,dc79,26,c617342d94bad2d3
+[2020-08-27 16:19:06,426] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000236540][EMRG]-CORE----: [OTNS] transmit=25,dc79,27,c617342d94bad2d3
+[2020-08-27 16:19:06,433] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000236547][EMRG]-CORE----: [OTNS] transmit=25,dc69,28,c617342d94bad2d3
+[2020-08-27 16:19:06,442] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000236537][EMRG]-CORE----: [OTNS] rloc16=9217
+[2020-08-27 16:19:06,444] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000236538][EMRG]-CORE----: [OTNS] role=2
+[2020-08-27 16:19:06,445] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 sending role=2
+[2020-08-27 16:19:06,446] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:06,446] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000236538][EMRG]-CORE----: [OTNS] parid=2cd0987d
+[2020-08-27 16:19:06,448] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "associating" -> "associated"
+[2020-08-27 16:19:06,451] [silk.Dev-4456] [DEBUG] [stdout] Joining WPAN "SILK-3F69" as node type "router", channel:25, panid:0xABD7, xpanid:0x4B34FD2DEC9D175C
+[2020-08-27 16:19:06,452] [silk.Dev-4456] [DEBUG] [stdout] Successfully Joined!
+[2020-08-27 16:19:06,453] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Node type change: "unknown" -> "end-device"
+[2020-08-27 16:19:06,456] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,457] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop channel"
+[2020-08-27 16:19:06,458] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,459] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop channel
+[2020-08-27 16:19:06,520] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000236634][EMRG]-CORE----: [OTNS] transmit=25,d841,29,ffff
+[2020-08-27 16:19:06,536] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: PropGet: Property "channel" is deprecated. Please use "NCP:Channel" instead.
+[2020-08-27 16:19:06,537] [silk.Dev-4456] [DEBUG] [stdout] channel = 25
+[2020-08-27 16:19:06,540] [silk.Dev-4456] [DEBUG] Stored data: channel  25
+[2020-08-27 16:19:06,540] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,541] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop panid"
+[2020-08-27 16:19:06,541] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,541] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop panid
+[2020-08-27 16:19:06,602] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: PropGet: Property "panid" is deprecated. Please use "Network:PANID" instead.
+[2020-08-27 16:19:06,604] [silk.Dev-4456] [DEBUG] [stdout] panid = 0xABD7
+[2020-08-27 16:19:06,606] [silk.Dev-4456] [DEBUG] Stored data: panid 0xABD7
+[2020-08-27 16:19:06,606] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,607] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop xpanid"
+[2020-08-27 16:19:06,607] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,607] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop xpanid
+[2020-08-27 16:19:06,674] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: PropGet: Property "xpanid" is deprecated. Please use "Network:XPANID" instead.
+[2020-08-27 16:19:06,677] [silk.Dev-4456] [DEBUG] [stdout] xpanid = 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:06,679] [silk.Dev-4456] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:06,680] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,680] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:06,680] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,680] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:06,748] [silk.Dev-4456] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::c417:342d:94ba:d2d3"
+[2020-08-27 16:19:06,750] [silk.Dev-4456] [DEBUG] Stored data: ip6_lla fe80::c417:342d:94ba:d2d3
+[2020-08-27 16:19:06,751] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,751] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:06,751] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,751] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:06,819] [silk.Dev-4456] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c"
+[2020-08-27 16:19:06,822] [silk.Dev-4456] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c
+[2020-08-27 16:19:06,822] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,822] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop Network:Key"
+[2020-08-27 16:19:06,822] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,823] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop Network:Key
+[2020-08-27 16:19:06,887] [silk.Dev-4456] [DEBUG] [stdout] Network:Key = [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:06,889] [silk.Dev-4456] [DEBUG] Stored data: psk [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:06,890] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,890] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 status"
+[2020-08-27 16:19:06,890] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,891] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 status
+[2020-08-27 16:19:06,956] [silk.Dev-4456] [DEBUG] [stdout] ttyACM1 => [
+[2020-08-27 16:19:06,958] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:06,959] [silk.Dev-4456] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:06,961] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:06,961] [silk.Dev-4456] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:06,961] [silk.Dev-4456] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:06,961] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE36CA5AF28D89]
+[2020-08-27 16:19:06,961] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:06,961] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:NodeType" => "end-device"
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::c417:342d:94ba:d2d3"
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c"
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:06,962] [silk.Dev-4456] [DEBUG] [stdout] ]
+[2020-08-27 16:19:06,963] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:06,963] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 ip addr add fde8:a95f:dead:0006:f6ce:36ca:5af2:8d89/64 dev ttyACM1"
+[2020-08-27 16:19:06,963] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:06,963] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 ip addr add fde8:a95f:dead:0006:f6ce:36ca:5af2:8d89/64 dev ttyACM1
+[2020-08-27 16:19:07,021] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Adding address "fde8:a95f:dead:6:f6ce:36ca:5af2:8d89/64" to NCP
+[2020-08-27 16:19:07,022] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Adding on-mesh prefix "fde8:a95f:dead:6::/64" to NCP
+[2020-08-27 16:19:07,023] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,024] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 ifconfig"
+[2020-08-27 16:19:07,024] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:07,024] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 ifconfig
+[2020-08-27 16:19:07,082] [silk.Dev-4456] [DEBUG] [stdout] ttyACM1: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1280
+[2020-08-27 16:19:07,084] [silk.Dev-4456] [DEBUG] [stdout]         inet6 fe80::cc98:12d4:b61d:61de  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:07,084] [silk.Dev-4456] [DEBUG] [stdout]         inet6 fe80::c417:342d:94ba:d2d3  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         inet6 fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         inet6 fde8:a95f:dead:6:f6ce:36ca:5af2:8d89  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         RX packets 0  bytes 0 (0.0 B)
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         RX errors 0  dropped 0  overruns 0  frame 0
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         TX packets 7  bytes 1104 (1.0 KiB)
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout]         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+[2020-08-27 16:19:07,085] [silk.Dev-4456] [DEBUG] [stdout] 
+[2020-08-27 16:19:07,086] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,086] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:07,086] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:07,086] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:07,152] [silk.Dev-4456] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::c417:342d:94ba:d2d3"
+[2020-08-27 16:19:07,153] [silk.Dev-4456] [DEBUG] Stored data: ip6_lla fe80::c417:342d:94ba:d2d3
+[2020-08-27 16:19:07,154] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,154] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:07,154] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:07,154] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:07,223] [silk.Dev-4456] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c"
+[2020-08-27 16:19:07,226] [silk.Dev-4456] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c
+[2020-08-27 16:19:07,227] [silk.Dev-4456] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:07,227] [silk.Dev-BB23] [DEBUG] Stored data: fabric-id e8a95fdead
+[2020-08-27 16:19:07,228] [silk.Dev-BB23] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:07,228] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:07,228] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,228] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,228] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:07,228] [silk.Dev-BB23] [DEBUG] Stored data: role 3
+[2020-08-27 16:19:07,229] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:07,229] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 join SILK-3F69 -T 3 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7"
+[2020-08-27 16:19:07,229] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 setprop Network:Key --data 00112233445566778899aabbccdde2f2
+[2020-08-27 16:19:07,230] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,230] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,236] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop channel"
+[2020-08-27 16:19:07,237] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,238] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,238] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop panid"
+[2020-08-27 16:19:07,238] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,238] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,239] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop xpanid"
+[2020-08-27 16:19:07,239] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,239] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,239] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:07,239] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,240] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,240] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:07,240] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,240] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,240] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop Network:Key"
+[2020-08-27 16:19:07,241] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,241] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,241] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 status"
+[2020-08-27 16:19:07,241] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,241] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,242] [silk.Dev-BB23] [DEBUG] Stored data: wpan_address(Weave Thread) fde8:a95f:dead:0006:f6ce:368b:d8b9:0284
+[2020-08-27 16:19:07,242] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 ip addr add fde8:a95f:dead:0006:f6ce:368b:d8b9:0284/64 dev ttyACM7"
+[2020-08-27 16:19:07,242] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,243] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,243] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 ifconfig"
+[2020-08-27 16:19:07,243] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,243] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,243] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:07,243] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,244] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,244] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:07,245] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,245] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:07,301] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:07,302] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 join SILK-3F69 -T 3 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7"
+[2020-08-27 16:19:07,302] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:07,302] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 join SILK-3F69 -T 3 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7
+[2020-08-27 16:19:07,535] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "offline" -> "associating"
+[2020-08-27 16:19:07,548] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000237657][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:07,550] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000237658][EMRG]-CORE----: [OTNS] role=1
+[2020-08-27 16:19:07,552] [silk.otnsManager.OtnsNode5] [DEBUG] Node 5 sending role=1
+[2020-08-27 16:19:07,553] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:07,736] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000237846][EMRG]-CORE----: [OTNS] transmit=25,d841,225,ffff
+[2020-08-27 16:19:08,487] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000238596][EMRG]-CORE----: [OTNS] transmit=25,d841,226,ffff
+[2020-08-27 16:19:08,637] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000238735][EMRG]-CORE----: [OTNS] transmit=25,dc61,223,9a5a3d4c822c720c
+[2020-08-27 16:19:09,736] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000239847][EMRG]-CORE----: [OTNS] transmit=25,dc61,227,c617342d94bad2d3
+[2020-08-27 16:19:09,742] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239840][EMRG]-CORE----: [OTNS] transmit=25,9869,224,2400
+[2020-08-27 16:19:09,748] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000239863][EMRG]-CORE----: [OTNS] transmit=25,9869,30,2401
+[2020-08-27 16:19:09,759] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239852][EMRG]-CORE----: [OTNS] rloc16=10240
+[2020-08-27 16:19:09,762] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239854][EMRG]-CORE----: [OTNS] child_added=9a5a3d4c822c720c
+[2020-08-27 16:19:09,764] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239855][EMRG]-CORE----: [OTNS] role=3
+[2020-08-27 16:19:09,765] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 sending role=3
+[2020-08-27 16:19:09,766] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:09,768] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Node type change: "end-device" -> "router"
+[2020-08-27 16:19:09,769] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239857][EMRG]-CORE----: [OTNS] transmit=25,d841,225,ffff
+[2020-08-27 16:19:09,772] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239861][EMRG]-CORE----: [OTNS] transmit=25,dc79,226,9a5a3d4c822c720c
+[2020-08-27 16:19:09,774] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239869][EMRG]-CORE----: [OTNS] transmit=25,dc79,227,9a5a3d4c822c720c
+[2020-08-27 16:19:09,778] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239875][EMRG]-CORE----: [OTNS] transmit=25,dc69,228,9a5a3d4c822c720c
+[2020-08-27 16:19:09,781] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000239879][EMRG]-CORE----: [OTNS] transmit=25,9869,229,2400
+[2020-08-27 16:19:09,786] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000239894][EMRG]-CORE----: [OTNS] rloc16=10241
+[2020-08-27 16:19:09,788] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000239894][EMRG]-CORE----: [OTNS] role=2
+[2020-08-27 16:19:09,788] [silk.otnsManager.OtnsNode5] [DEBUG] Node 5 sending role=2
+[2020-08-27 16:19:09,790] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:09,791] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000239894][EMRG]-CORE----: [OTNS] parid=2cd0987d
+[2020-08-27 16:19:09,794] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "associating" -> "associated"
+[2020-08-27 16:19:09,795] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Node type change: "unknown" -> "end-device"
+[2020-08-27 16:19:09,801] [silk.Dev-BB23] [DEBUG] [stdout] Joining WPAN "SILK-3F69" as node type "end-device", channel:25, panid:0xABD7, xpanid:0x4B34FD2DEC9D175C
+[2020-08-27 16:19:09,808] [silk.Dev-BB23] [DEBUG] [stdout] Successfully Joined!
+[2020-08-27 16:19:09,809] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:09,810] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop channel"
+[2020-08-27 16:19:09,811] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:09,811] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop channel
+[2020-08-27 16:19:09,921] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: PropGet: Property "channel" is deprecated. Please use "NCP:Channel" instead.
+[2020-08-27 16:19:09,922] [silk.Dev-BB23] [DEBUG] [stdout] channel = 25
+[2020-08-27 16:19:09,925] [silk.Dev-BB23] [DEBUG] Stored data: channel  25
+[2020-08-27 16:19:09,925] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:09,926] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop panid"
+[2020-08-27 16:19:09,926] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:09,926] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop panid
+[2020-08-27 16:19:09,986] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: PropGet: Property "panid" is deprecated. Please use "Network:PANID" instead.
+[2020-08-27 16:19:09,987] [silk.Dev-BB23] [DEBUG] [stdout] panid = 0xABD7
+[2020-08-27 16:19:09,989] [silk.Dev-BB23] [DEBUG] Stored data: panid 0xABD7
+[2020-08-27 16:19:09,990] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:09,990] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop xpanid"
+[2020-08-27 16:19:09,991] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:09,991] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop xpanid
+[2020-08-27 16:19:10,054] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: PropGet: Property "xpanid" is deprecated. Please use "Network:XPANID" instead.
+[2020-08-27 16:19:10,056] [silk.Dev-BB23] [DEBUG] [stdout] xpanid = 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:10,057] [silk.Dev-BB23] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:10,058] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,059] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:10,059] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,059] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:10,079] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000240194][EMRG]-CORE----: [OTNS] transmit=25,dc61,31,c617342d94bad2d3
+[2020-08-27 16:19:10,086] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000240184][EMRG]-CORE----: [OTNS] router_added=c22fbb08ea274ed3
+[2020-08-27 16:19:10,087] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000240185][EMRG]-CORE----: [OTNS] transmit=25,dc61,230,c22fbb08ea274ed3
+[2020-08-27 16:19:10,093] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000240207][EMRG]-CORE----: [OTNS] child_removed=c617342d94bad2d3
+[2020-08-27 16:19:10,095] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000240208][EMRG]-CORE----: [OTNS] router_added=c617342d94bad2d3
+[2020-08-27 16:19:10,128] [silk.Dev-BB23] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::985a:3d4c:822c:720c"
+[2020-08-27 16:19:10,130] [silk.Dev-BB23] [DEBUG] Stored data: ip6_lla fe80::985a:3d4c:822c:720c
+[2020-08-27 16:19:10,131] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,131] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:10,131] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,132] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:10,198] [silk.Dev-BB23] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:effd:697c:a931:5698"
+[2020-08-27 16:19:10,200] [silk.Dev-BB23] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:effd:697c:a931:5698
+[2020-08-27 16:19:10,200] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,200] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop Network:Key"
+[2020-08-27 16:19:10,201] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,201] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop Network:Key
+[2020-08-27 16:19:10,266] [silk.Dev-BB23] [DEBUG] [stdout] Network:Key = [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:10,268] [silk.Dev-BB23] [DEBUG] Stored data: psk [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:10,269] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,269] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 status"
+[2020-08-27 16:19:10,269] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,270] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 status
+[2020-08-27 16:19:10,334] [silk.Dev-BB23] [DEBUG] [stdout] ttyACM7 => [
+[2020-08-27 16:19:10,336] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:10,338] [silk.Dev-BB23] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:10,339] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:10,339] [silk.Dev-BB23] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:10,339] [silk.Dev-BB23] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:10,339] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE368BD8B90284]
+[2020-08-27 16:19:10,339] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:NodeType" => "end-device"
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::985a:3d4c:822c:720c"
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:effd:697c:a931:5698"
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:10,340] [silk.Dev-BB23] [DEBUG] [stdout] ]
+[2020-08-27 16:19:10,341] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,341] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 ip addr add fde8:a95f:dead:0006:f6ce:368b:d8b9:0284/64 dev ttyACM7"
+[2020-08-27 16:19:10,342] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,342] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 ip addr add fde8:a95f:dead:0006:f6ce:368b:d8b9:0284/64 dev ttyACM7
+[2020-08-27 16:19:10,399] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Adding address "fde8:a95f:dead:6:f6ce:368b:d8b9:284/64" to NCP
+[2020-08-27 16:19:10,400] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Adding on-mesh prefix "fde8:a95f:dead:6::/64" to NCP
+[2020-08-27 16:19:10,400] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,401] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 ifconfig"
+[2020-08-27 16:19:10,401] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,401] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 ifconfig
+[2020-08-27 16:19:10,409] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000240514][EMRG]-CORE----: [OTNS] transmit=25,9869,228,2800
+[2020-08-27 16:19:10,412] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000240507][EMRG]-CORE----: [OTNS] transmit=25,9869,231,2400
+[2020-08-27 16:19:10,416] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000240531][EMRG]-CORE----: [OTNS] transmit=25,d841,32,ffff
+[2020-08-27 16:19:10,422] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000240537][EMRG]-CORE----: [OTNS] transmit=25,9869,33,2800
+[2020-08-27 16:19:10,425] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000240524][EMRG]-CORE----: [OTNS] transmit=25,9869,232,2801
+[2020-08-27 16:19:10,462] [silk.Dev-BB23] [DEBUG] [stdout] ttyACM7: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1280
+[2020-08-27 16:19:10,465] [silk.Dev-BB23] [DEBUG] [stdout]         inet6 fe80::985a:3d4c:822c:720c  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:10,465] [silk.Dev-BB23] [DEBUG] [stdout]         inet6 fde8:a95f:dead:6:f6ce:368b:d8b9:284  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:10,465] [silk.Dev-BB23] [DEBUG] [stdout]         inet6 fd4b:34fd:2dec:0:effd:697c:a931:5698  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:10,465] [silk.Dev-BB23] [DEBUG] [stdout]         inet6 fe80::6e33:5d3f:c499:6ba4  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:10,465] [silk.Dev-BB23] [DEBUG] [stdout]         unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+[2020-08-27 16:19:10,466] [silk.Dev-BB23] [DEBUG] [stdout]         RX packets 0  bytes 0 (0.0 B)
+[2020-08-27 16:19:10,466] [silk.Dev-BB23] [DEBUG] [stdout]         RX errors 0  dropped 0  overruns 0  frame 0
+[2020-08-27 16:19:10,466] [silk.Dev-BB23] [DEBUG] [stdout]         TX packets 5  bytes 712 (712.0 B)
+[2020-08-27 16:19:10,466] [silk.Dev-BB23] [DEBUG] [stdout]         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+[2020-08-27 16:19:10,466] [silk.Dev-BB23] [DEBUG] [stdout] 
+[2020-08-27 16:19:10,466] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,467] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:10,467] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,467] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:10,474] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000240583][EMRG]-CORE----: [OTNS] transmit=25,d841,34,ffff
+[2020-08-27 16:19:10,536] [silk.Dev-BB23] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::985a:3d4c:822c:720c"
+[2020-08-27 16:19:10,538] [silk.Dev-BB23] [DEBUG] Stored data: ip6_lla fe80::985a:3d4c:822c:720c
+[2020-08-27 16:19:10,538] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,539] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:10,539] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,539] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:10,606] [silk.Dev-BB23] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:effd:697c:a931:5698"
+[2020-08-27 16:19:10,607] [silk.Dev-BB23] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:effd:697c:a931:5698
+[2020-08-27 16:19:10,607] [silk.Dev-BB23] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:10,608] [silk.Dev-C179] [DEBUG] Stored data: fabric-id e8a95fdead
+[2020-08-27 16:19:10,608] [silk.Dev-C179] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:10,608] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:10,608] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,608] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,609] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 setprop Network:Key --data 00112233445566778899aabbccdde2f2"
+[2020-08-27 16:19:10,609] [silk.Dev-C179] [DEBUG] Stored data: role 4
+[2020-08-27 16:19:10,609] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,610] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 join SILK-3F69 -T 4 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7"
+[2020-08-27 16:19:10,610] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 setprop Network:Key --data 00112233445566778899aabbccdde2f2
+[2020-08-27 16:19:10,610] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,611] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,611] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop channel"
+[2020-08-27 16:19:10,619] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,620] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,620] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop panid"
+[2020-08-27 16:19:10,620] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,621] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,621] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop xpanid"
+[2020-08-27 16:19:10,622] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,622] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,623] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:10,623] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,624] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000240715][EMRG]-CORE----: [OTNS] transmit=25,d841,233,ffff
+[2020-08-27 16:19:10,624] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,625] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:10,625] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,626] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,626] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop Network:Key"
+[2020-08-27 16:19:10,626] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,626] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,626] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 status"
+[2020-08-27 16:19:10,627] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,627] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,627] [silk.Dev-C179] [DEBUG] Stored data: wpan_address(Weave Thread) fde8:a95f:dead:0006:f6ce:36f1:856c:bd5c
+[2020-08-27 16:19:10,627] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 ip addr add fde8:a95f:dead:0006:f6ce:36f1:856c:bd5c/64 dev ttyACM3"
+[2020-08-27 16:19:10,628] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,628] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,628] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 ifconfig"
+[2020-08-27 16:19:10,628] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,629] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,629] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:10,630] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,630] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,631] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:10,631] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,631] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,632] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 setprop SleepPollInterval 300"
+[2020-08-27 16:19:10,632] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,633] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:10,683] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000240781][EMRG]-CORE----: [OTNS] transmit=25,d841,234,ffff
+[2020-08-27 16:19:10,688] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:10,689] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 join SILK-3F69 -T 4 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7"
+[2020-08-27 16:19:10,689] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:10,689] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 join SILK-3F69 -T 4 -c 25 -x 0x4B34FD2DEC9D175C -p 0xabd7
+[2020-08-27 16:19:10,924] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "offline" -> "associating"
+[2020-08-27 16:19:10,927] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000241035][EMRG]-CORE----: [OTNS] mode=sn
+[2020-08-27 16:19:10,938] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000241046][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:10,940] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000241047][EMRG]-CORE----: [OTNS] role=1
+[2020-08-27 16:19:10,941] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 sending role=1
+[2020-08-27 16:19:10,943] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:11,316] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000241425][EMRG]-CORE----: [OTNS] transmit=25,dc61,229,c617342d94bad2d3
+[2020-08-27 16:19:11,321] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000241418][EMRG]-CORE----: [OTNS] transmit=25,dc61,235,9a5a3d4c822c720c
+[2020-08-27 16:19:11,595] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000241704][EMRG]-CORE----: [OTNS] transmit=25,d841,30,ffff
+[2020-08-27 16:19:11,863] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000241978][EMRG]-CORE----: [OTNS] transmit=25,dc61,35,0a40b26efd74525c
+[2020-08-27 16:19:12,015] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000242112][EMRG]-CORE----: [OTNS] transmit=25,9869,236,2400
+[2020-08-27 16:19:12,023] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242136][EMRG]-CORE----: [OTNS] transmit=25,d841,36,ffff
+[2020-08-27 16:19:12,027] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242141][EMRG]-CORE----: [OTNS] transmit=25,9869,37,2800
+[2020-08-27 16:19:12,085] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000242182][EMRG]-CORE----: [OTNS] transmit=25,d841,237,ffff
+[2020-08-27 16:19:12,345] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242454][EMRG]-CORE----: [OTNS] transmit=25,dc61,31,c22fbb08ea274ed3
+[2020-08-27 16:19:12,354] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242466][EMRG]-CORE----: [OTNS] child_added=0a40b26efd74525c
+[2020-08-27 16:19:12,357] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242468][EMRG]-CORE----: [OTNS] transmit=25,d841,38,ffff
+[2020-08-27 16:19:12,362] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000242459][EMRG]-CORE----: [OTNS] transmit=25,d841,238,ffff
+[2020-08-27 16:19:12,444] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242553][EMRG]-CORE----: [OTNS] transmit=25,dc6b,32,c22fbb08ea274ed3
+[2020-08-27 16:19:12,448] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242563][EMRG]-CORE----: [OTNS] transmit=25,dc79,39,0a40b26efd74525c
+[2020-08-27 16:19:12,457] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242566][EMRG]-CORE----: [OTNS] transmit=25,dc6b,33,c22fbb08ea274ed3
+[2020-08-27 16:19:12,460] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242575][EMRG]-CORE----: [OTNS] transmit=25,dc79,40,0a40b26efd74525c
+[2020-08-27 16:19:12,467] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242576][EMRG]-CORE----: [OTNS] transmit=25,dc6b,34,c22fbb08ea274ed3
+[2020-08-27 16:19:12,470] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000242585][EMRG]-CORE----: [OTNS] transmit=25,dc69,41,0a40b26efd74525c
+[2020-08-27 16:19:12,479] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242587][EMRG]-CORE----: [OTNS] rloc16=9218
+[2020-08-27 16:19:12,481] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242587][EMRG]-CORE----: [OTNS] role=2
+[2020-08-27 16:19:12,482] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 sending role=2
+[2020-08-27 16:19:12,483] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:12,485] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000242587][EMRG]-CORE----: [OTNS] parid=2cd0987d
+[2020-08-27 16:19:12,487] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "associating" -> "associated"
+[2020-08-27 16:19:12,488] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Node type change: "unknown" -> "sleepy-end-device"
+[2020-08-27 16:19:12,491] [silk.Dev-C179] [DEBUG] [stdout] Joining WPAN "SILK-3F69" as node type "sleepy-end-device", channel:25, panid:0xABD7, xpanid:0x4B34FD2DEC9D175C
+[2020-08-27 16:19:12,492] [silk.Dev-C179] [DEBUG] [stdout] Successfully Joined!
+[2020-08-27 16:19:12,494] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,494] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop channel"
+[2020-08-27 16:19:12,495] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,495] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop channel
+[2020-08-27 16:19:12,577] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: PropGet: Property "channel" is deprecated. Please use "NCP:Channel" instead.
+[2020-08-27 16:19:12,580] [silk.Dev-C179] [DEBUG] [stdout] channel = 25
+[2020-08-27 16:19:12,582] [silk.Dev-C179] [DEBUG] Stored data: channel  25
+[2020-08-27 16:19:12,583] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,583] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop panid"
+[2020-08-27 16:19:12,583] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,584] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop panid
+[2020-08-27 16:19:12,668] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: PropGet: Property "panid" is deprecated. Please use "Network:PANID" instead.
+[2020-08-27 16:19:12,670] [silk.Dev-C179] [DEBUG] [stdout] panid = 0xABD7
+[2020-08-27 16:19:12,673] [silk.Dev-C179] [DEBUG] Stored data: panid 0xABD7
+[2020-08-27 16:19:12,674] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,674] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop xpanid"
+[2020-08-27 16:19:12,675] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,675] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop xpanid
+[2020-08-27 16:19:12,748] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: PropGet: Property "xpanid" is deprecated. Please use "Network:XPANID" instead.
+[2020-08-27 16:19:12,752] [silk.Dev-C179] [DEBUG] [stdout] xpanid = 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:12,753] [silk.Dev-C179] [DEBUG] Stored data: xpanid 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:12,753] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,754] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:12,754] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,754] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:12,829] [silk.Dev-C179] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::840:b26e:fd74:525c"
+[2020-08-27 16:19:12,832] [silk.Dev-C179] [DEBUG] Stored data: ip6_lla fe80::840:b26e:fd74:525c
+[2020-08-27 16:19:12,832] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,833] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:12,833] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,834] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:12,912] [silk.Dev-C179] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd"
+[2020-08-27 16:19:12,915] [silk.Dev-C179] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd
+[2020-08-27 16:19:12,915] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,916] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop Network:Key"
+[2020-08-27 16:19:12,916] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,916] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop Network:Key
+[2020-08-27 16:19:12,991] [silk.Dev-C179] [DEBUG] [stdout] Network:Key = [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:12,993] [silk.Dev-C179] [DEBUG] Stored data: psk [00112233445566778899AABBCCDDE2F2]
+[2020-08-27 16:19:12,993] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:12,994] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 status"
+[2020-08-27 16:19:12,994] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:12,994] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 status
+[2020-08-27 16:19:13,073] [silk.Dev-C179] [DEBUG] [stdout] ttyACM3 => [
+[2020-08-27 16:19:13,075] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:13,078] [silk.Dev-C179] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:13,079] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:13,079] [silk.Dev-C179] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:13,079] [silk.Dev-C179] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE36F1856CBD5C]
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:NodeType" => "sleepy-end-device"
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:13,080] [silk.Dev-C179] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::840:b26e:fd74:525c"
+[2020-08-27 16:19:13,081] [silk.Dev-C179] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd"
+[2020-08-27 16:19:13,081] [silk.Dev-C179] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:13,081] [silk.Dev-C179] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:13,081] [silk.Dev-C179] [DEBUG] [stdout] ]
+[2020-08-27 16:19:13,082] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:13,082] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 ip addr add fde8:a95f:dead:0006:f6ce:36f1:856c:bd5c/64 dev ttyACM3"
+[2020-08-27 16:19:13,082] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,082] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 ip addr add fde8:a95f:dead:0006:f6ce:36f1:856c:bd5c/64 dev ttyACM3
+[2020-08-27 16:19:13,147] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Adding address "fde8:a95f:dead:6:f6ce:36f1:856c:bd5c/64" to NCP
+[2020-08-27 16:19:13,148] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Adding on-mesh prefix "fde8:a95f:dead:6::/64" to NCP
+[2020-08-27 16:19:13,150] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:13,151] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 ifconfig"
+[2020-08-27 16:19:13,151] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,151] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 ifconfig
+[2020-08-27 16:19:13,159] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243262][EMRG]-CORE----: [OTNS] transmit=25,9869,35,2400
+[2020-08-27 16:19:13,162] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000243274][EMRG]-CORE----: [OTNS] transmit=25,d841,42,ffff
+[2020-08-27 16:19:13,215] [silk.Dev-C179] [DEBUG] [stdout] ttyACM3: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST>  mtu 1280
+[2020-08-27 16:19:13,216] [silk.Dev-C179] [DEBUG] [stdout]         inet6 fe80::840:b26e:fd74:525c  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:13,218] [silk.Dev-C179] [DEBUG] [stdout]         inet6 fe80::e57e:f18:559c:8e34  prefixlen 64  scopeid 0x20<link>
+[2020-08-27 16:19:13,221] [silk.Dev-C179] [DEBUG] [stdout]         inet6 fde8:a95f:dead:6:f6ce:36f1:856c:bd5c  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:13,222] [silk.Dev-C179] [DEBUG] [stdout]         inet6 fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd  prefixlen 64  scopeid 0x0<global>
+[2020-08-27 16:19:13,222] [silk.Dev-C179] [DEBUG] [stdout]         unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00  txqueuelen 500  (UNSPEC)
+[2020-08-27 16:19:13,222] [silk.Dev-C179] [DEBUG] [stdout]         RX packets 0  bytes 0 (0.0 B)
+[2020-08-27 16:19:13,222] [silk.Dev-C179] [DEBUG] [stdout]         RX errors 0  dropped 0  overruns 0  frame 0
+[2020-08-27 16:19:13,222] [silk.Dev-C179] [DEBUG] [stdout]         TX packets 5  bytes 672 (672.0 B)
+[2020-08-27 16:19:13,223] [silk.Dev-C179] [DEBUG] [stdout]         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+[2020-08-27 16:19:13,223] [silk.Dev-C179] [DEBUG] [stdout] 
+[2020-08-27 16:19:13,223] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:13,224] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:LinkLocalAddress"
+[2020-08-27 16:19:13,224] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,224] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:LinkLocalAddress
+[2020-08-27 16:19:13,249] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243359][EMRG]-CORE----: [OTNS] transmit=25,dc61,36,c22fbb08ea274ed3
+[2020-08-27 16:19:13,258] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243368][EMRG]-CORE----: [OTNS] transmit=25,986b,37,2400
+[2020-08-27 16:19:13,262] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000243377][EMRG]-CORE----: [OTNS] transmit=25,dc71,43,0a40b26efd74525c
+[2020-08-27 16:19:13,270] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243379][EMRG]-CORE----: [OTNS] transmit=25,986b,38,2400
+[2020-08-27 16:19:13,273] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000243388][EMRG]-CORE----: [OTNS] transmit=25,dc71,44,0a40b26efd74525c
+[2020-08-27 16:19:13,279] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243388][EMRG]-CORE----: [OTNS] transmit=25,dc61,39,c22fbb08ea274ed3
+[2020-08-27 16:19:13,283] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243393][EMRG]-CORE----: [OTNS] transmit=25,986b,40,2400
+[2020-08-27 16:19:13,287] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000243402][EMRG]-CORE----: [OTNS] transmit=25,9869,45,2402
+[2020-08-27 16:19:13,291] [silk.Dev-C179] [DEBUG] [stdout] IPv6:LinkLocalAddress = "fe80::840:b26e:fd74:525c"
+[2020-08-27 16:19:13,292] [silk.Dev-C179] [DEBUG] Stored data: ip6_lla fe80::840:b26e:fd74:525c
+[2020-08-27 16:19:13,293] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:13,293] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:MeshLocalAddress"
+[2020-08-27 16:19:13,294] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,294] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 get IPv6:MeshLocalAddress
+[2020-08-27 16:19:13,335] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000243433][EMRG]-CORE----: [OTNS] transmit=25,d841,239,ffff
+[2020-08-27 16:19:13,363] [silk.Dev-C179] [DEBUG] [stdout] IPv6:MeshLocalAddress = "fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd"
+[2020-08-27 16:19:13,366] [silk.Dev-C179] [DEBUG] Stored data: ip6_mla fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd
+[2020-08-27 16:19:13,366] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:13,366] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 setprop SleepPollInterval 300"
+[2020-08-27 16:19:13,366] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,367] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 setprop SleepPollInterval 300
+[2020-08-27 16:19:13,376] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243481][EMRG]-CORE----: [OTNS] transmit=25,dc61,41,c22fbb08ea274ed3
+[2020-08-27 16:19:13,380] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243490][EMRG]-CORE----: [OTNS] transmit=25,986b,42,2400
+[2020-08-27 16:19:13,385] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000243500][EMRG]-CORE----: [OTNS] transmit=25,dc61,46,0a40b26efd74525c
+[2020-08-27 16:19:13,438] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: PropSet: Property "SleepPollInterval" is deprecated. Please use "NCP:SleepyPollInterval" instead.
+[2020-08-27 16:19:13,442] [silk.Dev-C179] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:13,443] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,443] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get Network:NodeType
+[2020-08-27 16:19:13,516] [silk.Dev-4456] [DEBUG] [stdout] Network:NodeType = "router"
+[2020-08-27 16:19:13,519] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,519] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 status
+[2020-08-27 16:19:13,594] [silk.Dev-9119] [DEBUG] [stdout] ttyACM8 => [
+[2020-08-27 16:19:13,599] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:13,600] [silk.Dev-9119] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:13,600] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:13,600] [silk.Dev-9119] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:13,601] [silk.Dev-9119] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:13,601] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE362EFD0D44D1]
+[2020-08-27 16:19:13,602] [silk.Dev-9119] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:13,602] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:NodeType" => "leader"
+[2020-08-27 16:19:13,603] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:13,603] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:13,603] [silk.Dev-9119] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:13,604] [silk.Dev-9119] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::c02f:bb08:ea27:4ed3"
+[2020-08-27 16:19:13,604] [silk.Dev-9119] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:6f2b:1982:62f3:b1fb"
+[2020-08-27 16:19:13,605] [silk.Dev-9119] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:13,605] [silk.Dev-9119] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:13,605] [silk.Dev-9119] [DEBUG] [stdout] ]
+[2020-08-27 16:19:13,606] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,607] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 status
+[2020-08-27 16:19:13,680] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000243790][EMRG]-CORE----: [OTNS] transmit=25,986b,43,2400
+[2020-08-27 16:19:13,691] [silk.Dev-4456] [DEBUG] [stdout] ttyACM1 => [
+[2020-08-27 16:19:13,692] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:13,693] [silk.Dev-4456] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:13,696] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:13,696] [silk.Dev-4456] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:13,696] [silk.Dev-4456] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:13,696] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE36CA5AF28D89]
+[2020-08-27 16:19:13,696] [silk.Dev-4456] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:13,696] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:NodeType" => "router"
+[2020-08-27 16:19:13,697] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:13,697] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:13,697] [silk.Dev-4456] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:13,697] [silk.Dev-4456] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::c417:342d:94ba:d2d3"
+[2020-08-27 16:19:13,697] [silk.Dev-4456] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:dcfb:c8b4:931f:473c"
+[2020-08-27 16:19:13,698] [silk.Dev-4456] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:13,698] [silk.Dev-4456] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:13,698] [silk.Dev-4456] [DEBUG] [stdout] ]
+[2020-08-27 16:19:13,698] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,698] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 status
+[2020-08-27 16:19:13,767] [silk.Dev-C179] [DEBUG] [stdout] ttyACM3 => [
+[2020-08-27 16:19:13,768] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:13,768] [silk.Dev-C179] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:13,770] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:13,771] [silk.Dev-C179] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:13,771] [silk.Dev-C179] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:13,771] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE36F1856CBD5C]
+[2020-08-27 16:19:13,772] [silk.Dev-C179] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:13,772] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:NodeType" => "sleepy-end-device"
+[2020-08-27 16:19:13,772] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:13,772] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:13,772] [silk.Dev-C179] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:13,772] [silk.Dev-C179] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::840:b26e:fd74:525c"
+[2020-08-27 16:19:13,773] [silk.Dev-C179] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:b1f9:73b2:17bf:c3fd"
+[2020-08-27 16:19:13,773] [silk.Dev-C179] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:13,773] [silk.Dev-C179] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:13,773] [silk.Dev-C179] [DEBUG] [stdout] ]
+[2020-08-27 16:19:13,773] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,774] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 status
+[2020-08-27 16:19:13,836] [silk.Dev-BB23] [DEBUG] [stdout] ttyACM7 => [
+[2020-08-27 16:19:13,838] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:State" => "associated"
+[2020-08-27 16:19:13,839] [silk.Dev-BB23] [DEBUG] [stdout] 	"Daemon:Enabled" => true
+[2020-08-27 16:19:13,840] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:Version" => "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"Daemon:Version" => "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"Config:NCP:DriverName" => "spinel"
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:HardwareAddress" => [F4CE368BD8B90284]
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"NCP:Channel" => 25
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:NodeType" => "end-device"
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:Name" => "SILK-3F69"
+[2020-08-27 16:19:13,841] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:XPANID" => 0x4B34FD2DEC9D175C
+[2020-08-27 16:19:13,842] [silk.Dev-BB23] [DEBUG] [stdout] 	"Network:PANID" => 0xABD7
+[2020-08-27 16:19:13,842] [silk.Dev-BB23] [DEBUG] [stdout] 	"IPv6:LinkLocalAddress" => "fe80::985a:3d4c:822c:720c"
+[2020-08-27 16:19:13,842] [silk.Dev-BB23] [DEBUG] [stdout] 	"IPv6:MeshLocalAddress" => "fd4b:34fd:2dec:0:effd:697c:a931:5698"
+[2020-08-27 16:19:13,842] [silk.Dev-BB23] [DEBUG] [stdout] 	"IPv6:MeshLocalPrefix" => "fd4b:34fd:2dec::/64"
+[2020-08-27 16:19:13,842] [silk.Dev-BB23] [DEBUG] [stdout] 	"com.nestlabs.internal:Network:AllowingJoin" => false
+[2020-08-27 16:19:13,842] [silk.Dev-BB23] [DEBUG] [stdout] ]
+[2020-08-27 16:19:13,843] [silk] [INFO] TEAR DOWN TestNeighborTable.test01_Form_Network
+[2020-08-27 16:19:13,843] [silk] [INFO] SET UP TestNeighborTable.test02_Verify_Router_Type
+[2020-08-27 16:19:13,843] [silk] [INFO] RUNNING TEST TestNeighborTable.test02_Verify_Router_Type
+[2020-08-27 16:19:13,844] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.test02_Verify_Router_Type" x 0 y 20 fs 20
+[2020-08-27 16:19:13,853] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.test02_Verify_Router_Type" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:19:13,853] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,854] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v Network:NodeType
+[2020-08-27 16:19:13,914] [silk.Dev-4456] [DEBUG] [stdout] "router"
+[2020-08-27 16:19:13,916] [silk] [INFO] TEAR DOWN TestNeighborTable.test02_Verify_Router_Type
+[2020-08-27 16:19:13,917] [silk] [INFO] SET UP TestNeighborTable.test03_Verify_Children
+[2020-08-27 16:19:13,917] [silk] [INFO] RUNNING TEST TestNeighborTable.test03_Verify_Children
+[2020-08-27 16:19:13,917] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.test03_Verify_Children" x 0 y 20 fs 20
+[2020-08-27 16:19:13,924] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.test03_Verify_Children" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:19:13,924] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,924] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get Thread:NeighborTable
+[2020-08-27 16:19:13,980] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244090][EMRG]-CORE----: [OTNS] transmit=25,986b,44,2400
+[2020-08-27 16:19:13,992] [silk.Dev-9119] [DEBUG] [stdout] Thread:NeighborTable = [
+[2020-08-27 16:19:13,994] [silk.Dev-9119] [DEBUG] [stdout] 	"0A40B26EFD74525C, RLOC16:2402, LQIn:3, AveRssi:-36, LastRssi:-36, Age:0, LinkFC:10, MleFC:5, IsChild:yes, RxOnIdle:no, FTD:no, SecDataReq:yes, FullNetData:yes"
+[2020-08-27 16:19:13,994] [silk.Dev-9119] [DEBUG] [stdout] 	"C617342D94BAD2D3, RLOC16:2800, LQIn:3, AveRssi:-18, LastRssi:-19, Age:1, LinkFC:8, MleFC:12, IsChild:no, RxOnIdle:yes, FTD:yes, SecDataReq:no, FullNetData:yes"
+[2020-08-27 16:19:13,994] [silk.Dev-9119] [DEBUG] [stdout] ]
+[2020-08-27 16:19:13,995] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:13,995] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop NCP:ExtendedAddress
+[2020-08-27 16:19:14,052] [silk.Dev-C179] [DEBUG] [stdout] NCP:ExtendedAddress = [0A40B26EFD74525C]
+[2020-08-27 16:19:14,053] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:14,053] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop Thread:RLOC16
+[2020-08-27 16:19:14,104] [silk.Dev-C179] [DEBUG] [stdout] Thread:RLOC16 = 0x2402
+[2020-08-27 16:19:14,107] [silk] [INFO] TEAR DOWN TestNeighborTable.test03_Verify_Children
+[2020-08-27 16:19:14,108] [silk] [INFO] SET UP TestNeighborTable.test04_Verify_Router
+[2020-08-27 16:19:14,108] [silk] [INFO] RUNNING TEST TestNeighborTable.test04_Verify_Router
+[2020-08-27 16:19:14,109] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.test04_Verify_Router" x 0 y 20 fs 20
+[2020-08-27 16:19:14,118] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.test04_Verify_Router" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:19:14,118] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:14,118] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get Thread:NeighborTable
+[2020-08-27 16:19:14,174] [silk.Dev-9119] [DEBUG] [stdout] Thread:NeighborTable = [
+[2020-08-27 16:19:14,175] [silk.Dev-9119] [DEBUG] [stdout] 	"0A40B26EFD74525C, RLOC16:2402, LQIn:3, AveRssi:-36, LastRssi:-36, Age:0, LinkFC:10, MleFC:5, IsChild:yes, RxOnIdle:no, FTD:no, SecDataReq:yes, FullNetData:yes"
+[2020-08-27 16:19:14,176] [silk.Dev-9119] [DEBUG] [stdout] 	"C617342D94BAD2D3, RLOC16:2800, LQIn:3, AveRssi:-18, LastRssi:-19, Age:1, LinkFC:8, MleFC:12, IsChild:no, RxOnIdle:yes, FTD:yes, SecDataReq:no, FullNetData:yes"
+[2020-08-27 16:19:14,176] [silk.Dev-9119] [DEBUG] [stdout] ]
+[2020-08-27 16:19:14,176] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:14,176] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop NCP:ExtendedAddress
+[2020-08-27 16:19:14,229] [silk.Dev-4456] [DEBUG] [stdout] NCP:ExtendedAddress = [C617342D94BAD2D3]
+[2020-08-27 16:19:14,230] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:14,230] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop Thread:RLOC16
+[2020-08-27 16:19:14,280] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244390][EMRG]-CORE----: [OTNS] transmit=25,986b,45,2400
+[2020-08-27 16:19:14,288] [silk.Dev-4456] [DEBUG] [stdout] Thread:RLOC16 = 0x2800
+[2020-08-27 16:19:14,290] [silk] [INFO] TEAR DOWN TestNeighborTable.test04_Verify_Router
+[2020-08-27 16:19:14,291] [silk] [INFO] SET UP TestNeighborTable.test05_Verify_NeighborTable_AsValMap
+[2020-08-27 16:19:14,292] [silk] [INFO] RUNNING TEST TestNeighborTable.test05_Verify_NeighborTable_AsValMap
+[2020-08-27 16:19:14,292] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.test05_Verify_NeighborTable_AsValMap" x 0 y 20 fs 20
+[2020-08-27 16:19:14,301] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.test05_Verify_NeighborTable_AsValMap" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:19:14,302] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:14,302] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 get Thread:NeighborTable:AsValMap
+[2020-08-27 16:19:14,367] [silk.Dev-9119] [DEBUG] [stdout] Thread:NeighborTable:AsValMap = [
+[2020-08-27 16:19:14,368] [silk.Dev-9119] [DEBUG] [stdout] 	[
+[2020-08-27 16:19:14,369] [silk.Dev-9119] [DEBUG] [stdout] 		"Age" => 0
+[2020-08-27 16:19:14,371] [silk.Dev-9119] [DEBUG] [stdout] 		"AverageRssi" => -36
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"ExtAddress" => 0x0A40B26EFD74525C
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"FullFunction" => false
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"FullNetworkData" => true
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"IsChild" => true
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"LastRssi" => -35
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"LinkFrameCounter" => 11
+[2020-08-27 16:19:14,372] [silk.Dev-9119] [DEBUG] [stdout] 		"LinkQualityIn" => 0x03
+[2020-08-27 16:19:14,373] [silk.Dev-9119] [DEBUG] [stdout] 		"MleFrameCounter" => 5
+[2020-08-27 16:19:14,373] [silk.Dev-9119] [DEBUG] [stdout] 		"RLOC16" => 0x2402
+[2020-08-27 16:19:14,373] [silk.Dev-9119] [DEBUG] [stdout] 		"RxOnWhenIdle" => false
+[2020-08-27 16:19:14,373] [silk.Dev-9119] [DEBUG] [stdout] 		"SecureDataRequest" => true
+[2020-08-27 16:19:14,373] [silk.Dev-9119] [DEBUG] [stdout] 	]
+[2020-08-27 16:19:14,373] [silk.Dev-9119] [DEBUG] [stdout] 	[
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"Age" => 2
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"AverageRssi" => -18
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"ExtAddress" => 0xC617342D94BAD2D3
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"FullFunction" => true
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"FullNetworkData" => true
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"IsChild" => false
+[2020-08-27 16:19:14,374] [silk.Dev-9119] [DEBUG] [stdout] 		"LastRssi" => -19
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 		"LinkFrameCounter" => 8
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 		"LinkQualityIn" => 0x03
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 		"MleFrameCounter" => 12
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 		"RLOC16" => 0x2800
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 		"RxOnWhenIdle" => true
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 		"SecureDataRequest" => false
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] 	]
+[2020-08-27 16:19:14,375] [silk.Dev-9119] [DEBUG] [stdout] ]
+[2020-08-27 16:19:14,376] [silk] [INFO] TEAR DOWN TestNeighborTable.test05_Verify_NeighborTable_AsValMap
+[2020-08-27 16:19:14,376] [silk] [INFO] TEAR DOWN CLASS TestNeighborTable
+[2020-08-27 16:19:14,377] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestNeighborTable.tear_down" x 0 y 20 fs 20
+[2020-08-27 16:19:14,382] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestNeighborTable.tear_down" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:19:14,383] [silk] [DEBUG] Stopping Thread sniffer on channel 25
+[2020-08-27 16:19:14,383] [silk.MissingSniffer] [DEBUG] Stop failed. No sniffer present.
+[2020-08-27 16:19:14,383] [silk.MissingSniffer] [DEBUG] Tear Down failed. No sniffer present.
+[2020-08-27 16:19:14,383] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 leave"
+[2020-08-27 16:19:14,383] [silk.Dev-9119] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:14,383] [silk.Dev-9119] [DEBUG] Message enqueued
+[2020-08-27 16:19:14,384] [silk.Dev-9119] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 leave"
+[2020-08-27 16:19:14,384] [silk.Dev-9119] [DEBUG] Stored data: role None
+[2020-08-27 16:19:14,384] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:14,384] [silk.Dev-9119] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:19:14,385] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 leave
+[2020-08-27 16:19:14,385] [silk.Dev-9119] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:19:14,386] [silk.Dev-9119] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:19:14,392] [silk.Dev-9119] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:19:14,393] [silk.Dev-9119] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:19:14,394] [silk.Dev-9119] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:19:14,394] [silk.Dev-9119] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:19:14,445] [silk.Dev-9119] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:19:14,448] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "associated" -> "offline"
+[2020-08-27 16:19:14,448] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Resetting interface(s). . .
+[2020-08-27 16:19:14,450] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000244562][EMRG]-CORE----: [OTNS] router_removed=c617342d94bad2d3
+[2020-08-27 16:19:14,451] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP => [0000000244562][EMRG]-CORE----: [OTNS] role=0
+[2020-08-27 16:19:14,452] [silk.otnsManager.OtnsNode2] [DEBUG] Node 2 sending role=0
+[2020-08-27 16:19:14,453] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:14,454] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Node type change: "leader" -> "unknown"
+[2020-08-27 16:19:14,580] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244690][EMRG]-CORE----: [OTNS] transmit=25,986b,46,2400
+[2020-08-27 16:19:14,587] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244698][EMRG]-CORE----: [OTNS] transmit=25,986b,46,2400
+[2020-08-27 16:19:14,591] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244701][EMRG]-CORE----: [OTNS] transmit=25,986b,46,2400
+[2020-08-27 16:19:14,595] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244705][EMRG]-CORE----: [OTNS] transmit=25,986b,46,2400
+[2020-08-27 16:19:14,880] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244990][EMRG]-CORE----: [OTNS] transmit=25,986b,47,2400
+[2020-08-27 16:19:14,883] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244993][EMRG]-CORE----: [OTNS] transmit=25,986b,47,2400
+[2020-08-27 16:19:14,887] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244996][EMRG]-CORE----: [OTNS] transmit=25,986b,47,2400
+[2020-08-27 16:19:14,889] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000244998][EMRG]-CORE----: [OTNS] transmit=25,986b,47,2400
+[2020-08-27 16:19:15,062] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:19:15,063] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:19:15,140] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000245238][EMRG]-CORE----: [OTNS] transmit=25,d841,240,ffff
+[2020-08-27 16:19:15,164] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:19:15,165] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:15,167] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:19:15,171] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:19:15,172] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:15,179] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Network is not joinable
+[2020-08-27 16:19:15,180] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245290][EMRG]-CORE----: [OTNS] transmit=25,986b,48,2400
+[2020-08-27 16:19:15,182] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:19:15,183] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Resetting interface(s). . .
+[2020-08-27 16:19:15,184] [silk.Dev-9119.wpantund] [DEBUG] wpantund[420462]: Finished initializing NCP
+[2020-08-27 16:19:15,187] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245294][EMRG]-CORE----: [OTNS] transmit=25,986b,48,2400
+[2020-08-27 16:19:15,189] [silk.Dev-9119] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:15,191] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245296][EMRG]-CORE----: [OTNS] transmit=25,986b,48,2400
+[2020-08-27 16:19:15,193] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245299][EMRG]-CORE----: [OTNS] transmit=25,986b,48,2400
+[2020-08-27 16:19:15,480] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245590][EMRG]-CORE----: [OTNS] transmit=25,986b,49,2400
+[2020-08-27 16:19:15,484] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245594][EMRG]-CORE----: [OTNS] transmit=25,986b,49,2400
+[2020-08-27 16:19:15,485] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245596][EMRG]-CORE----: [OTNS] transmit=25,986b,49,2400
+[2020-08-27 16:19:15,488] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245598][EMRG]-CORE----: [OTNS] transmit=25,986b,49,2400
+[2020-08-27 16:19:15,491] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245600][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:15,491] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000245601][EMRG]-CORE----: [OTNS] role=1
+[2020-08-27 16:19:15,491] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 sending role=1
+[2020-08-27 16:19:15,492] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:15,492] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Node type change: "sleepy-end-device" -> "unknown"
+[2020-08-27 16:19:15,492] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "associated" -> "associated:no-parent"
+[2020-08-27 16:19:15,493] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Taking interface(s) down. . .
+[2020-08-27 16:19:16,203] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000246314][EMRG]-CORE----: [OTNS] transmit=25,d841,50,ffff
+[2020-08-27 16:19:16,953] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000247063][EMRG]-CORE----: [OTNS] transmit=25,d841,51,ffff
+[2020-08-27 16:19:17,395] [silk.Dev-9119] [INFO] Stopping wpantund
+[2020-08-27 16:19:18,187] [silk.otnsManager] [DEBUG] Unsubscribing from node 2
+[2020-08-27 16:19:18,187] [silk.otnsManager] [DEBUG] Removing node 2 from OTNS
+[2020-08-27 16:19:18,188] [silk.otnsManager.OtnsNode2] [DEBUG] Deleting node 2 on OTNS
+[2020-08-27 16:19:18,188] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: del 2
+[2020-08-27 16:19:18,201] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 2, resp: output: "Done"
+[2020-08-27 16:19:18,202] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:18,202] [silk.Dev-9119] [INFO] Cleaning up network namespace for /dev/ttyACM8
+[2020-08-27 16:19:18,202] [silk.Dev-9119] [INFO] Killing all processes in /dev/ttyACM8
+[2020-08-27 16:19:18,202] [silk.Dev-9119] [INFO] Getting PIDs for network namespace for /dev/ttyACM8
+[2020-08-27 16:19:18,202] [silk.Dev-9119] [DEBUG] Making system call for netns-pids
+[2020-08-27 16:19:18,202] [silk.Dev-9119] [DEBUG] sudo ip netns pids ttyACM8
+[2020-08-27 16:19:18,206] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248314][EMRG]-CORE----: [OTNS] transmit=25,d841,52,ffff
+[2020-08-27 16:19:18,250] [silk.Dev-9119] [DEBUG] [stdout] 420462
+[2020-08-27 16:19:18,254] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:18,255] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 kill -SIGINT 420462
+[2020-08-27 16:19:18,287] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248396][EMRG]-CORE----: [OTNS] transmit=11,d809,53,ffff
+[2020-08-27 16:19:18,319] [silk.Dev-9119] [INFO] Deleting network namespace for /dev/ttyACM8
+[2020-08-27 16:19:18,320] [silk.Dev-9119] [DEBUG] Making system call for netns-del
+[2020-08-27 16:19:18,320] [silk.Dev-9119] [DEBUG] sudo ip netns del ttyACM8
+[2020-08-27 16:19:18,370] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248478][EMRG]-CORE----: [OTNS] transmit=12,d809,54,ffff
+[2020-08-27 16:19:18,450] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248560][EMRG]-CORE----: [OTNS] transmit=13,d809,55,ffff
+[2020-08-27 16:19:18,532] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248642][EMRG]-CORE----: [OTNS] transmit=14,d809,56,ffff
+[2020-08-27 16:19:18,614] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248724][EMRG]-CORE----: [OTNS] transmit=15,d809,57,ffff
+[2020-08-27 16:19:18,696] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248806][EMRG]-CORE----: [OTNS] transmit=16,d809,58,ffff
+[2020-08-27 16:19:18,778] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248888][EMRG]-CORE----: [OTNS] transmit=17,d809,59,ffff
+[2020-08-27 16:19:18,860] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000248970][EMRG]-CORE----: [OTNS] transmit=18,d809,60,ffff
+[2020-08-27 16:19:18,942] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249052][EMRG]-CORE----: [OTNS] transmit=19,d809,61,ffff
+[2020-08-27 16:19:19,025] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249134][EMRG]-CORE----: [OTNS] transmit=20,d809,62,ffff
+[2020-08-27 16:19:19,106] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249216][EMRG]-CORE----: [OTNS] transmit=21,d809,63,ffff
+[2020-08-27 16:19:19,188] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249298][EMRG]-CORE----: [OTNS] transmit=22,d809,64,ffff
+[2020-08-27 16:19:19,270] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249380][EMRG]-CORE----: [OTNS] transmit=23,d809,65,ffff
+[2020-08-27 16:19:19,352] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249462][EMRG]-CORE----: [OTNS] transmit=24,d809,66,ffff
+[2020-08-27 16:19:19,434] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249544][EMRG]-CORE----: [OTNS] transmit=25,d809,67,ffff
+[2020-08-27 16:19:19,516] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249626][EMRG]-CORE----: [OTNS] transmit=26,d809,68,ffff
+[2020-08-27 16:19:19,597] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000249707][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:19,897] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000250007][EMRG]-CORE----: [OTNS] transmit=25,d841,69,ffff
+[2020-08-27 16:19:20,647] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000250756][EMRG]-CORE----: [OTNS] transmit=25,d841,70,ffff
+[2020-08-27 16:19:20,784] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000250894][EMRG]-CORE----: [OTNS] transmit=25,d841,230,ffff
+[2020-08-27 16:19:21,897] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252006][EMRG]-CORE----: [OTNS] transmit=25,d841,71,ffff
+[2020-08-27 16:19:21,979] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252089][EMRG]-CORE----: [OTNS] transmit=11,d809,72,ffff
+[2020-08-27 16:19:22,061] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252171][EMRG]-CORE----: [OTNS] transmit=12,d809,73,ffff
+[2020-08-27 16:19:22,142] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252253][EMRG]-CORE----: [OTNS] transmit=13,d809,74,ffff
+[2020-08-27 16:19:22,225] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252335][EMRG]-CORE----: [OTNS] transmit=14,d809,75,ffff
+[2020-08-27 16:19:22,307] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252417][EMRG]-CORE----: [OTNS] transmit=15,d809,76,ffff
+[2020-08-27 16:19:22,388] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252499][EMRG]-CORE----: [OTNS] transmit=16,d809,77,ffff
+[2020-08-27 16:19:22,471] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252581][EMRG]-CORE----: [OTNS] transmit=17,d809,78,ffff
+[2020-08-27 16:19:22,553] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252663][EMRG]-CORE----: [OTNS] transmit=18,d809,79,ffff
+[2020-08-27 16:19:22,636] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252745][EMRG]-CORE----: [OTNS] transmit=19,d809,80,ffff
+[2020-08-27 16:19:22,716] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252827][EMRG]-CORE----: [OTNS] transmit=20,d809,81,ffff
+[2020-08-27 16:19:22,799] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252909][EMRG]-CORE----: [OTNS] transmit=21,d809,82,ffff
+[2020-08-27 16:19:22,881] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000252991][EMRG]-CORE----: [OTNS] transmit=22,d809,83,ffff
+[2020-08-27 16:19:22,963] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000253073][EMRG]-CORE----: [OTNS] transmit=23,d809,84,ffff
+[2020-08-27 16:19:23,045] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000253155][EMRG]-CORE----: [OTNS] transmit=24,d809,85,ffff
+[2020-08-27 16:19:23,127] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000253237][EMRG]-CORE----: [OTNS] transmit=25,d809,86,ffff
+[2020-08-27 16:19:23,209] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000253319][EMRG]-CORE----: [OTNS] transmit=26,d809,87,ffff
+[2020-08-27 16:19:23,290] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000253400][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:23,773] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000253871][EMRG]-CORE----: [OTNS] transmit=25,d841,241,ffff
+[2020-08-27 16:19:23,817] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000253927][EMRG]-CORE----: [OTNS] transmit=25,d841,88,ffff
+[2020-08-27 16:19:24,567] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000254676][EMRG]-CORE----: [OTNS] transmit=25,d841,89,ffff
+[2020-08-27 16:19:25,817] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000255927][EMRG]-CORE----: [OTNS] transmit=25,d841,90,ffff
+[2020-08-27 16:19:25,899] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256009][EMRG]-CORE----: [OTNS] transmit=11,d809,91,ffff
+[2020-08-27 16:19:25,980] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256091][EMRG]-CORE----: [OTNS] transmit=12,d809,92,ffff
+[2020-08-27 16:19:26,062] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256173][EMRG]-CORE----: [OTNS] transmit=13,d809,93,ffff
+[2020-08-27 16:19:26,145] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256255][EMRG]-CORE----: [OTNS] transmit=14,d809,94,ffff
+[2020-08-27 16:19:26,227] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256337][EMRG]-CORE----: [OTNS] transmit=15,d809,95,ffff
+[2020-08-27 16:19:26,309] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256419][EMRG]-CORE----: [OTNS] transmit=16,d809,96,ffff
+[2020-08-27 16:19:26,391] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256501][EMRG]-CORE----: [OTNS] transmit=17,d809,97,ffff
+[2020-08-27 16:19:26,473] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256583][EMRG]-CORE----: [OTNS] transmit=18,d809,98,ffff
+[2020-08-27 16:19:26,555] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256665][EMRG]-CORE----: [OTNS] transmit=19,d809,99,ffff
+[2020-08-27 16:19:26,637] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256747][EMRG]-CORE----: [OTNS] transmit=20,d809,100,ffff
+[2020-08-27 16:19:26,719] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256829][EMRG]-CORE----: [OTNS] transmit=21,d809,101,ffff
+[2020-08-27 16:19:26,801] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256911][EMRG]-CORE----: [OTNS] transmit=22,d809,102,ffff
+[2020-08-27 16:19:26,883] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000256993][EMRG]-CORE----: [OTNS] transmit=23,d809,103,ffff
+[2020-08-27 16:19:26,965] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000257075][EMRG]-CORE----: [OTNS] transmit=24,d809,104,ffff
+[2020-08-27 16:19:27,047] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000257157][EMRG]-CORE----: [OTNS] transmit=25,d809,105,ffff
+[2020-08-27 16:19:27,130] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000257239][EMRG]-CORE----: [OTNS] transmit=26,d809,106,ffff
+[2020-08-27 16:19:27,210] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000257320][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:28,252] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000258362][EMRG]-CORE----: [OTNS] transmit=25,d841,107,ffff
+[2020-08-27 16:19:28,390] [silk.Dev-4456] [INFO] Enqueuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 leave"
+[2020-08-27 16:19:28,391] [silk.Dev-4456] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:28,391] [silk.Dev-4456] [DEBUG] Message enqueued
+[2020-08-27 16:19:28,392] [silk.Dev-4456] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 leave"
+[2020-08-27 16:19:28,393] [silk.Dev-4456] [DEBUG] Stored data: role None
+[2020-08-27 16:19:28,393] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:28,394] [silk.Dev-4456] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:19:28,394] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 leave
+[2020-08-27 16:19:28,394] [silk.Dev-4456] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:19:28,395] [silk.Dev-4456] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:19:28,403] [silk.Dev-4456] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:19:28,405] [silk.Dev-4456] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:19:28,405] [silk.Dev-4456] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:19:28,406] [silk.Dev-4456] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:19:28,481] [silk.Dev-4456] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:19:28,485] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "associated" -> "offline"
+[2020-08-27 16:19:28,487] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Resetting interface(s). . .
+[2020-08-27 16:19:28,488] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000258583][EMRG]-CORE----: [OTNS] router_removed=c22fbb08ea274ed3
+[2020-08-27 16:19:28,491] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP => [0000000258583][EMRG]-CORE----: [OTNS] role=0
+[2020-08-27 16:19:28,492] [silk.otnsManager.OtnsNode3] [DEBUG] Node 3 sending role=0
+[2020-08-27 16:19:28,494] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:28,496] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Node type change: "router" -> "unknown"
+[2020-08-27 16:19:29,002] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000259111][EMRG]-CORE----: [OTNS] transmit=25,d841,108,ffff
+[2020-08-27 16:19:29,099] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:19:29,100] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:19:29,200] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:19:29,201] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:29,201] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:19:29,209] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:19:29,210] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:29,211] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Network is not joinable
+[2020-08-27 16:19:29,214] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:19:29,215] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Resetting interface(s). . .
+[2020-08-27 16:19:29,216] [silk.Dev-4456.wpantund] [DEBUG] wpantund[420636]: Finished initializing NCP
+[2020-08-27 16:19:29,221] [silk.Dev-4456] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:30,252] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260362][EMRG]-CORE----: [OTNS] transmit=25,d841,109,ffff
+[2020-08-27 16:19:30,334] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260444][EMRG]-CORE----: [OTNS] transmit=11,d809,110,ffff
+[2020-08-27 16:19:30,416] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260526][EMRG]-CORE----: [OTNS] transmit=12,d809,111,ffff
+[2020-08-27 16:19:30,498] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260608][EMRG]-CORE----: [OTNS] transmit=13,d809,112,ffff
+[2020-08-27 16:19:30,580] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260690][EMRG]-CORE----: [OTNS] transmit=14,d809,113,ffff
+[2020-08-27 16:19:30,663] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260772][EMRG]-CORE----: [OTNS] transmit=15,d809,114,ffff
+[2020-08-27 16:19:30,744] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260854][EMRG]-CORE----: [OTNS] transmit=16,d809,115,ffff
+[2020-08-27 16:19:30,825] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000260936][EMRG]-CORE----: [OTNS] transmit=17,d809,116,ffff
+[2020-08-27 16:19:30,908] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261018][EMRG]-CORE----: [OTNS] transmit=18,d809,117,ffff
+[2020-08-27 16:19:30,990] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261100][EMRG]-CORE----: [OTNS] transmit=19,d809,118,ffff
+[2020-08-27 16:19:31,073] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261182][EMRG]-CORE----: [OTNS] transmit=20,d809,119,ffff
+[2020-08-27 16:19:31,154] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261264][EMRG]-CORE----: [OTNS] transmit=21,d809,120,ffff
+[2020-08-27 16:19:31,237] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261346][EMRG]-CORE----: [OTNS] transmit=22,d809,121,ffff
+[2020-08-27 16:19:31,318] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261428][EMRG]-CORE----: [OTNS] transmit=23,d809,122,ffff
+[2020-08-27 16:19:31,400] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261510][EMRG]-CORE----: [OTNS] transmit=24,d809,123,ffff
+[2020-08-27 16:19:31,409] [silk.Dev-4456] [INFO] Stopping wpantund
+[2020-08-27 16:19:31,482] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261592][EMRG]-CORE----: [OTNS] transmit=25,d809,124,ffff
+[2020-08-27 16:19:31,564] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261674][EMRG]-CORE----: [OTNS] transmit=26,d809,125,ffff
+[2020-08-27 16:19:31,645] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000261755][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:32,219] [silk.otnsManager] [DEBUG] Unsubscribing from node 3
+[2020-08-27 16:19:32,220] [silk.otnsManager] [DEBUG] Removing node 3 from OTNS
+[2020-08-27 16:19:32,221] [silk.otnsManager.OtnsNode3] [DEBUG] Deleting node 3 on OTNS
+[2020-08-27 16:19:32,221] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: del 3
+[2020-08-27 16:19:32,232] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 3, resp: output: "Done"
+[2020-08-27 16:19:32,233] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:32,233] [silk.Dev-4456] [INFO] Cleaning up network namespace for /dev/ttyACM1
+[2020-08-27 16:19:32,234] [silk.Dev-4456] [INFO] Killing all processes in /dev/ttyACM1
+[2020-08-27 16:19:32,234] [silk.Dev-4456] [INFO] Getting PIDs for network namespace for /dev/ttyACM1
+[2020-08-27 16:19:32,234] [silk.Dev-4456] [DEBUG] Making system call for netns-pids
+[2020-08-27 16:19:32,235] [silk.Dev-4456] [DEBUG] sudo ip netns pids ttyACM1
+[2020-08-27 16:19:32,303] [silk.Dev-4456] [DEBUG] [stdout] 420636
+[2020-08-27 16:19:32,306] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:32,307] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 kill -SIGINT 420636
+[2020-08-27 16:19:32,383] [silk.Dev-4456] [INFO] Deleting network namespace for /dev/ttyACM1
+[2020-08-27 16:19:32,384] [silk.Dev-4456] [DEBUG] Making system call for netns-del
+[2020-08-27 16:19:32,384] [silk.Dev-4456] [DEBUG] sudo ip netns del ttyACM1
+[2020-08-27 16:19:33,668] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000263778][EMRG]-CORE----: [OTNS] transmit=25,d841,126,ffff
+[2020-08-27 16:19:34,418] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000264527][EMRG]-CORE----: [OTNS] transmit=25,d841,127,ffff
+[2020-08-27 16:19:35,668] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000265777][EMRG]-CORE----: [OTNS] transmit=25,d841,128,ffff
+[2020-08-27 16:19:35,750] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000265860][EMRG]-CORE----: [OTNS] transmit=11,d809,129,ffff
+[2020-08-27 16:19:35,832] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000265942][EMRG]-CORE----: [OTNS] transmit=12,d809,130,ffff
+[2020-08-27 16:19:35,914] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266024][EMRG]-CORE----: [OTNS] transmit=13,d809,131,ffff
+[2020-08-27 16:19:35,996] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266106][EMRG]-CORE----: [OTNS] transmit=14,d809,132,ffff
+[2020-08-27 16:19:36,078] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266188][EMRG]-CORE----: [OTNS] transmit=15,d809,133,ffff
+[2020-08-27 16:19:36,160] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266270][EMRG]-CORE----: [OTNS] transmit=16,d809,134,ffff
+[2020-08-27 16:19:36,243] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266352][EMRG]-CORE----: [OTNS] transmit=17,d809,135,ffff
+[2020-08-27 16:19:36,324] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266434][EMRG]-CORE----: [OTNS] transmit=18,d809,136,ffff
+[2020-08-27 16:19:36,406] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266516][EMRG]-CORE----: [OTNS] transmit=19,d809,137,ffff
+[2020-08-27 16:19:36,488] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266598][EMRG]-CORE----: [OTNS] transmit=20,d809,138,ffff
+[2020-08-27 16:19:36,570] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266680][EMRG]-CORE----: [OTNS] transmit=21,d809,139,ffff
+[2020-08-27 16:19:36,652] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266762][EMRG]-CORE----: [OTNS] transmit=22,d809,140,ffff
+[2020-08-27 16:19:36,734] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266844][EMRG]-CORE----: [OTNS] transmit=23,d809,141,ffff
+[2020-08-27 16:19:36,816] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000266926][EMRG]-CORE----: [OTNS] transmit=24,d809,142,ffff
+[2020-08-27 16:19:36,898] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000267008][EMRG]-CORE----: [OTNS] transmit=25,d809,143,ffff
+[2020-08-27 16:19:36,979] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000267090][EMRG]-CORE----: [OTNS] transmit=26,d809,144,ffff
+[2020-08-27 16:19:37,061] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000267171][EMRG]-CORE----: [OTNS] rloc16=65534
+[2020-08-27 16:19:41,077] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000271188][EMRG]-CORE----: [OTNS] transmit=25,d841,145,ffff
+[2020-08-27 16:19:41,827] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000271937][EMRG]-CORE----: [OTNS] transmit=25,d841,146,ffff
+[2020-08-27 16:19:42,462] [silk.Dev-C179] [INFO] Enqueuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 leave"
+[2020-08-27 16:19:42,462] [silk.Dev-C179] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:42,463] [silk.Dev-C179] [DEBUG] Message enqueued
+[2020-08-27 16:19:42,463] [silk.Dev-C179] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 leave"
+[2020-08-27 16:19:42,464] [silk.Dev-C179] [DEBUG] Stored data: role None
+[2020-08-27 16:19:42,465] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:42,465] [silk.Dev-C179] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:19:42,466] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 leave
+[2020-08-27 16:19:42,466] [silk.Dev-C179] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:19:42,468] [silk.Dev-C179] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:19:42,475] [silk.Dev-C179] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:19:42,476] [silk.Dev-C179] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:19:42,477] [silk.Dev-C179] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:19:42,477] [silk.Dev-C179] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:19:42,546] [silk.Dev-C179] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:19:42,548] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "associated:no-parent" -> "offline"
+[2020-08-27 16:19:42,549] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Resetting interface(s). . .
+[2020-08-27 16:19:42,550] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP => [0000000272657][EMRG]-CORE----: [OTNS] role=0
+[2020-08-27 16:19:42,551] [silk.otnsManager.OtnsNode4] [DEBUG] Node 4 sending role=0
+[2020-08-27 16:19:42,552] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:43,161] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:19:43,161] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:19:43,263] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:19:43,264] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:43,264] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:19:43,271] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:19:43,272] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:43,278] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Network is not joinable
+[2020-08-27 16:19:43,282] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:19:43,283] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Resetting interface(s). . .
+[2020-08-27 16:19:43,283] [silk.Dev-C179.wpantund] [DEBUG] wpantund[420710]: Finished initializing NCP
+[2020-08-27 16:19:43,287] [silk.Dev-C179] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:45,478] [silk.Dev-C179] [INFO] Stopping wpantund
+[2020-08-27 16:19:46,287] [silk.otnsManager] [DEBUG] Unsubscribing from node 4
+[2020-08-27 16:19:46,287] [silk.otnsManager] [DEBUG] Removing node 4 from OTNS
+[2020-08-27 16:19:46,288] [silk.otnsManager.OtnsNode4] [DEBUG] Deleting node 4 on OTNS
+[2020-08-27 16:19:46,288] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: del 4
+[2020-08-27 16:19:46,302] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 4, resp: output: "Done"
+[2020-08-27 16:19:46,302] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:46,303] [silk.Dev-C179] [INFO] Cleaning up network namespace for /dev/ttyACM3
+[2020-08-27 16:19:46,303] [silk.Dev-C179] [INFO] Killing all processes in /dev/ttyACM3
+[2020-08-27 16:19:46,303] [silk.Dev-C179] [INFO] Getting PIDs for network namespace for /dev/ttyACM3
+[2020-08-27 16:19:46,304] [silk.Dev-C179] [DEBUG] Making system call for netns-pids
+[2020-08-27 16:19:46,304] [silk.Dev-C179] [DEBUG] sudo ip netns pids ttyACM3
+[2020-08-27 16:19:46,375] [silk.Dev-C179] [DEBUG] [stdout] 420710
+[2020-08-27 16:19:46,377] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:46,378] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 kill -SIGINT 420710
+[2020-08-27 16:19:46,428] [silk.Dev-C179] [INFO] Deleting network namespace for /dev/ttyACM3
+[2020-08-27 16:19:46,429] [silk.Dev-C179] [DEBUG] Making system call for netns-del
+[2020-08-27 16:19:46,429] [silk.Dev-C179] [DEBUG] sudo ip netns del ttyACM3
+[2020-08-27 16:19:56,490] [silk.Dev-BB23] [INFO] Enqueuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 leave"
+[2020-08-27 16:19:56,491] [silk.Dev-BB23] [DEBUG] Setting all-clear to False
+[2020-08-27 16:19:56,491] [silk.Dev-BB23] [DEBUG] Message enqueued
+[2020-08-27 16:19:56,492] [silk.Dev-BB23] [DEBUG] Dequeuing command "sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 leave"
+[2020-08-27 16:19:56,493] [silk.Dev-BB23] [DEBUG] Stored data: role None
+[2020-08-27 16:19:56,493] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:19:56,494] [silk.Dev-BB23] [DEBUG] Stored data: ip6_lla None
+[2020-08-27 16:19:56,495] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 leave
+[2020-08-27 16:19:56,495] [silk.Dev-BB23] [DEBUG] Stored data: ip6_mla None
+[2020-08-27 16:19:56,502] [silk.Dev-BB23] [DEBUG] Stored data: wpan_address(Weave Legacy) None
+[2020-08-27 16:19:56,504] [silk.Dev-BB23] [DEBUG] Stored data: wpan_address(Weave Thread) None
+[2020-08-27 16:19:56,505] [silk.Dev-BB23] [DEBUG] Stored data: ping6_sent None
+[2020-08-27 16:19:56,506] [silk.Dev-BB23] [DEBUG] Stored data: xpanid None
+[2020-08-27 16:19:56,506] [silk.Dev-BB23] [DEBUG] Stored data: ping_loss None
+[2020-08-27 16:19:56,567] [silk.Dev-BB23] [DEBUG] [stdout] Leaving current WPAN. . .
+[2020-08-27 16:19:56,569] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "associated" -> "offline"
+[2020-08-27 16:19:56,570] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Resetting interface(s). . .
+[2020-08-27 16:19:56,571] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP => [0000000286679][EMRG]-CORE----: [OTNS] role=0
+[2020-08-27 16:19:56,572] [silk.otnsManager.OtnsNode5] [DEBUG] Node 5 sending role=0
+[2020-08-27 16:19:56,573] [silk.otnsManager] [DEBUG] Updating nodes layout
+[2020-08-27 16:19:56,574] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Node type change: "end-device" -> "unknown"
+[2020-08-27 16:19:57,183] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: [-NCP-]: NCP was reset (RESET_POWER_ON, 112)
+[2020-08-27 16:19:57,184] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "offline" -> "uninitialized"
+[2020-08-27 16:19:57,285] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: State change: "uninitialized" -> "offline"
+[2020-08-27 16:19:57,286] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: NCP is running "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"
+[2020-08-27 16:19:57,287] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y
+[2020-08-27 16:19:57,292] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: netinfo version "OPENTHREAD/20191113-01008-g7a612437e; NRF52840; Jul 23 2020 17:58:45"  real y, resp: output: "Done"
+[2020-08-27 16:19:57,293] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Driver is running "0.08.00d (0.07.01-344-gffe7898-dirty; Jun 26 2020 17:03:46)"
+[2020-08-27 16:19:57,302] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Network is not joinable
+[2020-08-27 16:19:57,305] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: [-NCP-]: SLAAC enabled
+[2020-08-27 16:19:57,307] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Resetting interface(s). . .
+[2020-08-27 16:19:57,308] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[420751]: Finished initializing NCP
+[2020-08-27 16:19:57,312] [silk.Dev-BB23] [DEBUG] Setting all-clear to True
+[2020-08-27 16:19:59,509] [silk.Dev-BB23] [INFO] Stopping wpantund
+[2020-08-27 16:20:00,310] [silk.otnsManager] [DEBUG] Unsubscribing from node 5
+[2020-08-27 16:20:00,311] [silk.otnsManager] [DEBUG] Removing node 5 from OTNS
+[2020-08-27 16:20:00,312] [silk.otnsManager.OtnsNode5] [DEBUG] Deleting node 5 on OTNS
+[2020-08-27 16:20:00,312] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: del 5
+[2020-08-27 16:20:00,323] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 5, resp: output: "Done"
+[2020-08-27 16:20:00,323] [silk.Dev-BB23] [INFO] Cleaning up network namespace for /dev/ttyACM7
+[2020-08-27 16:20:00,324] [silk.Dev-BB23] [INFO] Killing all processes in /dev/ttyACM7
+[2020-08-27 16:20:00,324] [silk.Dev-BB23] [INFO] Getting PIDs for network namespace for /dev/ttyACM7
+[2020-08-27 16:20:00,324] [silk.Dev-BB23] [DEBUG] Making system call for netns-pids
+[2020-08-27 16:20:00,325] [silk.Dev-BB23] [DEBUG] sudo ip netns pids ttyACM7
+[2020-08-27 16:20:00,383] [silk.Dev-BB23] [DEBUG] [stdout] 420751
+[2020-08-27 16:20:00,384] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
+[2020-08-27 16:20:00,384] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 kill -SIGINT 420751
+[2020-08-27 16:20:00,439] [silk.Dev-BB23] [INFO] Deleting network namespace for /dev/ttyACM7
+[2020-08-27 16:20:00,440] [silk.Dev-BB23] [DEBUG] Making system call for netns-del
+[2020-08-27 16:20:00,440] [silk.Dev-BB23] [DEBUG] sudo ip netns del ttyACM7
+[2020-08-27 16:20:10,498] [silk] [INFO] TEAR DOWN CLASS DONE TestNeighborTable
+[2020-08-27 16:20:10,499] [silk] [INFO] ======================================================================
+[2020-08-27 16:20:10,499] [silk] [INFO] ============================= SUMMARY ===============================
+[2020-08-27 16:20:10,499] [silk] [INFO] ======================================================================
+[2020-08-27 16:20:10,500] [silk] [INFO] TestNeighborTable
+[2020-08-27 16:20:10,500] [silk] [INFO]     test01_Form_Network.........................................PASS
+[2020-08-27 16:20:10,500] [silk] [INFO]     test02_Verify_Router_Type...................................PASS
+[2020-08-27 16:20:10,501] [silk] [INFO]     test03_Verify_Children......................................PASS
+[2020-08-27 16:20:10,501] [silk] [INFO]     test04_Verify_Router........................................PASS
+[2020-08-27 16:20:10,501] [silk] [INFO]     test05_Verify_NeighborTable_AsValMap........................PASS
+[2020-08-27 16:20:10,502] [silk] [INFO] ======================================================================

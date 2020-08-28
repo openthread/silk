@@ -363,6 +363,9 @@ def test_method_decorator(func):
         self.wait_for_completion(self.device_list)
         self.logger.info("RUNNING TEST %s.%s" % (self.current_test_class, self.current_test_method))
 
+        if self.otns_manager:
+            self.otns_manager.set_test_title(f"{self.current_test_class}.{self.current_test_method}")
+
         try:
             func(self)
         except:
@@ -375,9 +378,6 @@ def test_method_decorator(func):
             raise
 
         self.results[self.current_test_class][self.current_test_method]["test"] = True
-
-        if self.otns_manager:
-            self.otns_manager.set_test_title(f"{self.current_test_class}.{self.current_test_method}")
 
     return wrapper
 
