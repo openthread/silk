@@ -27,7 +27,7 @@ def random_string(length: int) -> str:
     Returns:
         str: generated random string.
     """
-    return ''.join(random.choice(string.ascii_letters) for i in range(length))
+    return ''.join(random.choice(string.ascii_letters) for _ in range(length))
 
 
 def commands_almost_equal(command1: str, command2: str, delta: float = 1.0) -> bool:

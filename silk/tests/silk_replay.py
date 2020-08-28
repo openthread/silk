@@ -272,7 +272,7 @@ class SilkReplayer(object):
             for summary in self.otns_manager.node_summaries.values():
                 self.logger.debug(summary.to_string(extaddr_map))
 
-    def run(self, start_line: int = 0, stop_regex: str = None):
+    def run(self, start_line: int = 0, stop_regex: str = None) -> int:
         """Run the Silk log replayer.
         
         This method provides two optional arguments to allow for unit testing.
@@ -280,6 +280,9 @@ class SilkReplayer(object):
         Args:
             start_line (int, optional): start reading the log file at the specified line number. Defaults to 0.
             stop_regex (str, optional): stop running if the pattern matches a log line. Defaults to None.
+
+        Returns:
+            int: the last processed line number.
         """
         self.otns_manager.set_replay_speed(self.speed)
         with open(file=self.input_path, mode="r") as file:
@@ -304,6 +307,8 @@ class SilkReplayer(object):
                     if delay > 0:
                         time.sleep(delay)
                     self.execute_message(entity_name, message, timestamp)
+
+            return line_number
 
 
 if __name__ == "__main__":

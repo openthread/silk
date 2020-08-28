@@ -13,86 +13,18 @@
 # limitations under the License.
 
 from typing import Dict, List, Tuple
-import queue
 import random
-import threading
 import unittest
 
-from silk.tools.otns_manager import Event, EventType, OtnsManager, RoleType
+from silk.tools.otns_manager import Event, EventType, RoleType
 from silk.unit_tests.mock_device import MockThreadDevBoard
-from silk.unit_tests.mock_service import MockGrpcClient, MockUDPServer
 from silk.unit_tests.test_utils import random_string
-from silk.unit_tests.testcase import SilkTestCase
+from silk.unit_tests.testcase import SilkMockingTestCase
 
 
-class OTNSUnitTest(SilkTestCase):
+class OTNSUnitTest(SilkMockingTestCase):
     """Silk unit test case for OTNS manager.
     """
-
-    def setUp(self) -> None:
-        """Test method set up.
-        """
-        self.exception_queue = queue.Queue()
-
-        self.manager = OtnsManager("localhost", self.logger.getChild("OtnsManager"))
-        self.grpc_client = MockGrpcClient(self.exception_queue, self.logger.getChild("MockGrpcClient"))
-        self.manager.grpc_client = self.grpc_client
-
-        self.udp_server = MockUDPServer(self.exception_queue)
-
-    def tearDown(self):
-        """Test method tear down. Clean up fixtures.
-        """
-        self.manager.unsubscribe_from_all_nodes()
-        self.manager.remove_all_nodes()
-        self.udp_server.close()
-
-    def wait_for_expect(self, expect_thread: threading.Thread):
-        """Wait for expectation to be fuilfilled.
-
-        Args:
-            expect_thread (threading.Thread): thread running expectation.
-        """
-        while True:
-            try:
-                exception = self.exception_queue.get(block=False)
-            except queue.Empty:
-                pass
-            else:
-                self.fail(exception)
-
-            if expect_thread.is_alive():
-                expect_thread.join(0.1)
-            else:
-                break
-
-    def expect_grpc_commands(self, commands: List[str]) -> threading.Thread:
-        """Create a thread for an expecting gRPC commands.
-
-        Args:
-            commands (List[str]): expecting gRPC commands.
-
-        Returns:
-            threading.Thread: thread running the expectation.
-        """
-        expect_thread = threading.Thread(target=self.grpc_client.expect_commands, args=(commands,))
-        expect_thread.start()
-        return expect_thread
-
-    def expect_udp_message(self, message: str, source_id: int) -> threading.Thread:
-        """Create a thread for an expecting UDP message.
-
-        Args:
-            message (str): expecting UDP message.
-            source_id (int): expecting UDP message source node ID.
-
-        Returns:
-            threading.Thread: thread running the expectation.
-        """
-        source_port = 9000 + source_id
-        expect_thread = threading.Thread(target=self.udp_server.expect_message, args=(message, source_port))
-        expect_thread.start()
-        return expect_thread
 
     def testEventEncodeDecode(self):
         """Test encoding and decoding an OTNS status event.
@@ -177,12 +109,12 @@ class OTNSUnitTest(SilkTestCase):
             commands = [f"move {node_id} {x} {y}" for node_id, (x, y) in coords.items()]
             return self.expect_grpc_commands(commands)
 
-        def expect_node_vis_positions(devices: List[MockThreadDevBoard], coords: Dict[int, Tuple[int, int]]):
-            for device in devices:
-                if device.id in coords:
-                    otns_node = self.manager.otns_node_map[device]
-                    self.assertAlmostEqual(coords[device.id][0], otns_node.vis_x, delta=1)
-                    self.assertAlmostEqual(coords[device.id][1], otns_node.vis_y, delta=1)
+        def expect_node_vis_positions(nodes: List[MockThreadDevBoard], coords: Dict[int, Tuple[int, int]]):
+            for node in nodes:
+                if node.id in coords:
+                    otns_node = self.manager.otns_node_map[node]
+                    self.assertAlmostEqual(coords[node.id][0], otns_node.vis_x, delta=1)
+                    self.assertAlmostEqual(coords[node.id][1], otns_node.vis_y, delta=1)
 
         layout_center_x = random.randint(100, 200)
         layout_center_y = random.randint(100, 200)
@@ -246,7 +178,7 @@ class OTNSUnitTest(SilkTestCase):
 
         for _ in range(3):
             extaddr = random.getrandbits(64)
-            expect_thread = self.expect_udp_message(f"extaddr={extaddr:016x}", device.id)
+            expect_thread = self.expect_udp_messages([(f"extaddr={extaddr:016x}", device.id)])
             device.wpantund_process.emit_status(f"extaddr={extaddr:016x}")
             self.wait_for_expect(expect_thread)
             self.assertEqual(self.manager.otns_node_map[device].extaddr, extaddr)
@@ -260,7 +192,7 @@ class OTNSUnitTest(SilkTestCase):
         self.manager.subscribe_to_node(device)
 
         mode = "sn"
-        expect_thread = self.expect_udp_message(f"mode={mode}", device.id)
+        expect_thread = self.expect_udp_messages([(f"mode={mode}", device.id)])
         device.wpantund_process.emit_status(f"mode={mode}")
         self.wait_for_expect(expect_thread)
 
@@ -275,7 +207,7 @@ class OTNSUnitTest(SilkTestCase):
         device.wpantund_process.emit_status(f"role={RoleType.LEADER.value:1d}")
 
         for role in RoleType:
-            expect_thread = self.expect_udp_message(f"role={role.value:1d}", device.id)
+            expect_thread = self.expect_udp_messages([(f"role={role.value:1d}", device.id)])
             device.wpantund_process.emit_status(f"role={role.value:1d}")
             self.wait_for_expect(expect_thread)
             self.assertEqual(self.manager.otns_node_map[device].role, role)
@@ -296,7 +228,7 @@ class OTNSUnitTest(SilkTestCase):
 
         for role in RoleType:
             for device in [device_1, device_2]:
-                expect_thread = self.expect_udp_message(f"role={role.value:1d}", device.id)
+                expect_thread = self.expect_udp_messages([(f"role={role.value:1d}", device.id)])
                 device.wpantund_process.emit_status(f"role={role.value:1d}")
                 self.wait_for_expect(expect_thread)
                 self.assertEqual(self.manager.otns_node_map[device].role, role)
@@ -311,7 +243,7 @@ class OTNSUnitTest(SilkTestCase):
 
         for _ in range(3):
             rloc16 = random.getrandbits(16)
-            expect_thread = self.expect_udp_message(f"rloc16={rloc16}", device.id)
+            expect_thread = self.expect_udp_messages([(f"rloc16={rloc16}", device.id)])
             device.wpantund_process.emit_status(f"rloc16={rloc16}")
             self.wait_for_expect(expect_thread)
 
@@ -329,28 +261,28 @@ class OTNSUnitTest(SilkTestCase):
             device.wpantund_process.emit_status(f"extaddr={device.mock_extaddr:016x}")
 
         device_1_otns_node = self.manager.otns_node_map[device_1]
-        expect_thread = self.expect_udp_message(f"child_added={device_2.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"child_added={device_2.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"child_added={device_2.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.children), 1)
         self.assertIn(device_2.mock_extaddr, device_1_otns_node.children)
         self.assertNotIn(device_3.mock_extaddr, device_1_otns_node.children)
 
-        expect_thread = self.expect_udp_message(f"child_added={device_3.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"child_added={device_3.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"child_added={device_3.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.children), 2)
         self.assertIn(device_2.mock_extaddr, device_1_otns_node.children)
         self.assertIn(device_3.mock_extaddr, device_1_otns_node.children)
 
-        expect_thread = self.expect_udp_message(f"child_removed={device_3.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"child_removed={device_3.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"child_removed={device_3.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.children), 1)
         self.assertIn(device_2.mock_extaddr, device_1_otns_node.children)
         self.assertNotIn(device_3.mock_extaddr, device_1_otns_node.children)
 
-        expect_thread = self.expect_udp_message(f"child_removed={device_2.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"child_removed={device_2.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"child_removed={device_2.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.children), 0)
@@ -371,28 +303,28 @@ class OTNSUnitTest(SilkTestCase):
             device.wpantund_process.emit_status(f"extaddr={device.mock_extaddr:016x}")
 
         device_1_otns_node = self.manager.otns_node_map[device_1]
-        expect_thread = self.expect_udp_message(f"router_added={device_2.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"router_added={device_2.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"router_added={device_2.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.neighbors), 1)
         self.assertIn(device_2.mock_extaddr, device_1_otns_node.neighbors)
         self.assertNotIn(device_3.mock_extaddr, device_1_otns_node.neighbors)
 
-        expect_thread = self.expect_udp_message(f"router_added={device_3.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"router_added={device_3.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"router_added={device_3.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.neighbors), 2)
         self.assertIn(device_2.mock_extaddr, device_1_otns_node.neighbors)
         self.assertIn(device_3.mock_extaddr, device_1_otns_node.neighbors)
 
-        expect_thread = self.expect_udp_message(f"router_removed={device_3.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"router_removed={device_3.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"router_removed={device_3.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.neighbors), 1)
         self.assertIn(device_2.mock_extaddr, device_1_otns_node.neighbors)
         self.assertNotIn(device_3.mock_extaddr, device_1_otns_node.neighbors)
 
-        expect_thread = self.expect_udp_message(f"router_removed={device_2.mock_extaddr:016x}", device_1.id)
+        expect_thread = self.expect_udp_messages([(f"router_removed={device_2.mock_extaddr:016x}", device_1.id)])
         device_1.wpantund_process.emit_status(f"router_removed={device_2.mock_extaddr:016x}")
         self.wait_for_expect(expect_thread)
         self.assertEqual(len(device_1_otns_node.neighbors), 0)

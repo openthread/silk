@@ -14,7 +14,7 @@
 """This module contains mock service classes for tests.
 """
 
-from typing import List
+from typing import List, Tuple
 import logging
 import queue
 import socket
@@ -106,24 +106,29 @@ class MockUDPServer(object):
         self.sock.close()
         self._running = False
 
-    def expect_message(self, message: str, source_port: int, timeout: int = 10):
+    def expect_messages(self, messages: List[Tuple[str, int]], timeout: int = 20):
         """Listen for expected UDP message.
 
         Args:
-            message (str): expected UDP message.
-            source_port (int): expected UDP source port.
-            timeout (int, optional): wait timeout. Defaults to 10.
+            messages (List[Tuple[str, int]]): list of expected UDP messages and corresponding source port.
+            timeout (int, optional): wait timeout. Defaults to 20. With 0.01 delay the client can process at most
+                2000 messages before raising an exception.
         """
+        unseen_messages = set(messages)
         start_time = time.time()
         while self._running:
             if time.time() - start_time > timeout:
                 self.exception_queue.put(ExpectationError("Expectation not fulfilled within time limit"))
                 return
+            if not unseen_messages:
+                return
             try:
                 data, address = self.sock.recvfrom(0xfff)
-                if message == Event.from_bytes(data).message and address[1] == source_port:
-                    return
+                received_message = Event.from_bytes(data).message
+                for message, source_port in list(unseen_messages):
+                    if message == received_message and source_port == address[1]:
+                        unseen_messages.discard((message, source_port))
                 else:
-                    time.sleep(0.1)
+                    time.sleep(0.01)
             except socket.timeout:
                 pass

@@ -28,7 +28,7 @@ class OTNSIntegrationTest(SilkTestCase):
     """Silk integration test case for OTNS.
     """
 
-    def setUp(self) -> None:
+    def setUp(self):
         """Test method set up.
         """
         self.ns = OTNS(otns_args=["-raw", "-real", "-ot-cli", "otns-silk-proxy", "-listen", ":9000", "-log", "debug"])
