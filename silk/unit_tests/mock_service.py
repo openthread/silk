@@ -128,7 +128,6 @@ class MockUDPServer(object):
                 for message, source_port in list(unseen_messages):
                     if message == received_message and source_port == address[1]:
                         unseen_messages.discard((message, source_port))
-                else:
-                    time.sleep(0.01)
+                time.sleep(0.01)
             except socket.timeout:
                 pass
