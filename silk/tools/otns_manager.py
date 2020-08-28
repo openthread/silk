@@ -272,6 +272,7 @@ class OtnsNode(object):
 
     Attributes:
         node_id (int): ID of the node.
+        dut_serial (str): DUT serial of the node.
         vis_x (int): visualization x coordinate.
         vis_y (int): visualization y coordinate.
         sock (socket): UDP socket to send message from.
@@ -288,12 +289,13 @@ class OtnsNode(object):
         neighbors (List[int]): extended addresses of neighbors.
     """
 
-    def __init__(self, node_id: int, vis_x: int, vis_y: int, local_host: str, server_host: str, server_port: int,
-                 grpc_client: GRpcClient, logger: logging.Logger):
+    def __init__(self, node_id: int, dut_serial: str, vis_x: int, vis_y: int, local_host: str, server_host: str,
+                 server_port: int, grpc_client: GRpcClient, logger: logging.Logger):
         """Initialize a node.
 
         Args:
             node_id (int): ID of the node.
+            dut_serial (str): DUT serial of the node.
             vis_x (int): visualization x coordinate.
             vis_y (int): visualization y coordinate.
             local_host (str): host address of this machine.
@@ -305,6 +307,8 @@ class OtnsNode(object):
         assert node_id > 0
 
         self.node_id = node_id
+        self.dut_serial = dut_serial
+
         self.logger = logger
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -349,6 +353,13 @@ class OtnsNode(object):
         """
         event = Event.status_event(f"extaddr={self.extaddr:016x}")
         self.logger.debug(f"Node {self.node_id} sending extaddr={self.extaddr:016x}")
+        self.send_event(event.to_bytes())
+
+    def send_dut_serial_event(self):
+        """Send DUT serial event.
+        """
+        event = Event.status_event(f"dut_serial={self.dut_serial}")
+        self.logger.debug(f"Node {self.node_id} sending dut_serial={self.dut_serial}")
         self.send_event(event.to_bytes())
 
     def send_role_event(self):
@@ -463,6 +474,7 @@ class OtnsNode(object):
         self.logger.debug(f"Adding node {self.node_id} to OTNS at ({self.vis_x},{self.vis_y})")
         self.grpc_client.add_node(self.vis_x, self.vis_y, self.node_id)
         self.send_extaddr_event()
+        self.send_dut_serial_event()
         self.node_on_otns = True
 
     def delete_otns_node(self):
@@ -829,7 +841,9 @@ class OtnsManager(object):
             self.auto_layout = True
 
         node_id = device.get_otns_vis_node_id()
+        dut_serial = device.get_dut_serial()
         otns_node = OtnsNode(node_id=node_id,
+                             dut_serial=dut_serial,
                              vis_x=vis_x,
                              vis_y=vis_y,
                              local_host=self.local_host,
