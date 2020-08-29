@@ -229,13 +229,11 @@ class Event:
     def to_bytes(self) -> bytes:
         """Convert the event to bytes, to be sent as a UDP message.
 
-        The message format follows the OTNS event UDP format.
-        <: little-endian, standard size, no alignment.
-        Q: unsigned long long: 8 bytes. Corresponding to event's
-        delay field in uint64_t.
-        B: unsigned char: 1 byte. Corresponding to event's event field in uint8_t.
-        H: unsigned short: 2 bytes. Corresponding to event's data
-        length field in uint16_t.
+        The message format follows the OTNS event UDP format:
+            <: little-endian, standard size, no alignment.
+            Q: unsigned long long: 8 bytes. Corresponding to event's delay field in uint64_t.
+            B: unsigned char: 1 byte. Corresponding to event's event field in uint8_t.
+            H: unsigned short: 2 bytes. Corresponding to event's data length field in uint16_t.
         The data follows the header as defined above.
 
         Returns:
@@ -730,7 +728,7 @@ class OtnsNodeSummaryCollection(object):
         for summary in self.collection:
             node_events = summary.to_log_list(extaddr_map)
             events.extend([(time, summary.node_id, string) for time, string in node_events])
-        events.sort(key=lambda event: event[0])
+        events.sort(key=lambda an_event: an_event[0])
 
         lines = ["OTNS Summary"]
 
@@ -752,7 +750,7 @@ class OtnsNodeSummaryCollection(object):
         for summary in self.collection:
             node_events = summary.to_log_list(extaddr_map)
             events.extend([(time, summary.node_id, string) for time, string in node_events])
-        events.sort(key=lambda event: event[0])
+        events.sort(key=lambda an_event: an_event[0])
 
         node_ids = sorted(list(extaddr_map.values()))
         columns = [f"node{i:d}" for i in node_ids]

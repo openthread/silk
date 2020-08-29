@@ -26,15 +26,14 @@ class JsonFile(object):
     @staticmethod
     def load_json_file(file_path):
         try:
-            with open(file_path, "r") as jfile:
+            with open(file_path, "r") as json_file:
 
-                json_data = jfile.read()
+                json_data = json_file.read()
                 json_line = json.loads(json_data)
 
                 return json_line
         except Exception:
-            emsg = "Failed to load JSON file: %s" % (file_path)
-            print(emsg)
+            print("Failed to load JSON file: %s" % file_path)
 
     @staticmethod
     def save_json_file(file_path, json_line):
@@ -43,11 +42,11 @@ class JsonFile(object):
         try:
             json_data = json.dumps(json_line, sort_keys=True, indent=2)
         except Exception:
-            print("Failed to save json file: %s" % (file_path))
+            print("Failed to save json file: %s" % file_path)
             return
 
-        with open(file_path, "w") as jfile:
-            jfile.write(json_data)
+        with open(file_path, "w") as json_file:
+            json_file.write(json_data)
 
     @staticmethod
     def get_conf_file(conf_file_name):

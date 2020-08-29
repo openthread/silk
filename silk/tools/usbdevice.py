@@ -55,7 +55,7 @@ def device_get_serial_from_devname(device):
 
 def device_get_serial(device):
     """Gets the serial number for a particular device.
-  """
+    """
     serial = device[CONFIG_SERIAL_NUMBER]
     if len(serial) == 0:
         serial = device_get_serial_from_devname(device)

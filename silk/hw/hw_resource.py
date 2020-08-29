@@ -166,13 +166,13 @@ class HwResource(object):
         return None
 
     def find_hw_module_by_name(self, name):
-        retval = None
+        found_hw_module = None
 
-        for m in self._hw_modules:
-            if m.name() == name:
-                retval = m
+        for module in self._hw_modules:
+            if module.name() == name:
+                found_hw_module = module
 
-        return retval
+        return found_hw_module
 
     def get_hw_module_names(self):
         """Get the list of names of hardware modules.

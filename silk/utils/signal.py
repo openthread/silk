@@ -27,7 +27,7 @@ class SignalLoggerAdapter(logging.LoggerAdapter):
 
     def process(self, msg, kwargs):
         """
-        This will print out not only the standard Lattice logline, but also the subscriber that reported
+        This will print out not only the standard Lattice log line, but also the subscriber that reported
         the log event and the source of the line (if available).
         """
         return "%s%s: %s" % (self.extra["source"], self.extra["classname"], msg), kwargs

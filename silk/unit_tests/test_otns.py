@@ -108,9 +108,9 @@ class OTNSIntegrationTest(SilkTestCase):
             Args:
                 devices (List[MockThreadDevBoard]): list of devices to check.
             """
-            for device in devices:
-                self.assertEqual(nodes_info[device.id]["x"], device.x)
-                self.assertEqual(nodes_info[device.id]["y"], device.y)
+            for a_device in devices:
+                self.assertEqual(nodes_info[a_device.id]["x"], a_device.x)
+                self.assertEqual(nodes_info[a_device.id]["y"], a_device.y)
 
         ns = self.ns
         manager = self.manager

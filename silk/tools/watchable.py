@@ -164,14 +164,12 @@ class WatchableWithHistory(object):
 
     # Get the latest value
     def get(self):
-        retval = None
-
         if self.__history:
-            retval = self.__value.get()
+            value = self.__value.get()
         else:
-            retval = self.__initial_value
+            value = self.__initial_value
 
-        return retval
+        return value
 
     # Get the history
     def get_history(self):
