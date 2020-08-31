@@ -1,4 +1,3 @@
-from __future__ import print_function
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +29,8 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
     """
 
     def __init__(self, command):
-        super(SubprocessRunner, self).__init__()
+        super().__init__()
+        threading.Thread.__init__(self)
 
         self.command = command
 
@@ -38,17 +38,17 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
         self.daemon = True
 
     def start(self):
-        """Start the subprocessrunner, this does not start process.
+        """Start the subprocess runner, this does not start process.
         """
         try:
-            super(SubprocessRunner, self).start()
+            super().start()
             self.running = True
         except Exception as e:
             traceback.print_exc()
             print("Error in SubprocessRunner start:", str(e))
 
     def stop(self, timeout=15):
-        """End subprocessrunner.
+        """End subprocess runner.
 
         :param int timeout:
             the seconds to wait before force killing the process

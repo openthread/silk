@@ -26,7 +26,7 @@ from silk.node.base_node import BaseNode
 
 
 class MessageSystemCallItem(message_item.MessageItemBase):
-    """Class to encapusulate a system call into the message queue.
+    """Class to encapsulate a system call into the message queue.
     """
 
     def __init__(self, action, cmd, expect, timeout, field, refresh=0):

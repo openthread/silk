@@ -32,7 +32,6 @@ class ChildAddressEntry(object):
     """
 
     def __init__(self, text):
-
         # Example of expected text:
         #
         # `\t"9A456FEEC738F641, RLOC16:1402, IPv6Addrs:[fd74:5d77:b280:0:c7a2:c449:b097:147f]"`
@@ -71,7 +70,6 @@ class ChildEntry(object):
     """
 
     def __init__(self, text):
-
         # Example of expected text:
         #
         # `\t"E24C5F67F4B8CBB9, RLOC16:d402, NetDataVer:175, LQIn:3, AveRssi:-20, LastRssi:-20, Timeout:120, Age:0, `
@@ -146,7 +144,6 @@ class NeighborEntry(object):
     """
 
     def __init__(self, text):
-
         # Example of expected text:
         #
         # `\t"5AC95ED4646D6565, RLOC16:9403, LQIn:3, AveRssi:-20, LastRssi:-20, Age:0, LinkFC:8, MleFC:0, `
@@ -203,7 +200,6 @@ class RouterTableEntry(object):
     """
 
     def __init__(self, text):
-
         # Example of expected text:
         #
         # `\t"8A970B3251810826, RLOC16:4000, RouterId:16, NextHop:43, PathCost:1, LQIn:3, LQOut:3, Age:3, LinkEst:yes"`
@@ -264,7 +260,6 @@ class AddressCacheEntry(object):
     """
 
     def __init__(self, text):
-
         # Example of expected text:
         #
         # `\t"fd00:1234::d427:a1d9:6204:dbae -> 0x9c00, age:0"`
@@ -394,8 +389,8 @@ def parse_scan_result(scan_result):
     Exclude the last item `"` after split(`\n`)
     """
     print(scan_result)
-    return [ScanResult(item) for item in scan_result.strip().split("\n")[2:]
-           ]  # skip first two lines which are table headers
+    # skip first two lines which are table headers
+    return [ScanResult(item) for item in scan_result.strip().split("\n")[2:]]
 
 
 def is_in_scan_result(node, scan_results):
@@ -423,10 +418,10 @@ def is_in_scan_result(node, scan_results):
                 ])
 
             if all([
-                    item.network_name == name,
-                    item.panid.strip() == panid.strip(),
-                    item.xpanid.strip() == xpanid.strip(),
-                    int(item.channel, 16) == int(channel, 16), item.ext_address == ext_address,
+                item.network_name == name,
+                item.panid.strip() == panid.strip(),
+                item.xpanid.strip() == xpanid.strip(),
+                int(item.channel, 16) == int(channel, 16), item.ext_address == ext_address,
                 (item.type == ScanResult.TYPE_DISCOVERY_SCAN) or (item.joinable == joinable)
             ]):
                 return True
@@ -459,7 +454,6 @@ class OnMeshPrefix(object):
     """
 
     def __init__(self, text):
-
         # Example of expected text:
         #
         # `\t"fd00:abba:cafe::       prefix_len:64   origin:user     stable:yes flags:0x31`
@@ -530,5 +524,5 @@ class OnMeshPrefix(object):
 
 
 def parse_on_mesh_prefix_result(on_mesh_prefix_list):
-    """ Parses on-mesh prefix list string and returns an array of `OnMeshPrefix` objects"""
+    """Parses on-mesh prefix list string and returns an array of `OnMeshPrefix` objects"""
     return [OnMeshPrefix(item) for item in on_mesh_prefix_list.split("\n")[1:-1]]

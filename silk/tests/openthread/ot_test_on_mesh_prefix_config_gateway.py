@@ -118,7 +118,7 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, "Router cannot get into router role after 180 seconds timeout")
+            self.fail("Router cannot get into router role after 180 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_Verify_Prefix(self):

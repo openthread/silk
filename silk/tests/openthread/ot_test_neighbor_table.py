@@ -40,16 +40,16 @@ class TestNeighborTable(testcase.TestCase):
     @classmethod
     def hardware_select(cls):
         cls.routers = []
-        for num in range(NUM_ROUTERS):
+        for _ in range(NUM_ROUTERS):
             cls.routers.append(ffdb.ThreadDevBoard())
 
         cls.children = []
-        for num in range(NUM_CHILDREN):
+        for _ in range(NUM_CHILDREN):
             cls.children.append(ffdb.ThreadDevBoard())
 
         # end-device per router used for quick promotion to router role
         cls.ed = [0]
-        for num in range(1, NUM_ROUTERS):
+        for _ in range(1, NUM_ROUTERS):
             cls.ed.append(ffdb.ThreadDevBoard())
 
     @classmethod
@@ -70,7 +70,7 @@ class TestNeighborTable(testcase.TestCase):
         total_networks = NUM_ROUTERS
         cls.network_data_list = []
 
-        for i in range(total_networks):
+        for _ in range(total_networks):
             cls.network_data_list.append(
                 WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
                                 psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),

@@ -1,5 +1,3 @@
-from __future__ import print_function
-from __future__ import absolute_import
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,11 +12,12 @@ from __future__ import absolute_import
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-from . import wpan_table_parser
-import time
 import inspect
 import logging
+import time
+
+from silk.config import wpan_constants as wpan
+from . import wpan_table_parser
 
 logger = logging.getLogger(__name__)
 
@@ -178,7 +177,7 @@ def verify_prefix_with_rloc16(node_list,
         prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
 
         for p in prefixes:
-            if (p.prefix == prefix and p.origin == "ncp" and int(p.rloc16(), 0) == rloc16):
+            if p.prefix == prefix and p.origin == "ncp" and int(p.rloc16(), 0) == rloc16:
                 verify(int(p.prefix_len) == prefix_len)
                 verify(p.is_stable() == stable)
                 verify(p.is_on_mesh() == on_mesh)
@@ -202,7 +201,7 @@ def verify_no_prefix_with_rloc16(node_list, prefix, rloc16):
         prefixes = wpan_table_parser.parse_on_mesh_prefix_result(node.get(wpan.WPAN_THREAD_ON_MESH_PREFIXES))
 
         for p in prefixes:
-            if (p.prefix == prefix and p.origin == "ncp" and int(p.rloc16(), 0) == rloc16):
+            if p.prefix == prefix and p.origin == "ncp" and int(p.rloc16(), 0) == rloc16:
                 raise VerifyError("Did find prefix {} with rloc16 {} on node {}".format(
                     prefix, hex(rloc16), node.name))
 

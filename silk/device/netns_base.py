@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Base class for network namespace controller.
+"""
 
 import logging
 import os
@@ -31,16 +33,13 @@ def create_link_pair(interface_1, interface_2):
 
 class NetnsController(SystemCallManager):
     """
-    This class contains methods for creating, destroying, and manipulating
-    network namespaces. It also provides methods for making systems calls in
-    network namespaces.
+    This class contains methods for creating, destroying, and manipulating network namespaces. It also provides
+    methods for making systems calls in network namespaces.
 
-    Network namespace manipulation requires sudo.  All inheriting classes must
-    be run with sudo.
+    Network namespace manipulation requires sudo. All inheriting classes must be run with sudo.
 
     Classes that inherit from NetnsController
-    1) Must provide a self.device_path attribute. (This is used to roll a
-        unique network namespace name.)
+    1) Must provide a self.device_path attribute. (This is used to roll a unique network namespace name.)
     2) Inheriting class must define the following logging methods
         a) log_debug(log_line)
         b) log_info(log_line)
@@ -81,8 +80,7 @@ class NetnsController(SystemCallManager):
         return self.netns
 
     def delete_netns(self):
-        """
-        Delete netns containing this device.
+        """Delete netns containing this device.
         """
         self.log_info("Deleting network namespace for %s" % self.device_path)
 
@@ -90,8 +88,7 @@ class NetnsController(SystemCallManager):
         self._make_system_call("netns-del", command, 2)
 
     def netns_pids(self):
-        """
-        List all PIDs running in this device's netns
+        """List all PIDs running in this device's netns.
         """
         self.log_info("Getting PIDs for network namespace for %s" % self.device_path)
 
@@ -100,8 +97,7 @@ class NetnsController(SystemCallManager):
         return output.split("\n")
 
     def netns_killall(self):
-        """
-        Kill all PIDs in this netns.
+        """Kill all PIDs in this netns.
         """
         self.log_info("Killing all processes in %s" % self.device_path)
         for pid in self.netns_pids():
@@ -118,9 +114,7 @@ class NetnsController(SystemCallManager):
         self.delete_netns()
 
     def construct_netns_command(self, user_command):
-        """
-        Format a command so that it is called in this device's
-        network namespace.
+        """Format a command so that it is called in this device's network namespace.
         """
         command = "sudo ip netns exec %s " % self.netns
         command += user_command
@@ -191,9 +185,7 @@ class NetnsController(SystemCallManager):
 
 
 class StandaloneNetworkNamespace(NetnsController, BaseNode):
-    """
-    Class to control a standalone network namespace that is not associated
-    with a development board.
+    """Class to control a standalone network namespace that is not associated with a development board.
     """
 
     def __init__(self, netns_name):
@@ -204,10 +196,9 @@ class StandaloneNetworkNamespace(NetnsController, BaseNode):
     def tear_down(self):
         self.cleanup_netns()
 
-
-#################################
-#   Logging functions
-#################################
+    #################################
+    #   Logging functions
+    #################################
 
     def set_logger(self, parent_logger):
         self.logger = parent_logger.getChild(self.netns)

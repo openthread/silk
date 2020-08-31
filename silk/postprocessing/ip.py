@@ -80,7 +80,6 @@ def ipv6_assemble(prefix, subnet, iid):
     mac_addr must be a string containing a 64-bit hex value
 
     The 57th LSB (the UL bit) will be set in the address
-
     """
 
     prefix = prefix.replace(":", "")
@@ -93,7 +92,7 @@ def ipv6_assemble(prefix, subnet, iid):
         raise ValueError("subnet must be length 4, %u given" % len(subnet))
 
     if len(iid) != 16:
-        #QK TODO
+        # QK TODO
         print("iid={}".format(iid))
         raise ValueError("iid must be length 16, %u given" % len(iid))
 

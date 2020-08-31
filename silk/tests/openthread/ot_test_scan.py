@@ -67,7 +67,7 @@ class TestScan(testcase.TestCase):
         total_networks = len(cls.device_list)
 
         cls.network_data_list = []
-        for i in range(total_networks):
+        for _ in range(total_networks):
             cls.network_data_list.append(
                 WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
                                 psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),

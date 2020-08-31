@@ -63,6 +63,8 @@ class OTNSUnitTest(SilkMockingTestCase):
         self.wait_for_expect(expect_thread)
 
     def testSetOTNSProperties(self):
+        """Test setting OTNS properties.
+        """
         # speed
         speed = random.randint(2, 20)
         expect_thread = self.expect_grpc_commands([f"speed {speed}"])

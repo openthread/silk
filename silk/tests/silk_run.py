@@ -59,7 +59,7 @@ class SilkTestResult(unittest.TestResult):
         unittest.TestResult.__init__(self)
         self.successes = []
         self.testlist = []
-        self.startTime = time.time()
+        self.start_time = time.time()
         self.current_testclass = None
         self.verbosity = verbosity
 
@@ -76,56 +76,56 @@ class SilkTestResult(unittest.TestResult):
         unittest.TestResult.addSuccess(self, test)
         self.successes.append(test)
         if self.verbosity == 0:
-            self.printTestResultLine(test, self.result_pass)
+            self.print_test_result_line(test, self.result_pass)
 
     def addFailure(self, test, err):
         unittest.TestResult.addFailure(self, test, err)
         if self.verbosity == 0:
-            self.printTestResultLine(test, self.result_fail)
+            self.print_test_result_line(test, self.result_fail)
 
     def stopTest(self, test):
         unittest.TestResult.stopTest(self, test)
         self.testlist.append(test)
 
-    def printTestSummary(self):
-        self.printTestErrors()
-        self.printTestResults()
-        self.printBanner("SUMMARY")
+    def print_test_summary(self):
+        self.print_test_errors()
+        self.print_test_results()
+        self.print_banner("SUMMARY")
         end_time = time.time()
-        self.printStatLine("Start time:", time.ctime(self.startTime))
-        self.printStatLine("End time:", time.ctime(end_time))
-        self.printStatLine("Execution time:", time.strftime("%H:%M:%S", time.gmtime(time.time() - self.startTime)))
-        self.printStatLine("Tests skipped:", len(self.skipped))
-        self.printStatLine("Tests errors:", len(self.errors))
-        self.printStatLine("Tests run:", self.testsRun)
-        self.printStatLine("Tests passed:", len(self.successes))
-        self.printStatLine("Tests failed:", len(self.failures))
+        self.print_stat_line("Start time:", time.ctime(self.start_time))
+        self.print_stat_line("End time:", time.ctime(end_time))
+        self.print_stat_line("Execution time:", time.strftime("%H:%M:%S", time.gmtime(time.time() - self.start_time)))
+        self.print_stat_line("Tests skipped:", len(self.skipped))
+        self.print_stat_line("Tests errors:", len(self.errors))
+        self.print_stat_line("Tests run:", self.testsRun)
+        self.print_stat_line("Tests passed:", len(self.successes))
+        self.print_stat_line("Tests failed:", len(self.failures))
 
-    def printStatLine(self, name, result):
+    def print_stat_line(self, name, result):
         print("{0}{1}".format(name.ljust(16), result))
         logging.info("{0}{1}".format(name.ljust(16), result))
 
-    def printTestResults(self):
+    def print_test_results(self):
         if self.verbosity > 0:
-            self.printBanner("TEST RESULTS RECAP")
+            self.print_banner("TEST RESULTS RECAP")
             self.current_testclass = None
             for t in self.testlist:
-                self.printTestFailure(t)
-                self.printTestSuccess(t)
+                self.print_test_failure(t)
+                self.print_test_success(t)
             print("=" * self.line_length)
 
-    def printTestFailure(self, t):
+    def print_test_failure(self, t):
         for f in self.failures:
             if f[0] == t:
-                self.printTestResultLine(t, self.result_fail)
+                self.print_test_result_line(t, self.result_fail)
 
-    def printTestSuccess(self, t):
+    def print_test_success(self, t):
         if t in self.successes:
-            self.printTestResultLine(t, self.result_pass)
+            self.print_test_result_line(t, self.result_pass)
 
-    def printTestResultLine(self, test, result):
+    def print_test_result_line(self, test, result):
         if self.testsRun == 1:
-            self.printBanner("TEST RESULTS")
+            self.print_banner("TEST RESULTS")
         if test.__class__ != self.current_testclass:
             self.current_testclass = test.__class__
             tc = test.__class__
@@ -135,13 +135,13 @@ class SilkTestResult(unittest.TestResult):
         print("    {0}{1}".format(test._testMethodName.ljust(self.testname_spacing, "."), result))
         logging.info("    {0}{1}".format(test._testMethodName.ljust(self.testname_spacing, "."), result))
 
-    def printTestErrors(self):
-        self.printBanner("HARDWARE TEST SET-UP ERRORS")
+    def print_test_errors(self):
+        self.print_banner("HARDWARE TEST SET-UP ERRORS")
         for e in self.errors:
             print(str(e[0]))
             print(str(e[1]))
 
-    def printBanner(self, title):
+    def print_banner(self, title):
         print("\n")
         print("=" * self.line_length)
         logging.info("=" * self.line_length)
@@ -156,7 +156,7 @@ class SilkRunner(object):
     """
 
     def __init__(self, argv=None):
-        args = self.parseArgs(argv)
+        args = SilkRunner.parse_args(argv)
         self.verbosity = args.verbosity
         self.pattern = args.pattern
         self.results_dir = args.results_dir
@@ -165,14 +165,15 @@ class SilkRunner(object):
             silk.tests.testcase.set_output_directory(args.results_dir)
         if args.otns_server is not None:
             print("Setting OTNS server host to {0}".format(args.otns_server))
-            silk.tests.testcase.setOtnsHost(args.otns_server)
+            silk.tests.testcase.set_otns_host(args.otns_server)
         silk.tests.testcase.set_stream_verbosity(self.verbosity)
         hw_resource.global_instance(args.hw_conf_file)
 
         self.discover()
         self.run()
 
-    def parseArgs(self, argv):
+    @staticmethod
+    def parse_args(argv):
         parser = argparse.ArgumentParser(description="Run a suite of Silk Tests")
         parser.add_argument("-d",
                             "--results_dir",
@@ -207,7 +208,7 @@ class SilkRunner(object):
         print("Running tests...")
         tr = SilkTestResult(self.verbosity, self.results_dir)
         self.test_suite.run(tr)
-        tr.printTestSummary()
+        tr.print_test_summary()
 
 
 if __name__ == "__main__":

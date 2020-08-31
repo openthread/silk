@@ -54,8 +54,8 @@ def device_get_serial_from_devname(device):
 
 
 def device_get_serial(device):
-    """Gets the serial number for a particular devcie.
-  """
+    """Gets the serial number for a particular device.
+    """
     serial = device[CONFIG_SERIAL_NUMBER]
     if len(serial) == 0:
         serial = device_get_serial_from_devname(device)
@@ -65,14 +65,14 @@ def device_get_serial(device):
 
 def device_get_interface_number(device):
     """Gets the interface number for a specified device.
-  """
+    """
 
     return int(device[CONFIG_INTERFACE_NUMBER])
 
 
 def device_get_devname(device):
     """Gets the devname of the specified device.
-  """
+    """
 
     retval = None
 
@@ -81,9 +81,8 @@ def device_get_devname(device):
     if len(devname) != 0:
         retval = devname
 
-    # The device should mount as /dev/tty.usbserial-<serial#>
-    # followed by a letter.  The letter starts at A and
-    # incrememts on the interface_number.
+    # The device should mount as /dev/tty.usbserial-<serial#> followed by a letter. The letter starts at
+    # A and increments on the interface_number.
     elif sys.platform == "darwin":
         retval = "/dev/tty.usbserial-%s" % device_get_serial(device)
         retval += chr(ord("A") + int(device_get_interface_number(device)))
@@ -96,16 +95,12 @@ def device_find_from_serial(device_type, serial, interface_number):
 
     devices = usbinfo.usbinfo()
     for device in devices:
-        # Match the device serial number and interface number
-        # from the config file.  This is wrapped in a try statement
-        # because the interface number is sometimes returned as an
-        # empty string.
+        # Match the device serial number and interface number from the config file.
+        # This is wrapped in a try statement because the interface number is sometimes returned as an empty string.
         device_serial = device_get_serial(device)
-        # print device_serial, serial
         if device_serial == serial:
             try:
                 device_interface_number = device_get_interface_number(device)
-                # print device_interface_number, interface_number
                 if device_interface_number != interface_number:
                     continue
             except Exception:

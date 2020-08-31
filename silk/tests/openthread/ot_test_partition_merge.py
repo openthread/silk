@@ -156,9 +156,8 @@ class TestPartitionMerge(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test02_unwhitelist_r1_r2(self):
+        """un_whitelist r1 and r2, verify r2 become leader.
         """
-    un_whitelist r1 and r2, verify r2 become leader
-    """
         self.r1.un_whitelist_node(self.r2)
         self.r2.un_whitelist_node(self.r1)
 
@@ -233,13 +232,13 @@ class TestPartitionMerge(testcase.TestCase):
         self.assertTrue(roles_result, "r1, r2 role is not right, r1 is {}, r2 is {}".format(r1_role, r2_role))
 
         # verify their children stayed with their parents
-        childTable = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-        childTable = wpan_table_parser.parse_child_table_result(childTable)
-        verify(len(childTable) == NUM_CHILDREN)
+        child_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_result(child_table)
+        verify(len(child_table) == NUM_CHILDREN)
 
-        childTable = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-        childTable = wpan_table_parser.parse_child_table_result(childTable)
-        verify(len(childTable) == NUM_CHILDREN)
+        child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_result(child_table)
+        verify(len(child_table) == NUM_CHILDREN)
 
 
 if __name__ == "__main__":

@@ -29,14 +29,12 @@ class Process(object):
         try:
             self.process = subprocess.Popen("exec " + self.cmd, bufsize=0, shell=True, stdout=subprocess.PIPE)
             return self.process
-        except Exception as e:
+        except Exception:
             return None
 
     def process_cmd_asyc_end(self, key_word):
         self.stop_thread.set()
-        kill_cmd = "ps -ef | grep " + "'" + key_word + "'"  \
-            + " | grep -v grep | awk '{print $2}'"          \
-            + " | xargs kill"
+        kill_cmd = "ps -ef | grep '" + key_word + "' | grep -v grep | awk '{print $2}' | xargs kill"
         print(kill_cmd)
         os.popen(kill_cmd)
 

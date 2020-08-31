@@ -123,20 +123,20 @@ class TestInformPreviousParent(testcase.TestCase):
                 break
             time.sleep(10)
         else:
-            self.assertFalse(True, "Router cannot get into router role after 100 seconds timeout")
+            self.fail("Router cannot get into router role after 100 seconds timeout")
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):
-        childTable = self.parent2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-        childTable = wpan_table_parser.parse_child_table_result(childTable)
+        child_table = self.parent2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_result(child_table)
 
-        print(childTable)
+        print(child_table)
 
-        self.assertEqual(len(childTable), 1)
+        self.assertEqual(len(child_table), 1)
 
-        childTable = self.parent1.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-        childTable = wpan_table_parser.parse_child_table_result(childTable)
-        self.assertEqual(len(childTable), 0)
+        child_table = self.parent1.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_result(child_table)
+        self.assertEqual(len(child_table), 0)
 
     @testcase.test_method_decorator
     def test03_Change_Parent(self):

@@ -32,7 +32,7 @@ def not_implemented(f):
 class BaseNode(object):
     """Base node superclass.
     """
-    _maxTimeout = 60 * 3
+    _max_timeout = 60 * 3
 
     def __init__(self, name="Node"):
         self._connected = False
@@ -98,7 +98,7 @@ class BaseNode(object):
         occasions:
         1: Initially at the start of the daemon (to set event)
         2: After a message is been processed (set if queue is empty)
-        3: When a message has been queued (to clear event) 
+        3: When a message has been queued (to clear event)
         """
 
         self.log_debug("Setting all-clear to %s" % is_all_clear)
@@ -111,7 +111,7 @@ class BaseNode(object):
     def wait_for_completion(self):
         """Block until all queued commands and responses have been received.
         """
-        self._all_clear.wait(self._maxTimeout)
+        self._all_clear.wait(self._max_timeout)
         if not self._all_clear.is_set():
             self.log_debug("Did not get an all-clear!")
         return self.get_error()

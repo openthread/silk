@@ -11,11 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Base class for sniffer node.
+"""
 
 import logging
 
 
 class SnifferNode(object):
+    """Base class for sniffer node.
+
+    Attributes:
+        logger (logging.Logger): logger of the node.
+        device (HwModule): hardware module for the node.
+    """
 
     def __init__(self):
         self.logger = None

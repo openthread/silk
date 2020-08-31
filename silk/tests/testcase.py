@@ -55,7 +55,7 @@ def set_output_directory(path):
     os.environ[OUTPUT_DIRECTORY_KEY] = path
 
 
-def setOtnsHost(host: str):
+def set_otns_host(host: str):
     """Set the OTNS server host for the test case.
 
     Args:
@@ -83,7 +83,6 @@ def get_silk_child_logger(logger, device_name):
     logger object into which they can publish their logs.
     """
     new_logger = logger.getChild(device_name)
-    formatter = logging.Formatter(LOG_LINE_FORMAT)
     new_logger.setLevel(logging.DEBUG)
 
     return new_logger
@@ -92,7 +91,7 @@ def get_silk_child_logger(logger, device_name):
 def get_framework_logger(output_dest):
     """This function is only meant to be called by the setup_class_decorator.
 
-    This creates a top-level silk logger and installs two handlers.  One
+    This creates a top-level silk logger and installs two handlers. One
     handler writes ALL logs from children out to a file specified by the
     framework.  The other handler writes INFO level and above to the terminal.
     """
@@ -485,8 +484,8 @@ class TestCase(unittest.TestCase):
                 self.logger.info("Pings received: %s" % sender.ping6_received)
 
             if sender.ping6_received < (num_expected - allowed_errors) or \
-                sender.ping6_received > (num_expected + allowed_errors) or \
-                error is not None:
+                    sender.ping6_received > (num_expected + allowed_errors) or \
+                    error is not None:
                 failed_device_count += 1
 
         self.assertEqual(failed_device_count, 0)
@@ -520,7 +519,7 @@ class TestCase(unittest.TestCase):
                 continue
 
             elif sender.ping6_received < (num_expected - allowed_errors) or \
-                sender.ping6_received > (num_expected + allowed_errors):
+                    sender.ping6_received > (num_expected + allowed_errors):
                 failed_device_count += 1
 
         self.assertEqual(failed_device_count, 0)

@@ -151,8 +151,7 @@ class HwModule(object):
         model = self.model()
 
         if model in DEV_DEVICES:
-            self._port = \
-              self.find_dev_board_from_serial(serial_to_find, interface_number, model)
+            self._port = self.find_dev_board_from_serial(serial_to_find, interface_number, model)
         else:
             raise RuntimeError("Device not supported %s" % model)
 

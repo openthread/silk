@@ -194,8 +194,8 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test02_reset_r1(self):
         """
-    reset r1, verify r2 or r3 becomes leader, the other one stays as router
-    """
+        reset r1, verify r2 or r3 becomes leader, the other one stays as router
+        """
         self.r1.reset_thread_radio()
         self.wait_for_completion(self.device_list)
 
@@ -217,10 +217,10 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test03_r1_leave_network(self):
         """
-    unwhitelist r1 out
-    r1 leave the network
-    verify either r2 or r3 is leader, the other one is router
-    """
+        unwhitelist r1 out
+        r1 leave the network
+        verify either r2 or r3 is leader, the other one is router
+        """
         self.r2.un_whitelist_node(self.r1)
         self.r3.un_whitelist_node(self.r1)
         self.r1.un_whitelist_node(self.r2)
@@ -246,7 +246,7 @@ class TestLeaderLoss(testcase.TestCase):
             if roles_result:
                 break
 
-        self.assertTrue(roles_result, ("r2, r3 nobody change to leader in 5m," f" r2 is {r2_role}, r3 is {r3_role}"))
+        self.assertTrue(roles_result, f"r2, r3 nobody change to leader in 5m, r2 is {r2_role}, r3 is {r3_role}")
 
         # verify their children stayed with their parents
         self._verify_children(self.r2, NUM_CHILDREN)
@@ -255,8 +255,8 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test04_r1_join_network(self):
         """
-    r1 re-join network as router
-    """
+        r1 re-join network as router
+        """
         self.r1.whitelist_node(self.r2)
         self.r2.whitelist_node(self.r1)
 
@@ -272,7 +272,7 @@ class TestLeaderLoss(testcase.TestCase):
 
         # verify r1 role is router
         r1_result = self._verify_device_role(self.r1, "router")
-        self.assertTrue(r1_result, ("r1 cannot get into router role" f" after {ROLE_WAIT_TIME} seconds timeout"))
+        self.assertTrue(r1_result, f"r1 cannot get into router role after {ROLE_WAIT_TIME} seconds timeout")
         time.sleep(120)
 
         # verify their children stayed with their parents

@@ -23,7 +23,7 @@ class MessageItemDelegates(object):
     # Constructor
     # @param instance Instance object for all of the callables
     # @param expect_handler An callable for handling expect calls
-    # @param send_handler A callable for hanlding for send calls
+    # @param send_handler A callable for handling for send calls
     # @param error_handler A callable for handling errors
     def __init__(self, instance, expect_handler, send_handler, error_handler):
         self.instance = instance
@@ -48,9 +48,7 @@ class MessageItemDelegates(object):
 
 
 class MessageItemBase(object):
-    """
-    Base class used to encapsulate message/work objects handled
-    by EmbeddedShell's message queue
+    """Base class used to encapsulate message/work objects handled by EmbeddedShell's message queue.
     """
 
     def __init__(self):
@@ -63,13 +61,14 @@ class MessageItemBase(object):
 
     def invoke(self, parent):
         """ Invoke the action to be taken.
-      Return true if the worker thread should exit.
-    """
+
+        Return true if the worker thread should exit.
+        """
         raise NotImplementedError()
 
 
 class MessageCallableItem(MessageItemBase):
-    """Class to encapusulate a command/expect message into the message queue.
+    """Class to encapsulate a command/expect message into the message queue.
 
     callable_ must be a method that returns true when action is complete.
     Must not return false indefinitely.
