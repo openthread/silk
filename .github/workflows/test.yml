@@ -48,9 +48,11 @@ jobs:
         run: python setup.py install
       - name: Test
         run: |
-          python -m coverage run silk/unit_tests/test_log_replay.py
-          python -m coverage run silk/unit_tests/test_otns_manager.py
-          python -m coverage run silk/unit_tests/test_utilities.py
+          python -m coverage run --parallel-mode silk/unit_tests/test_log_replay.py
+          python -m coverage run --parallel-mode silk/unit_tests/test_otns_manager.py
+          python -m coverage run --parallel-mode silk/unit_tests/test_utilities.py
+      - name: Combine coverage reports
+        run: python -m coverage combine
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
 
