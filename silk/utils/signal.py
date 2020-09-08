@@ -112,10 +112,7 @@ class SignalLogger(object):
 class Publisher(SignalLogger):
     """Base class for signaling Publisher.
 
-    The base __init__ function setups the signaling object that a Subscriber
-    can connect to.
-
-    The child class
+    The base __init__ function setups the signaling object that a Subscriber can connect to.
     """
 
     def __init__(self):
@@ -141,9 +138,8 @@ class Publisher(SignalLogger):
 
 
 class Subscriber(SignalLogger):
+    """Base class for signaling Subscriber.
     """
-  Base class for signaling Subscriber.
-  """
 
     def __init__(self, publisher=None, source_name=None):
         """Creates a new subscriber for parsing logs.
@@ -167,8 +163,8 @@ class Subscriber(SignalLogger):
 
     def subscribe(self, publisher):
         """
-    Subscribe to a given publisher.
-    """
+        Subscribe to a given publisher.
+        """
         if not isinstance(publisher, Publisher):
             raise TypeError("publisher must be a type Publisher but was %s" % type(publisher))
 
