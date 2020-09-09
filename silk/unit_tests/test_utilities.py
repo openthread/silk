@@ -24,7 +24,9 @@ from silk.utils.network import get_local_ip
 from silk.utils.process import Process
 
 
-class OTNSUnitTest(SilkTestCase):
+class SilkUnitTest(SilkTestCase):
+    """Silk unit tests for utility methods.
+    """
 
     @staticmethod
     def test_decorator():
