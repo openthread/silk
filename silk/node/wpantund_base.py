@@ -29,7 +29,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
     can be ported to control Nordic, SiLabs dev boards, and any other dev board connected to a Linux machine
     with wpantund running in network name spaces and any other device that runs wpantund.
 
-    This base class contains all the necessary hooks for calling into wpanctlto configure the NCP and query its
+    This base class contains all the necessary hooks for calling into wpanctl to configure the NCP and query its
     state information.
 
     Requirements for inheriting classes:
@@ -378,19 +378,16 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl(action, action + " " + prop_name + " " + ("-d " if binary_data else "") + "-v " + value,
                             2)  # use -v to handle values starting with `-`.
 
-
-#################################
-#   Ping functionality
-#################################
+    #################################
+    #   Ping functionality
+    #################################
 
     def ping6(self, ipv6_target, num_pings, payload_size=8, interface=None):
         """Perform ping6 to ipv6_target.
 
-        Enable ping6_sent and ping6_received functionality as in
-        silabs_topaz2_thread_node.
+        Enable ping6_sent and ping6_received functionality as in silabs_topaz2_thread_node.
 
-        Make the ping call and store the % loss.
-        Also store the number of pings sent.
+        Make the ping call and store the % loss. Also store the number of pings sent.
         """
 
         command = "ping6"
@@ -430,3 +427,23 @@ class WpantundWpanNode(wpan_node.WpanNode):
         fields = [self.ping6_round_trip_time_label]
 
         self.make_netns_call_async(command, search_string, num_pings * 2 + 1, field=fields)
+
+    #################################
+    #   UDP functionality
+    #################################
+
+    def send_udp_data(self, ipv6_target, port, message):
+        """Perform netcat command to send UDP message to ipv6_target via port.
+        """
+
+        command = f"echo -n \"{message}\" | nc -u {ipv6_target} {port}"
+
+        self.make_netns_call(command)
+
+    def receive_udp_data(self, port, message):
+        """Perform netcat command to receive expected UDP message from port.
+        """
+
+        command = f"nc -u -l {port}"
+
+        self.make_netns_call_async(command, message, timeout=10)
