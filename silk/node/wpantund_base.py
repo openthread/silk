@@ -432,7 +432,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #   UDP functionality
     #################################
 
-    def send_udp_data(self, target, port, message, source=None):
+    def send_udp_data(self, target: str, port: int, message: str, source: str = None, hop_limit: int = 64):
         """Perform netcat command to send UDP message to ipv6_target via port.
 
         Args:
@@ -440,19 +440,21 @@ class WpantundWpanNode(wpan_node.WpanNode):
             port (int): target port.
             message (str): message to send.
             source (str, optional): source address. Defaults to None.
+            hop_limit (int, optional): packet hop limit. Defaults to 64.
         """
         source_clause = f"-s {source}" if source else ""
-        command = f"nc -6u {source_clause} {target} {port} <<< \"{message}\""
+        command = f"nc -6u -M {hop_limit} {source_clause} {target} {port} <<< \"{message}\""
 
         self.make_netns_call(command)
 
-    def receive_udp_data(self, port, message):
+    def receive_udp_data(self, port: int, message: str, timeout: int = 10):
         """Perform netcat command to receive expected UDP message from port.
 
         Args:
             port (int): target listening port.
             message (str): message to expect.
+            timeout (int, optional): timeout for waiting for the async call output. Defaults to 10.
         """
         command = f"nc -6lu {port}"
 
-        self.make_netns_call_async(command, message, timeout=10)
+        self.make_netns_call_async(command, message, timeout=timeout)
