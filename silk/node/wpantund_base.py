@@ -457,4 +457,4 @@ class WpantundWpanNode(wpan_node.WpanNode):
         """
         command = f"nc -6lu {port}"
 
-        self.make_netns_call_async(command, message, timeout=timeout)
+        self.make_netns_call_async(command, message, timeout=timeout, exact_match=True)
