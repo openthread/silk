@@ -183,9 +183,9 @@ class SystemCallManager(object):
             while True:
                 try:
                     new_char = proc.stdout.read(1)
-                    this_stdout += new_char.decode("utf-8")
                     if not new_char:
                         break
+                    this_stdout += new_char.decode("utf-8")
                 except Exception as err:
                     print("Exception: {}".format(err))
                     break
