@@ -75,9 +75,9 @@ class WpantundWpanNode(wpan_node.WpanNode):
         self.store_data(None, self.xpanid_label)
         self.store_data(None, "ping_loss")
 
-#################################
-#   base_node functionality
-#################################
+    #################################
+    #   base_node functionality
+    #################################
 
     def set_up(self):
         pass
@@ -100,9 +100,9 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         return self.getprop("NCPVersion")
 
-#################################
-#   wpan_MAC Filter functionality
-#################################
+    #################################
+    #   wpan_MAC Filter functionality
+    #################################
 
     def whitelist_node(self, node):
         """Adds a given node (of type `Node`) to the whitelist of `self` and enables whitelisting on `self`.
@@ -115,9 +115,9 @@ class WpantundWpanNode(wpan_node.WpanNode):
         """
         self.remove(wpan.WPAN_MAC_WHITELIST_ENTRIES, node.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
 
-#################################
-#   wpan_node functionality
-#################################
+    #################################
+    #   wpan_node functionality
+    #################################
 
     def form(self, network, role, xpanid=None, panid=None):
         """
@@ -320,9 +320,9 @@ class WpantundWpanNode(wpan_node.WpanNode):
             "remove-route " + route_prefix + (" -l {}".format(prefix_len) if prefix_len is not None else "") +
             (" -p {}".format(priority) if priority is not None else ""))
 
-#################################
-#   Calls into wpanctl for commissioning process in commissioner-joiner model
-#################################
+    #################################
+    #   Calls into wpanctl for commissioning process in commissioner-joiner model
+    #################################
 
     def commissioner_start(self):
         self.wpanctl_async("commissioner start", "commissioner start", "Commissioner started", 20)
@@ -337,9 +337,9 @@ class WpantundWpanNode(wpan_node.WpanNode):
     def joiner_attach(self):
         return self.wpanctl("joiner-attach", "joiner --attach", 20)
 
-#################################
-#   Calls into wpanctl for querying commissioning data
-#################################
+    #################################
+    #   Calls into wpanctl for querying commissioning data
+    #################################
 
     def setprop(self, key, value, data=False):
         """
@@ -385,7 +385,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
     def ping6(self, ipv6_target, num_pings, payload_size=8, interface=None):
         """Perform ping6 to ipv6_target.
 
-        Enable ping6_sent and ping6_received functionality as in silabs_topaz2_thread_node.
+        Enable ping6_sent and ping6_received functionality.
 
         Make the ping call and store the % loss. Also store the number of pings sent.
         """
@@ -422,7 +422,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         command += " %s -c %s -s %s -W 2" % (ipv6_target, num_pings, payload_size)
 
         search_string = r"rtt min/avg/max/mdev = \d+\.\d+/(?P<%s>\d+\.\d+)/\d+\.\d+/\d+\.\d+ ms" \
-            % (self.ping6_round_trip_time_label)
+                % self.ping6_round_trip_time_label
 
         fields = [self.ping6_round_trip_time_label]
 
@@ -432,18 +432,27 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #   UDP functionality
     #################################
 
-    def send_udp_data(self, ipv6_target, port, message):
+    def send_udp_data(self, target, port, message, source=None):
         """Perform netcat command to send UDP message to ipv6_target via port.
-        """
 
-        command = f"echo -n \"{message}\" | nc -u {ipv6_target} {port}"
+        Args:
+            target (str): target address.
+            port (int): target port.
+            message (str): message to send.
+            source (str, optional): source address. Defaults to None.
+        """
+        source_clause = f"-s {source}" if source else ""
+        command = f"nc -6u {source_clause} {target} {port} <<< \"{message}\""
 
         self.make_netns_call(command)
 
     def receive_udp_data(self, port, message):
         """Perform netcat command to receive expected UDP message from port.
-        """
 
-        command = f"nc -u -l {port}"
+        Args:
+            port (int): target listening port.
+            message (str): message to expect.
+        """
+        command = f"nc -6lu {port}"
 
         self.make_netns_call_async(command, message, timeout=10)

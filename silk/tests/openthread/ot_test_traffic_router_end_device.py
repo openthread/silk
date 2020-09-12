@@ -14,12 +14,15 @@
 """Test traffic between router and end-device (link-local and mesh-local IPv6 addresses).
 """
 
+import enum
 import random
+import time
 import unittest
 
 from silk.config import wpan_constants as wpan
 from silk.node.wpan_node import WpanCredentials
 from silk.utils import process_cleanup
+from silk.unit_tests.test_utils import random_string
 import silk.hw.hw_resource as hwr
 import silk.node.fifteen_four_dev_board as ffdb
 import silk.tests.testcase as testcase
@@ -100,15 +103,28 @@ class TestTrafficRouterEndDevice(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test03_Transmit_Receive(self):
-        port = random.randint(10020, 12000)
-        message = "Hi there"
-        for dst in [self.end_device.ip6_lla, self.end_device.ip6_mla]:
-            self.end_device.receive_udp_data(port, message)
-            self.router.send_udp_data(dst, port, message)
 
-        for dst in [self.router.ip6_lla, self.router.ip6_mla]:
-            self.router.receive_udp_data(port, message)
-            self.end_device.send_udp_data(dst, port, message)
+        class AddressType(enum.Enum):
+            LLA = 0
+            MLA = 1
+
+        addresses = [
+            (self.router, self.end_device, AddressType.LLA, AddressType.LLA),
+            (self.router, self.end_device, AddressType.LLA, AddressType.MLA),
+            (self.router, self.end_device, AddressType.MLA, AddressType.MLA),
+            (self.end_device, self.router, AddressType.LLA, AddressType.LLA),
+            (self.end_device, self.router, AddressType.LLA, AddressType.MLA),
+            (self.end_device, self.router, AddressType.MLA, AddressType.MLA)
+        ]
+
+        for i, (src, dst, src_type, dst_type) in enumerate(addresses):
+            port = random.randint(10000 + i * 100, 10099 + i * 100)
+            message = random_string(10)
+            src_address = f"{src.ip6_lla}%{src.netns}" if src_type == AddressType.LLA else None
+            dst_address = dst.ip6_lla if dst_type == AddressType.LLA else dst.ip6_mla
+            dst.receive_udp_data(port, message)
+            src.send_udp_data(dst_address, port, message, src_address)
+            time.sleep(5)
 
 
 if __name__ == "__main__":
