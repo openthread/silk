@@ -117,7 +117,7 @@ class TestTrafficRouterEndDevice(testcase.TestCase):
             (self.end_device, self.router, AddressType.MLA, AddressType.MLA)
         ]
 
-        timeout = 5
+        timeout = 10
         for i, (src, dst, src_type, dst_type) in enumerate(addresses):
             port = random.randint(10000 + i * 100, 10099 + i * 100)
             message = random_string(10)
@@ -126,7 +126,8 @@ class TestTrafficRouterEndDevice(testcase.TestCase):
             dst_address = dst.ip6_lla if dst_type == AddressType.LLA else dst.ip6_mla
 
             dst.receive_udp_data(port, message, timeout)
-            src.send_udp_data(dst_address, port, message, src_address)
+            for _ in range(3):
+                src.send_udp_data(dst_address, port, message, src_address)
 
             time.sleep(timeout)
 
