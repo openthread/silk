@@ -104,16 +104,16 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #   wpan_MAC Filter functionality
     #################################
 
-    def whitelist_node(self, node):
-        """Adds a given node (of type `Node`) to the whitelist of `self` and enables whitelisting on `self`.
+    def allowlist_node(self, node):
+        """Adds a given node (of type `Node`) to the allowlist of `self` and enables allowlisting on `self`.
         """
-        self.add(wpan.WPAN_MAC_WHITELIST_ENTRIES, node.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
-        self.set(wpan.WPAN_MAC_WHITELIST_ENABLED, "1")
+        self.add(wpan.WPAN_MAC_ALLOWLIST_ENTRIES, node.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
+        self.set(wpan.WPAN_MAC_ALLOWLIST_ENABLED, "1")
 
-    def un_whitelist_node(self, node):
-        """Removes a given node (of node `Node) from the whitelist.
+    def un_allowlist_node(self, node):
+        """Removes a given node (of node `Node) from the allowlist.
         """
-        self.remove(wpan.WPAN_MAC_WHITELIST_ENTRIES, node.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
+        self.remove(wpan.WPAN_MAC_ALLOWLIST_ENTRIES, node.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
 
     #################################
     #   wpan_node functionality

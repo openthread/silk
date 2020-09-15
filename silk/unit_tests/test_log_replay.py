@@ -337,7 +337,7 @@ class OTNSLogReplayTest(SilkMockingTestCase):
 
         test_class = "TestPartitionMerge"
         test_phases = [
-            "test01_pairing", "test02_unwhitelist_r1_r2", "test03_whitelist_r1_r2",
+            "test01_pairing", "test02_unallowlist_r1_r2", "test03_allowlist_r1_r2",
             "test04_verify_role_prefix_childTable"
         ]
 
@@ -355,7 +355,7 @@ class OTNSLogReplayTest(SilkMockingTestCase):
         self.assertEqual(4, len(self.manager.otns_node_map))
         assert_network_topology_one_partition(otns_nodes)
 
-        # unwhitelist: separate partitions; routers links removed
+        # unallowlist: separate partitions; routers links removed
         expect_thread = self.expect_udp_messages([(f"router_removed={otns_nodes[2].extaddr:016x}", 3),
                                                   (f"router_removed={otns_nodes[3].extaddr:016x}", 2)])
         line_number = replayer.run(start_line=line_number, stop_regex=fr"TEAR DOWN {test_class}.{test_phases[1]}")

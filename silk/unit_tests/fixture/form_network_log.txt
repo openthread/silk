@@ -623,226 +623,226 @@ output: "Done"
 [2020-08-27 16:11:55,194] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:55,266] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:55,268] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,268] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:55,268] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:55,337] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,338] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:55,338] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:55,401] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:55,402] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:55,470] [silk.Dev-4456] [DEBUG] [stdout] [BAF637C9EC13D829]
 [2020-08-27 16:11:55,472] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,472] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v BAF637C9EC13D829
+[2020-08-27 16:11:55,472] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v BAF637C9EC13D829
 [2020-08-27 16:11:55,543] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,543] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:55,543] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:55,606] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:55,607] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:55,672] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:55,674] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,674] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:55,674] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:55,745] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,745] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:55,745] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:55,814] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:55,814] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:55,876] [silk.Dev-C179] [DEBUG] [stdout] [1A2E64246678110D]
 [2020-08-27 16:11:55,879] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,879] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 1A2E64246678110D
+[2020-08-27 16:11:55,879] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v 1A2E64246678110D
 [2020-08-27 16:11:55,947] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:55,948] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:55,948] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:56,014] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:56,015] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:56,079] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:56,082] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,083] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:56,083] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:56,152] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,152] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:56,152] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:56,218] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:56,219] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:56,283] [silk.Dev-BB23] [DEBUG] [stdout] [768F51A3586E851F]
 [2020-08-27 16:11:56,286] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,287] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 768F51A3586E851F
+[2020-08-27 16:11:56,287] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v 768F51A3586E851F
 [2020-08-27 16:11:56,353] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,354] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:56,354] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:56,420] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:56,421] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:56,485] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:56,488] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,489] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:56,489] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:56,560] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,561] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:56,561] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:56,631] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:56,632] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:56,697] [silk.Dev-1560] [DEBUG] [stdout] [B674AF96B3940984]
 [2020-08-27 16:11:56,699] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,699] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v B674AF96B3940984
+[2020-08-27 16:11:56,699] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v B674AF96B3940984
 [2020-08-27 16:11:56,769] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,770] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:56,770] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:56,839] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:56,840] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:56,905] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:56,907] [silk.Dev-6521] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,907] [silk.Dev-6521] [DEBUG] sudo ip netns exec ttyACM2 /usr/local/bin/wpanctl -I ttyACM2 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:56,907] [silk.Dev-6521] [DEBUG] sudo ip netns exec ttyACM2 /usr/local/bin/wpanctl -I ttyACM2 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:56,975] [silk.Dev-6521] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:56,976] [silk.Dev-6521] [DEBUG] sudo ip netns exec ttyACM2 /usr/local/bin/wpanctl -I ttyACM2 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:56,976] [silk.Dev-6521] [DEBUG] sudo ip netns exec ttyACM2 /usr/local/bin/wpanctl -I ttyACM2 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:57,041] [silk.Dev-6521] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:57,042] [silk.Dev-6521] [DEBUG] sudo ip netns exec ttyACM2 /usr/local/bin/wpanctl -I ttyACM2 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:57,109] [silk.Dev-6521] [DEBUG] [stdout] [DE7929170C112F77]
 [2020-08-27 16:11:57,112] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,113] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v DE7929170C112F77
+[2020-08-27 16:11:57,113] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v DE7929170C112F77
 [2020-08-27 16:11:57,188] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,189] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:57,189] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:57,256] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:57,257] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:57,318] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:57,321] [silk.Dev-4F76] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,321] [silk.Dev-4F76] [DEBUG] sudo ip netns exec ttyACM0 /usr/local/bin/wpanctl -I ttyACM0 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:57,321] [silk.Dev-4F76] [DEBUG] sudo ip netns exec ttyACM0 /usr/local/bin/wpanctl -I ttyACM0 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:57,392] [silk.Dev-4F76] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,392] [silk.Dev-4F76] [DEBUG] sudo ip netns exec ttyACM0 /usr/local/bin/wpanctl -I ttyACM0 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:57,392] [silk.Dev-4F76] [DEBUG] sudo ip netns exec ttyACM0 /usr/local/bin/wpanctl -I ttyACM0 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:57,460] [silk.Dev-4F76] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:57,460] [silk.Dev-4F76] [DEBUG] sudo ip netns exec ttyACM0 /usr/local/bin/wpanctl -I ttyACM0 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:57,523] [silk.Dev-4F76] [DEBUG] [stdout] [DE6FE569A4B49B2A]
 [2020-08-27 16:11:57,527] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,527] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v DE6FE569A4B49B2A
+[2020-08-27 16:11:57,527] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v DE6FE569A4B49B2A
 [2020-08-27 16:11:57,598] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,598] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:57,598] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:57,665] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:57,666] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:57,733] [silk.Dev-4456] [DEBUG] [stdout] [BAF637C9EC13D829]
 [2020-08-27 16:11:57,736] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,737] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v BAF637C9EC13D829
+[2020-08-27 16:11:57,737] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v BAF637C9EC13D829
 [2020-08-27 16:11:57,807] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,808] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:57,808] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:57,872] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:57,873] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:57,939] [silk.Dev-C179] [DEBUG] [stdout] [1A2E64246678110D]
 [2020-08-27 16:11:57,941] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:57,941] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 1A2E64246678110D
+[2020-08-27 16:11:57,941] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v 1A2E64246678110D
 [2020-08-27 16:11:58,013] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,013] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:58,013] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:58,083] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:58,083] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:58,148] [silk.Dev-BB23] [DEBUG] [stdout] [768F51A3586E851F]
 [2020-08-27 16:11:58,151] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,151] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 768F51A3586E851F
+[2020-08-27 16:11:58,151] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v 768F51A3586E851F
 [2020-08-27 16:11:58,223] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,224] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:58,224] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:58,292] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:58,293] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:58,359] [silk.Dev-1560] [DEBUG] [stdout] [B674AF96B3940984]
 [2020-08-27 16:11:58,361] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,362] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v B674AF96B3940984
+[2020-08-27 16:11:58,362] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v B674AF96B3940984
 [2020-08-27 16:11:58,430] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,430] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:58,430] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:58,497] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:58,498] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:58,561] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:58,564] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,565] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:58,565] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:58,645] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,645] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:58,645] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:58,713] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:58,714] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:58,782] [silk.Dev-C179] [DEBUG] [stdout] [1A2E64246678110D]
 [2020-08-27 16:11:58,783] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,784] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 1A2E64246678110D
+[2020-08-27 16:11:58,784] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v 1A2E64246678110D
 [2020-08-27 16:11:58,856] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,857] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:58,857] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:58,924] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:58,925] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:58,990] [silk.Dev-BB23] [DEBUG] [stdout] [768F51A3586E851F]
 [2020-08-27 16:11:58,993] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:58,993] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 768F51A3586E851F
+[2020-08-27 16:11:58,993] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v 768F51A3586E851F
 [2020-08-27 16:11:59,066] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,067] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:59,067] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:59,132] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:59,132] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:59,199] [silk.Dev-1560] [DEBUG] [stdout] [B674AF96B3940984]
 [2020-08-27 16:11:59,203] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,203] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v B674AF96B3940984
+[2020-08-27 16:11:59,203] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v B674AF96B3940984
 [2020-08-27 16:11:59,274] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,275] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:59,275] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:59,341] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:59,342] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:59,406] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:11:59,409] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,410] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:11:59,410] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:11:59,476] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,477] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:59,477] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:59,542] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:59,543] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:59,612] [silk.Dev-4456] [DEBUG] [stdout] [BAF637C9EC13D829]
 [2020-08-27 16:11:59,614] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,616] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v BAF637C9EC13D829
+[2020-08-27 16:11:59,616] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Allowlist:Entries -v BAF637C9EC13D829
 [2020-08-27 16:11:59,687] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,688] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:59,688] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:59,757] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:59,757] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:11:59,826] [silk.Dev-BB23] [DEBUG] [stdout] [768F51A3586E851F]
 [2020-08-27 16:11:59,829] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,829] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v 768F51A3586E851F
+[2020-08-27 16:11:59,829] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Allowlist:Entries -v 768F51A3586E851F
 [2020-08-27 16:11:59,902] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:11:59,903] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:11:59,903] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:11:59,967] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:11:59,967] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:00,034] [silk.Dev-1560] [DEBUG] [stdout] [B674AF96B3940984]
 [2020-08-27 16:12:00,037] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,038] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v B674AF96B3940984
+[2020-08-27 16:12:00,038] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Allowlist:Entries -v B674AF96B3940984
 [2020-08-27 16:12:00,109] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,110] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:00,110] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:00,174] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:00,175] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:00,240] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:12:00,243] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,243] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:12:00,243] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:12:00,314] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,314] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:00,314] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:00,381] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:00,381] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:00,448] [silk.Dev-4456] [DEBUG] [stdout] [BAF637C9EC13D829]
 [2020-08-27 16:12:00,451] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,451] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v BAF637C9EC13D829
+[2020-08-27 16:12:00,451] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Allowlist:Entries -v BAF637C9EC13D829
 [2020-08-27 16:12:00,521] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,521] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:00,521] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:00,590] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:00,591] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:00,662] [silk.Dev-C179] [DEBUG] [stdout] [1A2E64246678110D]
 [2020-08-27 16:12:00,665] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,667] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v 1A2E64246678110D
+[2020-08-27 16:12:00,667] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Allowlist:Entries -v 1A2E64246678110D
 [2020-08-27 16:12:00,739] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,740] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:00,740] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:00,808] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:00,808] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:00,871] [silk.Dev-1560] [DEBUG] [stdout] [B674AF96B3940984]
 [2020-08-27 16:12:00,874] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,874] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v B674AF96B3940984
+[2020-08-27 16:12:00,874] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Allowlist:Entries -v B674AF96B3940984
 [2020-08-27 16:12:00,942] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:00,943] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:00,943] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:01,011] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:01,012] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:01,075] [silk.Dev-9119] [DEBUG] [stdout] [468FB837BD9DFCB5]
 [2020-08-27 16:12:01,078] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,079] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Whitelist:Entries -v 468FB837BD9DFCB5
+[2020-08-27 16:12:01,079] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Allowlist:Entries -v 468FB837BD9DFCB5
 [2020-08-27 16:12:01,145] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,145] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:01,145] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:01,215] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:01,216] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:01,287] [silk.Dev-4456] [DEBUG] [stdout] [BAF637C9EC13D829]
 [2020-08-27 16:12:01,289] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,290] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Whitelist:Entries -v BAF637C9EC13D829
+[2020-08-27 16:12:01,290] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Allowlist:Entries -v BAF637C9EC13D829
 [2020-08-27 16:12:01,358] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,359] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:01,359] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:01,423] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:01,424] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:01,490] [silk.Dev-C179] [DEBUG] [stdout] [1A2E64246678110D]
 [2020-08-27 16:12:01,492] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,493] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Whitelist:Entries -v 1A2E64246678110D
+[2020-08-27 16:12:01,493] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Allowlist:Entries -v 1A2E64246678110D
 [2020-08-27 16:12:01,562] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,563] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:01,563] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:01,630] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:12:01,631] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:12:01,702] [silk.Dev-BB23] [DEBUG] [stdout] [768F51A3586E851F]
 [2020-08-27 16:12:01,706] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,706] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Whitelist:Entries -v 768F51A3586E851F
+[2020-08-27 16:12:01,706] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 add MAC:Allowlist:Entries -v 768F51A3586E851F
 [2020-08-27 16:12:01,784] [silk.Dev-1560] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:12:01,784] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:12:01,784] [silk.Dev-1560] [DEBUG] sudo ip netns exec ttyACM4 /usr/local/bin/wpanctl -I ttyACM4 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:12:01,849] [silk.Dev-9119] [DEBUG] Stored data: fabric-id 6f731ddead
 [2020-08-27 16:12:01,850] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 setprop Network:Key --data 00112233445566778899aabbccdd353c"
 [2020-08-27 16:12:01,850] [silk.Dev-9119] [DEBUG] Setting all-clear to False

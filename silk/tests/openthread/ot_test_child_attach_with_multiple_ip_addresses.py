@@ -50,15 +50,11 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
     #              child (sleepy)
     #
     # Test covers the following situations:
-    # - Verify adding 4 slaac prefixes on leader results in each prefix adding
-    #   a slaac address on sed child too
-    # - Verify removing child from parent's white-list results in child getting
-    #   detached.
-    # - Verify after parent recovers from a reset and gets associated the child
-    #   ia also able to reattach to it and all child addresses are seen on the
-    #   parent.
-    # - Verify disabling supervision checkout on child results in quick child
-    #   re-attach after a parent reset.
+    # - Verify adding 4 slaac prefixes on leader results in each prefix adding a slaac address on sed child too.
+    # - Verify removing child from parent's allowlist results in child getting detached.
+    # - Verify after parent recovers from a reset and gets associated the child ia also able to reattach to it and all
+    #   child addresses are seen on the parent.
+    # - Verify disabling supervision checkout on child results in quick child re-attach after a parent reset.
 
     poll_interval = 400
 
@@ -114,11 +110,11 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_pairing(self):
-        self.leader.whitelist_node(self.parent)
-        self.parent.whitelist_node(self.leader)
+        self.leader.allowlist_node(self.parent)
+        self.parent.allowlist_node(self.leader)
 
-        self.parent.whitelist_node(self.child)
-        self.child.whitelist_node(self.parent)
+        self.parent.allowlist_node(self.child)
+        self.child.allowlist_node(self.parent)
 
         self.leader.form(self.network_data, "router")
         self.parent.permit_join(120)
@@ -159,11 +155,10 @@ class TestChildAttachWithMultipleIpAddresses(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test03_detach_child(self):
-        # Remove child from parent's white-list
-        self.parent.remove(wpan.WPAN_MAC_WHITELIST_ENTRIES, self.child.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
+        # Remove child from parent's allowlist
+        self.parent.remove(wpan.WPAN_MAC_ALLOWLIST_ENTRIES, self.child.get(wpan.WPAN_EXT_ADDRESS)[1:-1])
         self.wait_for_completion(self.device_list)
-        # Enable supervision check on child, this ensures that child is detached
-        # soon.
+        # Enable supervision check on child, this ensures that child is detached soon.
         self.child.set(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
 
         self.logger.info("verify child {} gets detached from parent {}".format(self.child.name, self.parent.name))

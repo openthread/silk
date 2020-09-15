@@ -344,44 +344,44 @@ output: "Done"
 [2020-08-27 16:23:30,520] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:30,580] [silk.Dev-4456] [DEBUG] [stdout] [560E4E243803BE8D]
 [2020-08-27 16:23:30,581] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:30,582] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 560E4E243803BE8D
+[2020-08-27 16:23:30,582] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v 560E4E243803BE8D
 [2020-08-27 16:23:30,625] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:30,626] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:23:30,626] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:23:30,670] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:30,670] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:30,710] [silk.Dev-9119] [DEBUG] [stdout] [3AA74E1EB731F437]
 [2020-08-27 16:23:30,713] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:30,714] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 3AA74E1EB731F437
+[2020-08-27 16:23:30,714] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v 3AA74E1EB731F437
 [2020-08-27 16:23:30,762] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:30,762] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:23:30,762] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:23:30,802] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:30,802] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:30,853] [silk.Dev-C179] [DEBUG] [stdout] [A254C60F957B2F2C]
 [2020-08-27 16:23:30,855] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:30,856] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v A254C60F957B2F2C
+[2020-08-27 16:23:30,856] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v A254C60F957B2F2C
 [2020-08-27 16:23:30,920] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:30,921] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:23:30,921] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:23:30,980] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:30,980] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:31,024] [silk.Dev-9119] [DEBUG] [stdout] [3AA74E1EB731F437]
 [2020-08-27 16:23:31,025] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:31,025] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Whitelist:Entries -v 3AA74E1EB731F437
+[2020-08-27 16:23:31,025] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 add MAC:Allowlist:Entries -v 3AA74E1EB731F437
 [2020-08-27 16:23:31,069] [silk.Dev-C179] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:31,069] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:23:31,069] [silk.Dev-C179] [DEBUG] sudo ip netns exec ttyACM3 /usr/local/bin/wpanctl -I ttyACM3 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:23:31,114] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:31,115] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:31,163] [silk.Dev-BB23] [DEBUG] [stdout] [F2A37C35C0390FFD]
 [2020-08-27 16:23:31,164] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:31,164] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v F2A37C35C0390FFD
+[2020-08-27 16:23:31,164] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v F2A37C35C0390FFD
 [2020-08-27 16:23:31,207] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:31,207] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:23:31,207] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:23:31,255] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:31,255] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:31,290] [silk.Dev-4456] [DEBUG] [stdout] [560E4E243803BE8D]
 [2020-08-27 16:23:31,291] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:31,291] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Whitelist:Entries -v 560E4E243803BE8D
+[2020-08-27 16:23:31,291] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 add MAC:Allowlist:Entries -v 560E4E243803BE8D
 [2020-08-27 16:23:31,334] [silk.Dev-BB23] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:31,334] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:23:31,334] [silk.Dev-BB23] [DEBUG] sudo ip netns exec ttyACM7 /usr/local/bin/wpanctl -I ttyACM7 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:23:31,379] [silk.Dev-9119] [DEBUG] Stored data: fabric-id 526307dead
 [2020-08-27 16:23:31,379] [silk.Dev-9119] [INFO] Enqueuing command "sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 setprop Network:Key --data 00112233445566778899aabbccddf6b5"
 [2020-08-27 16:23:31,379] [silk.Dev-9119] [DEBUG] Setting all-clear to False
@@ -1094,22 +1094,22 @@ output: "Done"
 [2020-08-27 16:23:41,644] [silk.Dev-4456] [DEBUG] [stdout] Network:NodeType = "router"
 [2020-08-27 16:23:41,645] [silk] [INFO] Node type for r2 is router currently, expect to be router
 [2020-08-27 16:23:41,645] [silk] [INFO] TEAR DOWN TestPartitionMerge.test01_pairing
-[2020-08-27 16:23:41,646] [silk] [INFO] SET UP TestPartitionMerge.test02_unwhitelist_r1_r2
-[2020-08-27 16:23:41,646] [silk] [INFO] RUNNING TEST TestPartitionMerge.test02_unwhitelist_r1_r2
-[2020-08-27 16:23:41,646] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestPartitionMerge.test02_unwhitelist_r1_r2" x 0 y 20 fs 20
-[2020-08-27 16:23:41,649] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestPartitionMerge.test02_unwhitelist_r1_r2" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:23:41,646] [silk] [INFO] SET UP TestPartitionMerge.test02_unallowlist_r1_r2
+[2020-08-27 16:23:41,646] [silk] [INFO] RUNNING TEST TestPartitionMerge.test02_unallowlist_r1_r2
+[2020-08-27 16:23:41,646] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestPartitionMerge.test02_unallowlist_r1_r2" x 0 y 20 fs 20
+[2020-08-27 16:23:41,649] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestPartitionMerge.test02_unallowlist_r1_r2" x 0 y 20 fs 20, resp: output: "Done"
 [2020-08-27 16:23:41,650] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:41,650] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:41,736] [silk.Dev-4456] [DEBUG] [stdout] [560E4E243803BE8D]
 [2020-08-27 16:23:41,739] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:41,740] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 remove MAC:Whitelist:Entries -v 560E4E243803BE8D
+[2020-08-27 16:23:41,740] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 remove MAC:Allowlist:Entries -v 560E4E243803BE8D
 [2020-08-27 16:23:41,812] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:41,812] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:23:41,864] [silk.Dev-4456.wpantund] [DEBUG] wpantund[423681]: NCP => [0000000510599][EMRG]-CORE----: [OTNS] transmit=19,d841,71,ffff
 [2020-08-27 16:23:41,879] [silk.Dev-9119] [DEBUG] [stdout] [3AA74E1EB731F437]
 [2020-08-27 16:23:41,880] [silk.Dev-9119.wpantund] [DEBUG] wpantund[423639]: NCP => [0000000510644][EMRG]-CORE----: [OTNS] transmit=19,d841,26,ffff
 [2020-08-27 16:23:41,881] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:23:41,882] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 remove MAC:Whitelist:Entries -v 3AA74E1EB731F437
+[2020-08-27 16:23:41,882] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 remove MAC:Allowlist:Entries -v 3AA74E1EB731F437
 [2020-08-27 16:23:41,938] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:23:41,939] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get Network:NodeType
 [2020-08-27 16:23:41,955] [silk.Dev-BB23.wpantund] [DEBUG] wpantund[423776]: NCP => [0000000510712][EMRG]-CORE----: [OTNS] transmit=19,dc61,135,560e4e243803be8d
@@ -1278,11 +1278,11 @@ output: "Done"
 [2020-08-27 16:26:53,232] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get Network:PartitionId
 [2020-08-27 16:26:53,256] [silk.Dev-4456] [DEBUG] [stdout] Network:PartitionId = 585998445
 [2020-08-27 16:26:53,256] [silk] [INFO] r1 partition is 68192744, r2 partition is 8599844
-[2020-08-27 16:26:53,256] [silk] [INFO] TEAR DOWN TestPartitionMerge.test02_unwhitelist_r1_r2
-[2020-08-27 16:26:53,257] [silk] [INFO] SET UP TestPartitionMerge.test03_whitelist_r1_r2
-[2020-08-27 16:26:53,257] [silk] [INFO] RUNNING TEST TestPartitionMerge.test03_whitelist_r1_r2
-[2020-08-27 16:26:53,257] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestPartitionMerge.test03_whitelist_r1_r2" x 0 y 20 fs 20
-[2020-08-27 16:26:53,261] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestPartitionMerge.test03_whitelist_r1_r2" x 0 y 20 fs 20, resp: output: "Done"
+[2020-08-27 16:26:53,256] [silk] [INFO] TEAR DOWN TestPartitionMerge.test02_unallowlist_r1_r2
+[2020-08-27 16:26:53,257] [silk] [INFO] SET UP TestPartitionMerge.test03_allowlist_r1_r2
+[2020-08-27 16:26:53,257] [silk] [INFO] RUNNING TEST TestPartitionMerge.test03_allowlist_r1_r2
+[2020-08-27 16:26:53,257] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestPartitionMerge.test03_allowlist_r1_r2" x 0 y 20 fs 20
+[2020-08-27 16:26:53,261] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: title "TestPartitionMerge.test03_allowlist_r1_r2" x 0 y 20 fs 20, resp: output: "Done"
 [2020-08-27 16:26:53,261] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:26:53,261] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 config-gateway fd00:abba:cafe::
 [2020-08-27 16:26:53,283] [silk.Dev-9119] [DEBUG] [stdout] Using prefix "fd00:abba:cafe::"
@@ -1337,16 +1337,16 @@ output: "Done"
 [2020-08-27 16:27:53,482] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:27:53,505] [silk.Dev-4456] [DEBUG] [stdout] [560E4E243803BE8D]
 [2020-08-27 16:27:53,506] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:27:53,506] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Whitelist:Entries -v 560E4E243803BE8D
+[2020-08-27 16:27:53,506] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 add MAC:Allowlist:Entries -v 560E4E243803BE8D
 [2020-08-27 16:27:53,530] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:27:53,530] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:27:53,530] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:27:53,554] [silk.Dev-9119] [DEBUG] Making system call for netns-exec
 [2020-08-27 16:27:53,555] [silk.Dev-9119] [DEBUG] sudo ip netns exec ttyACM8 /usr/local/bin/wpanctl -I ttyACM8 getprop -v NCP:ExtendedAddress
 [2020-08-27 16:27:53,577] [silk.Dev-9119] [DEBUG] [stdout] [3AA74E1EB731F437]
 [2020-08-27 16:27:53,578] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:27:53,578] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Whitelist:Entries -v 3AA74E1EB731F437
+[2020-08-27 16:27:53,578] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 add MAC:Allowlist:Entries -v 3AA74E1EB731F437
 [2020-08-27 16:27:53,601] [silk.Dev-4456] [DEBUG] Making system call for netns-exec
-[2020-08-27 16:27:53,602] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Whitelist:Enabled -v 1
+[2020-08-27 16:27:53,602] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 set MAC:Allowlist:Enabled -v 1
 [2020-08-27 16:28:15,811] [silk.Dev-4456.wpantund] [DEBUG] wpantund[423681]: NCP => [0000000784546][EMRG]-CORE----: [OTNS] transmit=19,d841,106,ffff
 [2020-08-27 16:28:26,858] [silk.Dev-9119.wpantund] [DEBUG] wpantund[423639]: NCP => [0000000795621][EMRG]-CORE----: [OTNS] transmit=19,d841,48,ffff
 [2020-08-27 16:28:26,864] [silk.Dev-4456.wpantund] [DEBUG] wpantund[423681]: NCP => [0000000795599][EMRG]-CORE----: [OTNS] transmit=19,d841,107,ffff
@@ -1430,7 +1430,7 @@ output: "Done"
 [2020-08-27 16:28:53,740] [silk.Dev-4456] [DEBUG] sudo ip netns exec ttyACM1 /usr/local/bin/wpanctl -I ttyACM1 get Network:PartitionId
 [2020-08-27 16:28:53,766] [silk.Dev-4456] [DEBUG] [stdout] Network:PartitionId = 1681927444
 [2020-08-27 16:28:53,767] [silk] [INFO] r1 partition is 68192744, r2 partition is 68192744
-[2020-08-27 16:28:53,767] [silk] [INFO] TEAR DOWN TestPartitionMerge.test03_whitelist_r1_r2
+[2020-08-27 16:28:53,767] [silk] [INFO] TEAR DOWN TestPartitionMerge.test03_allowlist_r1_r2
 [2020-08-27 16:28:53,767] [silk] [INFO] SET UP TestPartitionMerge.test04_verify_role_prefix_childTable
 [2020-08-27 16:28:53,767] [silk] [INFO] RUNNING TEST TestPartitionMerge.test04_verify_role_prefix_childTable
 [2020-08-27 16:28:53,767] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: title "TestPartitionMerge.test04_verify_role_prefix_childTable" x 0 y 20 fs 20
@@ -1834,7 +1834,7 @@ output: "Done"
 [2020-08-27 16:29:49,891] [silk] [INFO] ======================================================================
 [2020-08-27 16:29:49,891] [silk] [INFO] TestPartitionMerge
 [2020-08-27 16:29:49,892] [silk] [INFO]     test01_pairing..............................................PASS
-[2020-08-27 16:29:49,892] [silk] [INFO]     test02_unwhitelist_r1_r2....................................PASS
-[2020-08-27 16:29:49,892] [silk] [INFO]     test03_whitelist_r1_r2......................................PASS
+[2020-08-27 16:29:49,892] [silk] [INFO]     test02_unallowlist_r1_r2....................................PASS
+[2020-08-27 16:29:49,892] [silk] [INFO]     test03_allowlist_r1_r2......................................PASS
 [2020-08-27 16:29:49,892] [silk] [INFO]     test04_verify_role_prefix_childTable........................PASS
 [2020-08-27 16:29:49,893] [silk] [INFO] ======================================================================

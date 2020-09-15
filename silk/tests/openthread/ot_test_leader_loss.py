@@ -48,7 +48,7 @@ class TestLeaderLoss(testcase.TestCase):
     #
     # - r1 joined as leader, r2, r3 joined as router initially
     # - r1 reset, r1, r2 or r3 only has one leader, the rest ones stay as router
-    # - unwhite list r1, and r1 leave the network, verify r2 or r3 is leader, the other one is router
+    # - unallowlist r1, and r1 leave the network, verify r2 or r3 is leader, the other one is router
     # - join r1 to the network, verify r1 becomes router role, r2 or r3 is leader, the other one is router
     #
 
@@ -133,23 +133,23 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test01_Pairing(self):
 
-        self.r1.whitelist_node(self.r2)
-        self.r2.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r2)
+        self.r2.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.fed1)
-        self.fed1.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.fed1)
+        self.fed1.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.r3)
-        self.r3.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r3)
+        self.r3.allowlist_node(self.r1)
 
-        self.r2.whitelist_node(self.fed2)
-        self.fed2.whitelist_node(self.r2)
+        self.r2.allowlist_node(self.fed2)
+        self.fed2.allowlist_node(self.r2)
 
-        self.r2.whitelist_node(self.r3)
-        self.r3.whitelist_node(self.r2)
+        self.r2.allowlist_node(self.r3)
+        self.r3.allowlist_node(self.r2)
 
-        self.r3.whitelist_node(self.fed3)
-        self.fed3.whitelist_node(self.r3)
+        self.r3.allowlist_node(self.fed3)
+        self.fed3.allowlist_node(self.r3)
 
         self.r1.form(self.network_data, "router")
         self.r1.permit_join(3600)
@@ -217,14 +217,14 @@ class TestLeaderLoss(testcase.TestCase):
     @testcase.test_method_decorator
     def test03_r1_leave_network(self):
         """
-        unwhitelist r1 out
+        unallowlist r1 out
         r1 leave the network
         verify either r2 or r3 is leader, the other one is router
         """
-        self.r2.un_whitelist_node(self.r1)
-        self.r3.un_whitelist_node(self.r1)
-        self.r1.un_whitelist_node(self.r2)
-        self.r1.un_whitelist_node(self.r3)
+        self.r2.un_allowlist_node(self.r1)
+        self.r3.un_allowlist_node(self.r1)
+        self.r1.un_allowlist_node(self.r2)
+        self.r1.un_allowlist_node(self.r3)
 
         self.r1.leave()
         self.wait_for_completion(self.device_list)
@@ -257,14 +257,14 @@ class TestLeaderLoss(testcase.TestCase):
         """
         r1 re-join network as router
         """
-        self.r1.whitelist_node(self.r2)
-        self.r2.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r2)
+        self.r2.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.fed1)
-        self.fed1.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.fed1)
+        self.fed1.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.r3)
-        self.r3.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r3)
+        self.r3.allowlist_node(self.r1)
         self.wait_for_completion(self.device_list)
 
         self.r1.join(self.network_data, "router")

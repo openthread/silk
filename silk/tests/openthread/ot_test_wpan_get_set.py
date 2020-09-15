@@ -85,12 +85,12 @@ all_gettable_props = [
     wpan.WPAN_NCP_COUNTER_ALL_MAC_ASVALMAP,
     wpan.WPAN_NCP_RSSI,
     wpan.WPAN_NCP_STATE,
-    wpan.WPAN_MAC_WHITELIST_ENABLED,
-    wpan.WPAN_MAC_WHITELIST_ENTRIES,
-    wpan.WPAN_MAC_WHITELIST_ENTRIES_ASVALMAP,
-    wpan.WPAN_MAC_BLACKLIST_ENABLED,
-    wpan.WPAN_MAC_BLACKLIST_ENTRIES,
-    wpan.WPAN_MAC_BLACKLIST_ENTRIES_ASVALMAP,
+    wpan.WPAN_MAC_ALLOWLIST_ENABLED,
+    wpan.WPAN_MAC_ALLOWLIST_ENTRIES,
+    wpan.WPAN_MAC_ALLOWLIST_ENTRIES_ASVALMAP,
+    wpan.WPAN_MAC_DENYLIST_ENABLED,
+    wpan.WPAN_MAC_DENYLIST_ENTRIES,
+    wpan.WPAN_MAC_DENYLIST_ENTRIES_ASVALMAP,
     wpan.WPAN_JAM_DETECTION_STATUS,
     wpan.WPAN_JAM_DETECTION_ENABLE,
     wpan.WPAN_JAM_DETECTION_RSSI_THRESHOLD,
@@ -183,14 +183,14 @@ class TestWpanGetSet(testcase.TestCase):
         self.router.setprop(wpan.WPAN_KEY, self.network_data.psk, data=True)
         self.assertEqual(self.router.getprop(wpan.WPAN_KEY), f"[{self.network_data.psk.upper()}]")
 
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "1")
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "true")
+        self.router.setprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED, "1")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED), "true")
 
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "0")
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "false")
+        self.router.setprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED, "0")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED), "false")
 
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "true")
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "true")
+        self.router.setprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED, "true")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED), "true")
 
         self.router.setprop(wpan.WPAN_THREAD_ROUTER_UPGRADE_THRESHOLD, "100")
         self.assertEqual(int(self.router.getprop(wpan.WPAN_THREAD_ROUTER_UPGRADE_THRESHOLD), 0), 100)
