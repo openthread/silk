@@ -29,7 +29,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
     """Class to encapsulate a system call into the message queue.
     """
 
-    def __init__(self, action, cmd, expect, timeout, field, refresh=0):
+    def __init__(self, action, cmd, expect, timeout, field, refresh=0, exact_match: bool = False):
         super(MessageSystemCallItem, self).__init__()
 
         self.action = action
@@ -38,6 +38,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
         self.timeout = timeout
         self.field = field
         self.refresh = refresh
+        self.exact_match = exact_match
 
     def log_match_failure(self, response):
         self.parent.log_error("Worker failed to match expected output.")
@@ -61,8 +62,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
 
     def invoke(self, parent):
         """
-        Consumer thread for serializing and asynchronously handling command
-        inputs and expected returns.
+        Consumer thread for serializing and asynchronously handling command inputs and expected returns.
         Make system calls using the _make_system_call method.
         """
         self.parent = parent
@@ -80,16 +80,26 @@ class MessageSystemCallItem(message_item.MessageItemBase):
             self.log_response_failure()
             return
 
-        match = re.search(self.expect, response)
+        if self.exact_match:
+            response = response.rstrip()
 
-        if match is None:
-            self.log_match_failure(response)
-            return
+            if response != self.expect:
+                self.log_match_failure(response)
+                return
 
-        if type(self.field) is str:
-            self.parent.store_data(match.group(), self.field)
-        elif type(self.field) is list:
-            self.store_groupdict_match(match)
+            if type(self.field) is str:
+                self.parent.store_data(response, self.field)
+        else:
+            match = re.search(self.expect, response)
+
+            if match is None:
+                self.log_match_failure(response)
+                return
+
+            if type(self.field) is str:
+                self.parent.store_data(match.group(), self.field)
+            elif type(self.field) is list:
+                self.store_groupdict_match(match)
 
 
 class SystemCallManager(object):
@@ -101,13 +111,11 @@ class SystemCallManager(object):
         self.__worker_thread.daemon = True
         self.__worker_thread.start()
 
-    def make_system_call_async(self, action, command, expect, timeout, field=None):
-        """
-        Post a command, timeout, and expect value to a queue for the consumer
-        thread.
+    def make_system_call_async(self, action, command, expect, timeout, field=None, exact_match: bool = False):
+        """Post a command, timeout, and expect value to a queue for the consumer thread.
         """
         self.log_info("Enqueuing command \"%s\"" % command)
-        item = MessageSystemCallItem(action, command, expect, timeout, field)
+        item = MessageSystemCallItem(action, command, expect, timeout, field, exact_match)
 
         with self.__event_lock:
             self.set_all_clear(False)
@@ -115,8 +123,7 @@ class SystemCallManager(object):
             self.log_debug("Message enqueued")
 
     def make_function_call_async(self, function, *args):
-        """
-        Enqueue a Python function to be called on the worker thread
+        """Enqueue a Python function to be called on the worker thread.
         """
         self.log_info("Enqueueing function %s with args %s" % (function, args))
         item = message_item.MessageCallableItem(function, args)
@@ -127,8 +134,7 @@ class SystemCallManager(object):
             self.log_debug("Message enqueued")
 
     def _make_system_call(self, action, command, timeout):
-        """
-        Generic method for making a system call with timeout
+        """Generic method for making a system call with timeout.
         """
 
         log_line = "Making system call for %s" % action
@@ -183,9 +189,9 @@ class SystemCallManager(object):
             while True:
                 try:
                     new_char = proc.stdout.read(1)
-                    this_stdout += new_char.decode("utf-8")
                     if not new_char:
                         break
+                    this_stdout += new_char.decode("utf-8")
                 except Exception as err:
                     print("Exception: {}".format(err))
                     break

@@ -129,14 +129,14 @@ class NetnsController(SystemCallManager):
         command = self.construct_netns_command(command)
         return self._make_system_call("netns-exec", command, timeout)
 
-    def make_netns_call_async(self, command, expect, timeout, field=None):
+    def make_netns_call_async(self, command, expect, timeout, field=None, exact_match: bool = False):
         """
         Take a standard system call (eg: ifconfig, ping, etc.).
         Format the command so that it will be called in this network namespace.
         Make the system call with a timeout.
         """
         command = self.construct_netns_command(command)
-        return self.make_system_call_async("netns-exec", command, expect, timeout, field)
+        return self.make_system_call_async("netns-exec", command, expect, timeout, field, exact_match)
 
     def link_set(self, interface_name, virtual_eth_peer):
         """
