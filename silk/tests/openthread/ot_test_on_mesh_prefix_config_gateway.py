@@ -82,11 +82,11 @@ class TestOnMeshPrefixConfigGateway(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        self.r1.whitelist_node(self.r2)
-        self.r2.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r2)
+        self.r2.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.sc1)
-        self.r2.whitelist_node(self.sc2)
+        self.r1.allowlist_node(self.sc1)
+        self.r2.allowlist_node(self.sc2)
 
         self.r1.form(self.network_data, "router")
         self.r1.permit_join(3600)

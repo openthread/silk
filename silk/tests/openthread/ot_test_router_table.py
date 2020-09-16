@@ -93,22 +93,22 @@ class TestRouterTable(testcase.TestCase):
         self.r1.form(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
-        # whitelist all routers with each other
-        self.r1.whitelist_node(self.r2)
-        self.r2.whitelist_node(self.r1)
+        # allowlist all routers with each other
+        self.r1.allowlist_node(self.r2)
+        self.r2.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.r3)
-        self.r3.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r3)
+        self.r3.allowlist_node(self.r1)
 
-        self.r2.whitelist_node(self.r3)
-        self.r3.whitelist_node(self.r2)
+        self.r2.allowlist_node(self.r3)
+        self.r3.allowlist_node(self.r2)
 
-        self.r3.whitelist_node(self.r4)
-        self.r4.whitelist_node(self.r3)
+        self.r3.allowlist_node(self.r4)
+        self.r4.allowlist_node(self.r3)
 
-        # whitelist between r4 and c1
-        self.r4.whitelist_node(self.c1)
-        self.c1.whitelist_node(self.r4)
+        # allowlist between r4 and c1
+        self.r4.allowlist_node(self.c1)
+        self.c1.allowlist_node(self.r4)
 
         self.logger.info(self.r1.ip6_lla)
         self.logger.info(self.r1.ip6_thread_ula)

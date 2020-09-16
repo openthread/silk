@@ -118,14 +118,14 @@ class TestPartitionMerge(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_pairing(self):
-        self.r1.whitelist_node(self.r2)
-        self.r2.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r2)
+        self.r2.allowlist_node(self.r1)
 
-        self.r1.whitelist_node(self.fed1)
-        self.fed1.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.fed1)
+        self.fed1.allowlist_node(self.r1)
 
-        self.r2.whitelist_node(self.fed2)
-        self.fed2.whitelist_node(self.r2)
+        self.r2.allowlist_node(self.fed2)
+        self.fed2.allowlist_node(self.r2)
 
         self.r1.form(self.network_data, "router")
         self.r1.permit_join(3600)
@@ -155,11 +155,11 @@ class TestPartitionMerge(testcase.TestCase):
         self.assertTrue(r2_result, "r2 cannot get into router role after 180 seconds timeout")
 
     @testcase.test_method_decorator
-    def test02_unwhitelist_r1_r2(self):
-        """un_whitelist r1 and r2, verify r2 become leader.
+    def test02_unallowlist_r1_r2(self):
+        """unallowlist r1 and r2, verify r2 become leader.
         """
-        self.r1.un_whitelist_node(self.r2)
-        self.r2.un_whitelist_node(self.r1)
+        self.r1.un_allowlist_node(self.r2)
+        self.r2.un_allowlist_node(self.r1)
 
         # verify r2 become leader
         r2_result = self._verify_device_role("r2", "leader")
@@ -187,10 +187,10 @@ class TestPartitionMerge(testcase.TestCase):
         r1_partition = self.r1.wpanctl("get", "get " + wpan.WPAN_PARTITION_ID, 2).split("=")[1].strip()[1:-1]
         r2_partition = self.r2.wpanctl("get", "get " + wpan.WPAN_PARTITION_ID, 2).split("=")[1].strip()[1:-1]
         self.logger.info("r1 partition is {}, r2 partition is {}".format(r1_partition, r2_partition))
-        self.assertFalse(r1_partition == r2_partition, "r1, r2 partition id are same after unwhite list r1, r2")
+        self.assertFalse(r1_partition == r2_partition, "r1, r2 partition id are same after unallowlisting r1, r2")
 
     @testcase.test_method_decorator
-    def test03_whitelist_r1_r2(self):
+    def test03_allowlist_r1_r2(self):
         # Add on-mesh prefix1 on router r1
         self.r1.config_gateway1(prefix1)
         self.wait_for_completion(self.device_list)
@@ -200,15 +200,15 @@ class TestPartitionMerge(testcase.TestCase):
         verify_prefix(r1_network_nodes, prefix1, stable=True, on_mesh=True, slaac=True)
         verify_address(r1_network_nodes, prefix1)
 
-        self.r1.whitelist_node(self.r2)
-        self.r2.whitelist_node(self.r1)
+        self.r1.allowlist_node(self.r2)
+        self.r2.allowlist_node(self.r1)
         time.sleep(60)
 
         # verify partition id match
         r1_partition = self.r1.wpanctl("get", "get " + wpan.WPAN_PARTITION_ID, 2).split("=")[1].strip()[1:-1]
         r2_partition = self.r2.wpanctl("get", "get " + wpan.WPAN_PARTITION_ID, 2).split("=")[1].strip()[1:-1]
         self.logger.info("r1 partition is {}, r2 partition is {}".format(r1_partition, r2_partition))
-        self.assertTrue(r1_partition == r2_partition, "r1, r2 partition id are not same after white list r1, r2")
+        self.assertTrue(r1_partition == r2_partition, "r1, r2 partition id are not same after allowlisting r1, r2")
 
     @testcase.test_method_decorator
     def test04_verify_role_prefix_childTable(self):

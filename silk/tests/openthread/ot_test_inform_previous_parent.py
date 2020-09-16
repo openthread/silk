@@ -92,9 +92,9 @@ class TestInformPreviousParent(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        self.parent1.whitelist_node(self.parent2)
-        self.parent2.whitelist_node(self.parent1)
-        self.parent2.whitelist_node(self.child1)
+        self.parent1.allowlist_node(self.parent2)
+        self.parent2.allowlist_node(self.parent1)
+        self.parent2.allowlist_node(self.child1)
 
         self.parent1.form(self.network_data, "router")
         self.parent1.permit_join(120)
@@ -140,13 +140,13 @@ class TestInformPreviousParent(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test03_Change_Parent(self):
-        # Remove the `child` from whitelist of `parent2` and add it to whitelist of `parent1` instead.
+        # Remove the `child` from allowlist of `parent2` and add it to allowlist of `parent1` instead.
         self.child_num_state_changes = len(wpan_table_parser.parse_list(self.child1.get("stat:ncp")))
 
         print(self.child_num_state_changes)
 
-        self.parent1.whitelist_node(self.child1)
-        self.parent2.un_whitelist_node(self.child1)
+        self.parent1.allowlist_node(self.child1)
+        self.parent2.un_allowlist_node(self.child1)
 
         # Enable supervision check on the `child` and also on `parent1`.
 
@@ -154,10 +154,10 @@ class TestInformPreviousParent(testcase.TestCase):
         self.parent1.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
 
         # Since child supervision is not enabled on `parent2` and the `child` is
-        # removed from whitelist on `parent2`, after the supervision check timeout
+        # removed from allowlist on `parent2`, after the supervision check timeout
         # the `child` should realize that it can no longer talk to its current
         # parent (`parent2`) and try to reattach. All re-attach attempts to `parent2`
-        # should fail (due to whitelist) and cause the `child` to get detached and
+        # should fail (due to allowlist) and cause the `child` to get detached and
         # search for a new parent and then attach to `parent1`.
         #
         # To verify that the `child` does get detached and attach to a new parent, we

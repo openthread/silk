@@ -177,12 +177,12 @@ class TestChildSupervision(testcase.TestCase):
         self.assertEqual(e.is_ftd(), False)
 
     @testcase.test_method_decorator
-    def test06_enable_whitelist(self):
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "1")
+    def test06_enable_allowlist(self):
+        self.router.setprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED, "1")
 
-        print(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED))
+        print(self.router.getprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED))
 
-        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_WHITELIST_ENABLED), "true")
+        self.assertEqual(self.router.getprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED), "true")
 
         time.sleep(CHILD_TIMEOUT + 3)
 
@@ -217,10 +217,10 @@ class TestChildSupervision(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test08_enable_supervision_on_parent(self):
-        # Enable child supervision on parent and disable white-listing
+        # Enable child supervision on parent and disable allowlisting
 
         self.router.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
-        self.router.setprop(wpan.WPAN_MAC_WHITELIST_ENABLED, "0")
+        self.router.setprop(wpan.WPAN_MAC_ALLOWLIST_ENABLED, "0")
 
         # Wait for the child to attach back
 

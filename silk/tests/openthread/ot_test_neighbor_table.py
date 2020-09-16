@@ -95,21 +95,21 @@ class TestNeighborTable(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Form_Network(self):
-        # whitelist all routers with one another
+        # allowlist all routers with one another
         for i in range(NUM_ROUTERS):
             for j in range(NUM_ROUTERS):
                 if i != j:
-                    self.routers[i].whitelist_node(self.routers[j])
+                    self.routers[i].allowlist_node(self.routers[j])
 
         # All children should attach to routers[0]
         for num in range(NUM_CHILDREN):
-            self.children[num].whitelist_node(self.routers[0])
-            self.routers[0].whitelist_node(self.children[num])
+            self.children[num].allowlist_node(self.routers[0])
+            self.routers[0].allowlist_node(self.children[num])
 
-        # whitelist the end-device ed with its corresponding router
+        # allowlist the end-device ed with its corresponding router
         for num in range(1, NUM_ROUTERS):
-            self.ed[num].whitelist_node(self.routers[num])
-            self.routers[num].whitelist_node(self.ed[num])
+            self.ed[num].allowlist_node(self.routers[num])
+            self.routers[num].allowlist_node(self.ed[num])
 
         # Form the Network
         self.routers[0].form(self.network_data_list[0], "router")

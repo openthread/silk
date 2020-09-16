@@ -77,9 +77,9 @@ class TestTrafficRouterEndDevice(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        # whitelisting between leader and end device
-        self.end_device.whitelist_node(self.router)
-        self.router.whitelist_node(self.end_device)
+        # allowlisting between leader and end device
+        self.end_device.allowlist_node(self.router)
+        self.router.allowlist_node(self.end_device)
 
         self.router.form(self.network_data, "router")
         self.router.permit_join(60)
