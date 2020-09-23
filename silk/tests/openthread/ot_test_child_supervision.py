@@ -80,13 +80,6 @@ class TestChildSupervision(testcase.TestCase):
     def tearDown(self):
         pass
 
-    def find_string_in_log_file(self):
-        filename = os.path.join(self.current_output_directory, "silk.log")
-        cmd = "grep " + "\"" + self.child_supervision_msg + "\" " + filename
-        ret = subprocess.check_output(cmd, shell=True)
-        self.logger.info(ret)
-        return verify(self.child_supervision_msg in ret.decode("utf-8"))
-
     @testcase.test_method_decorator
     def test01_Pairing(self):
         self.router.form(self.network_data, "router")
@@ -249,15 +242,6 @@ class TestChildSupervision(testcase.TestCase):
         time.sleep(CHILD_SUPERVISION_CHECK_TIMEOUT * 3)
 
         self.assertTrue(wpan_table_parser.is_associated(self.sed), "SED is still not associated!!!")
-
-    @testcase.test_method_decorator
-    def test09_verify_supervision_message(self):
-        self.router.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
-
-        self.child_supervision_msg = "Sending supervision message to child"
-        result = verify_within(self.find_string_in_log_file, PARENT_SUPERVISION_INTERVAL * 10)
-        self.assertTrue(result, ("Cannot find the expected string:"
-                                 " {} in log file !!!".format(self.child_supervision_msg)))
 
 
 if __name__ == "__main__":
