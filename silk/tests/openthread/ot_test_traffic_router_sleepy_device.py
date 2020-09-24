@@ -30,10 +30,11 @@ import silk.tests.testcase as testcase
 hwr.global_instance()
 
 MSG_LENS = [40, 100, 400, 800, 1000]
+POLL_INTERVALS = [10, 100, 300]
 
 
 class TestTrafficRouterSleepyEndDevice(testcase.TestCase):
-    """Test traffic between a router and an sleepy-end-device in a two node network.
+    """Test traffic between a router and a sleepy-end-device in a two node network.
     """
 
     @classmethod
@@ -118,16 +119,16 @@ class TestTrafficRouterSleepyEndDevice(testcase.TestCase):
             (self.sleepy_end_device, self.router, AddressType.LLA, AddressType.MLA),
             (self.sleepy_end_device, self.router, AddressType.MLA, AddressType.MLA)
         ]
-
-        for poll_interval in [10, 100, 300]:
+        timeout = 5
+        delay = 1
+        for poll_interval in POLL_INTERVALS:
             self.sleepy_end_device.setprop(wpan.WPAN_POLL_INTERVAL, str(poll_interval))
             interval = self.sleepy_end_device.getprop(wpan.WPAN_POLL_INTERVAL)
             self.assertEqual(int(interval), poll_interval)
 
             for i, (src, dst, src_type, dst_type) in enumerate(addresses):
                 port = random.randint(10000 + i * 100, 10099 + i * 100)
-                timeout = 5
-                delay = 1
+
                 for msg_len in MSG_LENS:
                     message = random_string(msg_len)
 
