@@ -152,6 +152,8 @@ class TestOffMeshRouteTraffic(testcase.TestCase):
         self.sed2.set_sleep_poll_interval(POLL_INTERVAL)
         self.wait_for_completion(self.device_list)
 
+        self.assertTrue(self.r2.get(wpan.WPAN_NODE_TYPE) == wpan.NODE_TYPE_ROUTER)
+
     @testcase.test_method_decorator
     def test03_verify_off_mesh_routes(self):
         # Add on-mesh prefix
@@ -218,9 +220,8 @@ class TestOffMeshRouteTraffic(testcase.TestCase):
             message = random_string(10)
             src_address = ""
             if src_type == AddressType.Prefix:
-                address = src.find_ip6_address_with_prefix(ON_MESH_PREFIX)
+                src_address = src.find_ip6_address_with_prefix(ON_MESH_PREFIX)
                 self.wait_for_completion(self.device_list)
-                src_address = f"{address}%{src.netns}"
 
             dst.receive_udp_data(port, message, timeout)
             time.sleep(delay)
