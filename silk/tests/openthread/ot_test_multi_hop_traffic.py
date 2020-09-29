@@ -113,7 +113,7 @@ class TestMultiHopTraffic(testcase.TestCase):
     @testcase.test_method_decorator
     def test01_Pairing(self):
         # Allowlist routers with their corresponding sleepy children
-        for index in range(0, NUM_ROUTERS):
+        for index in range(NUM_ROUTERS):
             self.routers[index].allowlist_node(self.sed_children[index])
             self.sed_children[index].allowlist_node(self.routers[index])
 
