@@ -19,15 +19,15 @@ import random
 import time
 import unittest
 
-from silk.config import wpan_constants as wpan
-from silk.node.wpan_node import WpanCredentials
-from silk.utils import process_cleanup
-from silk.tools import wpan_table_parser
-from silk.tools.wpan_util import verify, verify_within
-from silk.unit_tests.test_utils import random_string
 import silk.hw.hw_resource as hwr
 import silk.node.fifteen_four_dev_board as ffdb
 import silk.tests.testcase as testcase
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, verify_within
+from silk.unit_tests.test_utils import random_string
+from silk.utils import process_cleanup
 
 hwr.global_instance()
 
@@ -74,7 +74,7 @@ class TestMultiHopTraffic(testcase.TestCase):
         for _ in range(NUM_FED_CHILDREN):
             cls.fed_children.append(ffdb.ThreadDevBoard())
 
-        cls.all_nodes = [cls.routers, cls.sed_children, cls.fed_children]
+        cls.all_nodes = cls.routers + cls.sed_children + cls.fed_children
 
     @classmethod
     @testcase.setup_class_decorator
@@ -162,7 +162,7 @@ class TestMultiHopTraffic(testcase.TestCase):
         r1_rloc = int(self.routers[0].getprop(wpan.WPAN_THREAD_RLOC16), 16)
 
         def check_r1_router_table():
-            router_table = self.routers[0].wpanctl("get", "get " + wpan.WPAN_THREAD_ROUTER_TABLE, 2)
+            router_table = self.routers[0].get(wpan.WPAN_THREAD_ROUTER_TABLE)
             router_table = wpan_table_parser.parse_router_table_result(router_table)
             self.assertEqual(len(router_table), NUM_ROUTERS)
             for entry in router_table:
