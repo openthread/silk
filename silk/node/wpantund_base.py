@@ -201,6 +201,34 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self._get_addr("join")
 
+    def join_node(self, network, role, should_set_key=True):
+        """Join a network specified by another node based on should_set_key parameter.
+           Perform an insecure join in case should_set_key=False.
+        """
+        # if not node.is_associated():
+        #     return "{} is not associated".format(node)
+        self.store_data(network.fabric_id, "fabric-id")
+
+        self.store_data(network.xpanid, self.xpanid_label)
+
+        role = getattr(wpan, "ROLES")[role]
+        self.store_data(role, self.role_label)
+
+        join_command = "join %s -T %s -c %s -x %s -p 0x%x" % \
+            (network.name, role, network.channel, network.xpanid, network.panid)
+
+        if should_set_key:
+            command = "setprop Network:Key --data %s" % network.psk
+            self.wpanctl_async("join", command, None, 1)
+            self.wpanctl_async("join", join_command,
+                               r"Partial \(insecure\) join. Credentials needed. Update key to continue.", 30)
+        else:
+            self.wpanctl_async("join", join_command, "Successfully Joined!", 60)
+
+        self.__get_network_properties("join", network)
+
+        self._get_addr("join")
+
     def __get_network_properties(self, action, network):
         """Extract channel, PANID, XPANID, node type, and network key.
         """
@@ -304,7 +332,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
             "remove-prefix",
             "remove-prefix " + prefix + (" -l {}".format(prefix_len) if prefix_len is not None else ""), 20)
 
-    def add_route_prefix(self, route_prefix, prefix_len=None, priority=None, stable=True):
+    def add_route_using_prefix(self, route_prefix, prefix_len=None, priority=None, stable=True):
         """route priority [(>0 for high, 0 for medium, <0 for low)].
         """
         return self.wpanctl(
