@@ -185,16 +185,13 @@ class TestOffMeshRouteTraffic(testcase.TestCase):
             # its WPAN_THREAD_OFF_MESH_ROUTES list (one time as part of network-wide
             # network data and again as part of the local network data). Note that
             # `r1 and `r2` each add a route, while `sed2` does not.
-            r1_routes = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_OFF_MESH_ROUTES, 2)
-            r1_routes = wpan_table_parser.parse_list(r1_routes)
+            r1_routes = wpan_table_parser.parse_list(self.r1.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))
             self.assertEqual(len(r1_routes), NUM_ROUTES + NUM_ROUTES_LOCAL)
 
-            r2_routes = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_OFF_MESH_ROUTES, 2)
-            r2_routes = wpan_table_parser.parse_list(r2_routes)
+            r2_routes = wpan_table_parser.parse_list(self.r2.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))
             self.assertEqual(len(r2_routes), NUM_ROUTES + NUM_ROUTES_LOCAL)
 
-            sed2_routes = self.sed2.wpanctl("get", "get " + wpan.WPAN_THREAD_OFF_MESH_ROUTES, 2)
-            sed2_routes = wpan_table_parser.parse_list(sed2_routes)
+            sed2_routes = wpan_table_parser.parse_list(self.sed2.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))
             self.assertEqual(len(sed2_routes), NUM_ROUTES)
 
         verify_within(check_off_mesh_routes, WAIT_TIME)

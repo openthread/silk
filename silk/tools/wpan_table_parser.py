@@ -446,8 +446,7 @@ def parse_list(list_string):
     # For each line, skip the first two characters (which are `\t"`) and last character (`"`), then split the string
     # using whitespace as separator. The first entry is the IPv6 address.
     #
-    # return [line[2:-1].split()[0] for line in list_string.split("\n")[1:-1]]
-    return [line[2:-1].split()[0] for line in list_string.split("\n")[1:-2]]
+    return [line[2:-1].split()[0] for line in list_string.split("\n")[1:-1]]
 
 
 class OnMeshPrefix(object):
