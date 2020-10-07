@@ -177,7 +177,6 @@ JOIN_TYPE_SLEEPY_END_DEVICE = "s"
 
 THREAD_MODE_FLAG_FULL_NETWORK_DATA = (1 << 0)
 THREAD_MODE_FLAG_FULL_THREAD_DEV = (1 << 1)
-THREAD_MODE_FLAG_SECURE_DATA_REQUEST = (1 << 2)
 THREAD_MODE_FLAG_RX_ON_WHEN_IDLE = (1 << 3)
 
 #--------------------------------------------------------------------------------------------------------------------
