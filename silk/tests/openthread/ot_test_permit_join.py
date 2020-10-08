@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.config import wpan_constants as wpan
-from silk.utils import process_cleanup
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -29,7 +29,7 @@ hwr.global_instance()
 class TestPermitJoin(testcase.TestCase):
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
 
     @classmethod
@@ -38,25 +38,24 @@ class TestPermitJoin(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -68,33 +67,33 @@ class TestPermitJoin(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Form_Network(self):
-        self.router.form(self.network_data, 'router')
+        self.router.form(self.network_data, "router")
         self.wait_for_completion(self.device_list)
 
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'false')
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "false")
 
     @testcase.test_method_decorator
     def test02_Permit_Join_enable(self):
         self.router.permit_join_new()
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'true')
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "true")
 
-        self.router.permit_join_new('0')
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'false')
+        self.router.permit_join_new("0")
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "false")
 
-        self.router.permit_join_new(port='1234')
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'true')
+        self.router.permit_join_new(port="1234")
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "true")
 
-        self.router.permit_join_new('0')
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'false')
+        self.router.permit_join_new("0")
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "false")
 
     @testcase.test_method_decorator
     def test03_Permit_Join_time(self):
-        self.router.permit_join_new('10')
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'true')
+        self.router.permit_join_new("10")
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "true")
 
         time.sleep(11)
 
-        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), 'false')
+        self.assertEqual(self.router.getprop(wpan.WPAN_NETWORK_ALLOW_JOIN), "false")
 
 
 if __name__ == "__main__":

@@ -19,11 +19,26 @@
 #      example compilation and programming.
 #
 
+python='python3'
+
 # Establish some key directories
 
 srcdir=`dirname ${0}`
 abs_srcdir=`pwd`
 abs_top_srcdir="${abs_srcdir}"
+
+use_venv='false'
+python_cmd="sudo ${python}"
+
+while getopts ':v' 'OPTKEY'; do
+    case ${OPTKEY} in
+        'v')
+            use_venv='true'
+            python_cmd="./env/bin/${python}"
+            ;;
+        *) ;;
+    esac
+done
 
 link_sh_to_bash()
 {
@@ -34,15 +49,14 @@ link_sh_to_bash()
 install_packages_apt()
 {
     # apt update and install dependencies
-#    sudo apt-get update
-    sudo apt-get install python-pip expect figlet graphviz python-tk -y
+    sudo apt-get update
+    sudo apt-get install $python-pip $python-venv expect figlet graphviz $python-tk -y
 }
 
 install_packages_pip()
 {
-    # pip install dependencies
-    sudo python2.7 -m pip install pip --upgrade
-    sudo python2.7 -m pip install -r requirements.txt
+    $python_cmd -m pip install --upgrade pip setuptools wheel
+    $python_cmd -m pip install -r requirements.txt
 }
 
 install_packages()
@@ -52,9 +66,23 @@ install_packages()
     link_sh_to_bash
 }
 
+compile_proto()
+{
+    $python_cmd -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+}
+
+setup_venv()
+{
+    $python -m venv env
+}
+
 main()
 {
+    if ${use_venv}; then
+        setup_venv
+    fi
     install_packages
+    compile_proto
 }
 
 main

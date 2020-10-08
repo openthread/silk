@@ -14,23 +14,22 @@
 
 import fcntl
 import os
-import Queue
+import queue
 import re
 import select
 import subprocess
 import threading
 import time
 
-import message_item
-
+from . import message_item
 from silk.node.base_node import BaseNode
 
 
 class MessageSystemCallItem(message_item.MessageItemBase):
-    """Class to encapusulate a system call into the message queue
+    """Class to encapsulate a system call into the message queue.
     """
 
-    def __init__(self, action, cmd, expect, timeout, field, refresh=0):
+    def __init__(self, action, cmd, expect, timeout, field, refresh=0, exact_match: bool = False):
         super(MessageSystemCallItem, self).__init__()
 
         self.action = action
@@ -39,6 +38,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
         self.timeout = timeout
         self.field = field
         self.refresh = refresh
+        self.exact_match = exact_match
 
     def log_match_failure(self, response):
         self.parent.log_error("Worker failed to match expected output.")
@@ -48,8 +48,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
         for line in response.splitlines():
             self.parent.log_error(line)
 
-        self._delegates.set_error('{0} not found for cmd:{1}!'.format(
-                                  self.expect, self.action))
+        self._delegates.set_error("{0} not found for cmd:{1}!".format(self.expect, self.action))
 
     def log_response_failure(self):
         self.parent.log_error("Worker failed to execute command.")
@@ -63,8 +62,7 @@ class MessageSystemCallItem(message_item.MessageItemBase):
 
     def invoke(self, parent):
         """
-        Consumer thread for serializing and asynchronously handling command
-        inputs and expected returns.
+        Consumer thread for serializing and asynchronously handling command inputs and expected returns.
         Make system calls using the _make_system_call method.
         """
         self.parent = parent
@@ -82,33 +80,42 @@ class MessageSystemCallItem(message_item.MessageItemBase):
             self.log_response_failure()
             return
 
-        match = re.search(self.expect, response)
+        if self.exact_match:
+            response = response.rstrip()
 
-        if match is None:
-            self.log_match_failure(response)
-            return
+            if response != self.expect:
+                self.log_match_failure(response)
+                return
 
-        if type(self.field) is str:
-            self.parent.store_data(match.group(), self.field)
-        elif type(self.field) is list:
-            self.store_groupdict_match(match)
+            if type(self.field) is str:
+                self.parent.store_data(response, self.field)
+        else:
+            match = re.search(self.expect, response)
+
+            if match is None:
+                self.log_match_failure(response)
+                return
+
+            if type(self.field) is str:
+                self.parent.store_data(match.group(), self.field)
+            elif type(self.field) is list:
+                self.store_groupdict_match(match)
 
 
 class SystemCallManager(object):
+
     def __init__(self):
-        self.__message_queue = Queue.Queue()
+        self.__message_queue = queue.Queue()
         self.__event_lock = threading.Lock()
         self.__worker_thread = threading.Thread(target=self.__worker_run, name="thread-" + self._name)
         self.__worker_thread.daemon = True
         self.__worker_thread.start()
 
-    def make_system_call_async(self, action, command, expect, timeout, field=None):
-        """
-        Post a command, timeout, and expect value to a queue for the consumer
-        thread.
+    def make_system_call_async(self, action, command, expect, timeout, field=None, exact_match: bool = False):
+        """Post a command, timeout, and expect value to a queue for the consumer thread.
         """
         self.log_info("Enqueuing command \"%s\"" % command)
-        item = MessageSystemCallItem(action, command, expect, timeout, field)
+        item = MessageSystemCallItem(action, command, expect, timeout, field, exact_match)
 
         with self.__event_lock:
             self.set_all_clear(False)
@@ -116,8 +123,7 @@ class SystemCallManager(object):
             self.log_debug("Message enqueued")
 
     def make_function_call_async(self, function, *args):
-        """
-        Enqueue a Python function to be called on the worker thread
+        """Enqueue a Python function to be called on the worker thread.
         """
         self.log_info("Enqueueing function %s with args %s" % (function, args))
         item = message_item.MessageCallableItem(function, args)
@@ -128,19 +134,16 @@ class SystemCallManager(object):
             self.log_debug("Message enqueued")
 
     def _make_system_call(self, action, command, timeout):
-        """
-        Generic method for making a system call with timeout
+        """Generic method for making a system call with timeout.
         """
 
         log_line = "Making system call for %s" % action
         self.log_debug(log_line)
         self.log_debug(command)
         try:
-            proc = subprocess.Popen(command, shell=True,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT)
-        except:
-            self.log_error("Failed to start subprocess.")
+            proc = subprocess.Popen(command, bufsize=0, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        except Exception as error:
+            self.log_error("Failed to start subprocess: %s" % error)
             self.log_error("\tCommand: %s" % command)
             return None
 
@@ -151,7 +154,6 @@ class SystemCallManager(object):
         curr_line = ""
 
         t_start = time.time()
-
         while True:
             if proc.poll() == 0:
                 break
@@ -164,8 +166,9 @@ class SystemCallManager(object):
 
                 # Check the length of the read list to see if there is new data
                 if len(poll_list[0]) > 0:
-                    curr_line += proc.stdout.read(1)
-            except ValueError:
+                    curr_line += proc.stdout.read(1).decode("utf-8")
+            except Exception as err:
+                print("EXCEPTION:{}".format(err))
                 break
 
             if len(curr_line) > 0 and curr_line[-1] == "\n" and not curr_line.isspace():
@@ -186,10 +189,11 @@ class SystemCallManager(object):
             while True:
                 try:
                     new_char = proc.stdout.read(1)
-                    this_stdout += new_char
                     if not new_char:
                         break
-                except:
+                    this_stdout += new_char.decode("utf-8")
+                except Exception as err:
+                    print("Exception: {}".format(err))
                     break
             if this_stdout:
                 this_stdout = curr_line + this_stdout
@@ -198,35 +202,30 @@ class SystemCallManager(object):
                 stdout += this_stdout
         except ValueError:
             pass
-
         return stdout
 
     def __clear_message_queue(self):
-        """Remove all pending messages in queue
-
+        """Remove all pending messages in queue.
         """
         try:
             while True:
                 self.__message_queue.get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             pass
 
     def __set_error(self, msg):
-        """Post error msg and clear message queue
-
+        """Post error msg and clear message queue.
         """
-        self.log_error('set_error: {0}'.format(msg))
+        self.log_error("set_error: {0}".format(msg))
         self.post_error(msg)
         self.__clear_message_queue()
 
     def __worker_run(self):
         """
-        Consumer thread for serializing and asynchronously handling command
-        inputs and expected returns.
+        Consumer thread for serializing and asynchronously handling command inputs and expected returns.
         Serialize requests to make system calls.
         Make system calls using the _make_system_call method.
         """
-        response = ""
         while True:
             self.__event_lock.acquire()
             self.set_all_clear(self.__message_queue.empty())
@@ -236,10 +235,7 @@ class SystemCallManager(object):
 
             error_handler = lambda me, error_str: me.__set_error(error_str)
 
-            delegates = message_item.MessageItemDelegates(self,
-                                                          None,
-                                                          None,
-                                                          error_handler)
+            delegates = message_item.MessageItemDelegates(self, None, None, error_handler)
 
             item.set_delegates(delegates)
 
@@ -247,10 +243,9 @@ class SystemCallManager(object):
 
 
 class TemporarySystemCallManager(SystemCallManager, BaseNode):
+    """Class that can be used to make simple system calls with timeouts and logging functionality.
     """
-    Class that can be used to make simple system calls with
-    timeouts and logging functionality.
-    """
+
     def __init__(self, name="TemporarySystemCallManager"):
         BaseNode.__init__(self, name)
         SystemCallManager.__init__(self)

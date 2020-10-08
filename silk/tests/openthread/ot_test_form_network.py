@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
 import random
-import unittest
 import time
+import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -30,7 +30,7 @@ class TestFormNetwork(testcase.TestCase):
     poll_interval = 1000
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
         cls.joiner_list = []
 
@@ -41,7 +41,7 @@ class TestFormNetwork(testcase.TestCase):
                 break
             else:
                 cls.joiner_list.append(device)
-        print cls.joiner_list
+        print(cls.joiner_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -49,31 +49,29 @@ class TestFormNetwork(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 
         for end_node in cls.joiner_list:
             cls.add_test_device(end_node)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk = "00112233445566778899aabbccdd{0:04x}".
-                format(random.randint(0, 0xffff)),
-            channel = random.randint(11, 25),
-            fabric_id = "{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -85,13 +83,20 @@ class TestFormNetwork(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        # whilte listing between leader and other nodes
+        # allowlisting between leader and other nodes
         for end_node in self.joiner_list:
-            end_node.whitelist_node(self.router)
-            self.router.whitelist_node(end_node)
+            end_node.allowlist_node(self.router)
+            self.router.allowlist_node(end_node)
 
-        self.router.form(self.network_data, 'router')
-        self.router.permit_join(60*len(self.joiner_list))
+        # allowlisting nodes for full mesh
+        mesh_nodes = self.device_list[:-2]
+        for node in mesh_nodes:
+            for other_node in mesh_nodes:
+                if other_node is not node:
+                    node.allowlist_node(other_node)
+
+        self.router.form(self.network_data, "router")
+        self.router.permit_join(60 * len(self.joiner_list))
         self.wait_for_completion(self.device_list)
 
         self.logger.info(self.router.ip6_lla)
@@ -115,42 +120,43 @@ class TestFormNetwork(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test02_GetWpanStatus(self):
-        leader_node_type = self.router.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1]
-        self.assertTrue(leader_node_type == 'leader', 'Leader is not created correctly!!!')
+        leader_node_type = self.router.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1]
+        self.assertTrue(leader_node_type == "leader", "Leader is not created correctly!!!")
 
         for _ in range(30):
             router_list, sed_list = [], []
 
             for e in self.joiner_list[:-2]:
-                router_list.append(e.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1])
+                router_list.append(e.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1])
 
             for e in self.joiner_list[-2:]:
-                sed_list.append(e.wpanctl('get', 'get '+wpan.WPAN_NODE_TYPE, 2).split('=')[1].strip()[1:-1])
+                sed_list.append(e.wpanctl("get", "get " + wpan.WPAN_NODE_TYPE, 2).split("=")[1].strip()[1:-1])
 
-            print router_list
-            print sed_list
+            print(router_list)
+            print(sed_list)
 
-            if all(e == 'router' for e in router_list) and all(e == 'sleepy-end-device' for e in sed_list):
-                print 'All End-node moved up to  Router.'
+            if all(e == "router" for e in router_list) and all(e == "sleepy-end-device" for e in sed_list):
+                print("All End-node moved up to  Router.")
                 break
             time.sleep(8)
         else:
-            self.assertFalse(True, 'Router cannot get into router role after 240 seconds timeout')
+            self.assertFalse(True, "Router cannot get into router role after 240 seconds timeout")
 
     @testcase.test_method_decorator
     def test03_PingRouterLLA(self):
-        self.ping6_multi_source(self.joiner_list, self.router.ip6_lla,
-                                num_pings=10, allowed_errors=5, ping_size=200)
+        self.ping6_multi_source(self.joiner_list, self.router.ip6_lla, num_pings=10, allowed_errors=5, ping_size=200)
 
     @testcase.test_method_decorator
     def test04_PingRouterMLA(self):
-        self.ping6_multi_source(self.joiner_list, self.router.ip6_mla,
-                                num_pings=10, allowed_errors=5, ping_size=200)
+        self.ping6_multi_source(self.joiner_list, self.router.ip6_mla, num_pings=10, allowed_errors=5, ping_size=200)
 
     @testcase.test_method_decorator
     def test05_PingRouterULA(self):
-        self.ping6_multi_source(self.joiner_list, self.router.ip6_thread_ula,
-                                num_pings=10, allowed_errors=5, ping_size=200)
+        self.ping6_multi_source(self.joiner_list,
+                                self.router.ip6_thread_ula,
+                                num_pings=10,
+                                allowed_errors=5,
+                                ping_size=200)
 
 
 if __name__ == "__main__":

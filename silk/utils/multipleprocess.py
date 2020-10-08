@@ -21,10 +21,9 @@ class MultipleProcess(object):
     @staticmethod
     def process(func, *args):
         processes = []
-        new_args = ()
         for node in args[0]:
             new_args = [args[0][node]] + [arg for arg in args[1:]]
-            p = multiprocessing.Process(target=func, args=(new_args))
+            p = multiprocessing.Process(target=func, args=(new_args,))
             processes.append(p)
             if len(processes) == 4:
                 is_alive = True

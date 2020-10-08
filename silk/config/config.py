@@ -11,25 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-config.py
-
-This file contains Configuration management classes for use by the silk framework
+"""This file contains Configuration management classes for use by the silk framework
 
 """
 
 import json
 
-BLACKLIST_KEY = "blacklist"
+DENYLIST_KEY = "denylist"
 PORT_MAPPING = "port_mapping"
 
 CONFIG_FILENAME_DEFAULT = "hwconfig.ini"
 
 
-class Config:
-    """
-    Class that encapsulates configuration parameters
+class Config(object):
+    """Class that encapsulates configuration parameters.
     """
 
     def __init__(self, config_file=None):
@@ -38,26 +33,25 @@ class Config:
             config_file = expanduser("~") + "/" + CONFIG_FILENAME_DEFAULT
 
         self.config_file = config_file
-        self.blacklist = []
+        self.denylist = []
         self.port_mapping = {}
 
         self.load()
 
     def load(self):
-        """
-        Load configuration data from file
+        """Load configuration data from file.
         """
         try:
-            with open(self.config_file,'r') as fd:
+            with open(self.config_file, "r") as fd:
                 try:
                     raw_dict = json.load(fd)
                 except ValueError:
-                    print "Writing new configuration file %s" % self.config_file
+                    print("Writing new configuration file %s" % self.config_file)
                     raw_dict = {}
                     self.store()
 
-                if BLACKLIST_KEY in raw_dict:
-                    self._load_blacklist(raw_dict[BLACKLIST_KEY])
+                if DENYLIST_KEY in raw_dict:
+                    self._load_denylist(raw_dict[DENYLIST_KEY])
 
                 if PORT_MAPPING in raw_dict:
                     self._load_port_mapping(raw_dict[PORT_MAPPING])
@@ -68,11 +62,8 @@ class Config:
         """
         Save configuration data to file
         """
-        with open(self.config_file, 'w') as fd:
-            raw_dict = {
-                BLACKLIST_KEY : self.get_blacklist(),
-                PORT_MAPPING : self._get_port_mapping()
-            }
+        with open(self.config_file, "w") as fd:
+            raw_dict = {DENYLIST_KEY: self.get_denylist(), PORT_MAPPING: self._get_port_mapping()}
 
             json.dump(raw_dict, fd)
 
@@ -80,7 +71,7 @@ class Config:
         """
         Update the port mapping with the specified device
         """
-        print "Adding device %s to %s to port mapping" % (device_serial, port)
+        print("Adding device %s to %s to port mapping" % (device_serial, port))
         self.port_mapping[device_serial] = port
 
         self.store()
@@ -89,52 +80,51 @@ class Config:
         return self.str()
 
     def str(self):
-        """
-        Get a string version of the config
+        """Get a string version of the config.
         """
 
         retval = ""
 
-        if self.blacklist:
-            retval += "Blacklist: %s" % str(self.blacklist)
+        if self.denylist:
+            retval += "Denylist: %s" % str(self.denylist)
 
         if self.port_mapping:
             retval += "Port mapping: %s" % str(self.port_mapping)
 
         return retval
 
-    def blacklist_mapped(self):
+    def denylist_mapped(self):
         """
-        Determine whether the blacklist has been mapped
+        Determine whether the denylist has been mapped
         """
 
-        return self._check_blacklist()
+        return self._check_denylist()
 
-    def _load_blacklist(self, blacklist):
-        if blacklist is None:
-            blacklist = []
-        self.blacklist = blacklist
+    def _load_denylist(self, denylist):
+        if denylist is None:
+            denylist = []
+        self.denylist = denylist
 
     def _load_port_mapping(self, port_mapping):
         if port_mapping is None:
             port_mapping = {}
         self.port_mapping = port_mapping
 
-    def add_to_blacklist(self, serial):
+    def add_to_denylist(self, serial):
         """
-        Add a serial number to the blacklist
+        Add a serial number to the denylist
         """
-        if serial not in self.blacklist:
-            self.blacklist.append(serial)
+        if serial not in self.denylist:
+            self.denylist.append(serial)
 
         self.store()
 
-    def get_blacklist(self):
+    def get_denylist(self):
         """
-        Get the blacklist
+        Get the denylist
         """
 
-        return self.blacklist
+        return self.denylist
 
     def get_port(self, serial):
         """
@@ -143,40 +133,40 @@ class Config:
 
         return self.port_mapping[serial]
 
-    def get_unmapped_blacklist(self):
+    def get_unmapped_denylist(self):
         """
-        Get a list of blacklist serials for which we haven't mapped yet
+        Get a list of denylist serials for which we haven't mapped yet
         """
 
         unmapped = []
-        for blacklisted_serial in self.blacklist:
-            if not self._check_blacklist_serial(blacklisted_serial):
-                unmapped.append(blacklisted_serial)
+        for denylisted_serial in self.denylist:
+            if not self._check_denylist_serial(denylisted_serial):
+                unmapped.append(denylisted_serial)
 
         return unmapped
 
     def _get_port_mapping(self):
         return self.port_mapping
 
-    def _check_blacklist(self):
+    def _check_denylist(self):
         mapped = True
 
-        if self.blacklist:
-            for blacklisted_serial in self.blacklist:
-                current_mapped = self._check_blacklist_serial(blacklisted_serial)
+        if self.denylist:
+            for denylisted_serial in self.denylist:
+                current_mapped = self._check_denylist_serial(denylisted_serial)
 
                 if not current_mapped:
-                    print "Device %s not in port mapping" % blacklisted_serial
+                    print("Device %s not in port mapping" % denylisted_serial)
 
                 mapped &= current_mapped
 
         return mapped
 
-    def _check_blacklist_serial(self, blacklisted_serial):
+    def _check_denylist_serial(self, denylisted_serial):
         mapped = True
 
         if self.port_mapping:
-            if blacklisted_serial not in self.port_mapping:
+            if denylisted_serial not in self.port_mapping:
                 mapped = False
         else:
             mapped = False

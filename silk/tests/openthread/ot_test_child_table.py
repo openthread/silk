@@ -12,28 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-from silk.tools import wpan_table_parser
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
 import random
 import unittest
 
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
+
 hwr.global_instance()
 
-CHILD_TABLE_AS_VALMAP_ENTRY = ("Age", "AverageRssi", "ExtAddress", "FullFunction", "FullNetworkData",
-                               "LastRssi", "LinkQualityIn", "NetworkDataVersion", "RLOC16", "RxOnWhenIdle",
-                               "SecureDataRequest", "Timeout",)
+CHILD_TABLE_AS_VALMAP_ENTRY = (
+    "Age",
+    "AverageRssi",
+    "ExtAddress",
+    "FullFunction",
+    "FullNetworkData",
+    "LastRssi",
+    "LinkQualityIn",
+    "NetworkDataVersion",
+    "RLOC16",
+    "RxOnWhenIdle",
+    "SecureDataRequest",
+    "Timeout",
+)
 
 
 class TestChildTable(testcase.TestCase):
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
         cls.joiner_list = []
 
@@ -44,7 +55,7 @@ class TestChildTable(testcase.TestCase):
                 break
             else:
                 cls.joiner_list.append(device)
-        print cls.joiner_list
+        print(cls.joiner_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -52,31 +63,29 @@ class TestChildTable(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 
         for end_node in cls.joiner_list:
             cls.add_test_device(end_node)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk = "00112233445566778899aabbccdd{0:04x}".
-                format(random.randint(0, 0xffff)),
-            channel = random.randint(11, 25),
-            fabric_id = "{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -88,8 +97,8 @@ class TestChildTable(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        self.router.form(self.network_data, 'router')
-        self.router.permit_join(60*len(self.joiner_list))
+        self.router.form(self.network_data, "router")
+        self.router.permit_join(60 * len(self.joiner_list))
         self.wait_for_completion(self.device_list)
 
         self.logger.info(self.router.ip6_lla)
@@ -104,9 +113,8 @@ class TestChildTable(testcase.TestCase):
             self.wait_for_completion([end_node])
             self.wait_for_completion(self.device_list)
 
-        #The last one will join in as end-device
+        # The last one will join in as end-device
         self.joiner_list[-1].join(self.network_data, "end-node")
-        self.joiner_list[-1].set_sleep_poll_interval(100)
         self.wait_for_completion(self.device_list)
 
         for end_node in self.joiner_list:
@@ -114,31 +122,31 @@ class TestChildTable(testcase.TestCase):
             self.logger.info(end_node.ip6_thread_ula)
 
         ret = self.router.wpanctl("get", "status", 2)
-        print ret
+        print(ret)
 
         for end_node in self.joiner_list:
             ret = end_node.wpanctl("get", "status", 2)
-            print ret
+            print(ret)
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):
-        childTable = self.router.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE, 2)
-        childTable = wpan_table_parser.parse_child_table_result(childTable)
+        child_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_result(child_table)
 
-        print childTable
+        print(child_table)
 
-        self.assertEqual(len(childTable), len(self.joiner_list))
+        self.assertEqual(len(child_table), len(self.joiner_list))
 
         counter = 0
         for i, child in enumerate(self.joiner_list):
             ext_addr = child.getprop(wpan.WPAN_EXT_ADDRESS)[1:-1]
 
-            for entry in childTable:
+            for entry in child_table:
                 if entry.ext_address == ext_addr:
                     self.assertEqual(int(entry.rloc16, 16), int(child.getprop(wpan.WPAN_THREAD_RLOC16), 16))
                     self.assertEqual(int(entry.timeout), int(child.getprop(wpan.WPAN_THREAD_CHILD_TIMEOUT)))
 
-                    if i == len(self.joiner_list)-1:
+                    if i == len(self.joiner_list) - 1:
                         self.assertTrue(entry.is_ftd())
                         self.assertTrue(entry.is_rx_on_when_idle())
                     else:
@@ -147,38 +155,38 @@ class TestChildTable(testcase.TestCase):
                     counter += 1
 
         missing_entry = len(self.joiner_list) - counter
-        self.assertEqual(missing_entry, 0, 'Missing {} child entry in Child table'.format(str(missing_entry)))
+        self.assertEqual(missing_entry, 0, "Missing {} child entry in Child table".format(str(missing_entry)))
 
     @testcase.test_method_decorator
     def test03_Verify_ChildTableAddress(self):
-        childAddrTable = self.router.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE_ADDRESSES, 2)
-        childAddrTable = wpan_table_parser.parse_child_table_address_result(childAddrTable)
+        child_addr_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE_ADDRESSES, 2)
+        child_addr_table = wpan_table_parser.parse_child_table_address_result(child_addr_table)
 
-        print childAddrTable
+        print(child_addr_table)
 
-        self.assertEqual(len(childAddrTable), len(self.joiner_list))
+        self.assertEqual(len(child_addr_table), len(self.joiner_list))
 
         counter = 0
         for child in self.joiner_list:
             ext_addr = child.getprop(wpan.WPAN_EXT_ADDRESS)[1:-1]
 
-            for entry in childAddrTable:
+            for entry in child_addr_table:
                 if entry.ext_address == ext_addr:
                     self.assertEqual(int(entry.rloc16, 16), int(child.getprop(wpan.WPAN_THREAD_RLOC16), 16))
                     counter += 1
 
         missing_entry = len(self.joiner_list) - counter
-        self.assertEqual(missing_entry, 0, 'Missing {} child entry in Child table'.format(str(missing_entry)))
+        self.assertEqual(missing_entry, 0, "Missing {} child entry in Child table".format(str(missing_entry)))
 
     @testcase.test_method_decorator
     def test04_Verify_ChildTable_AsValMap(self):
-        childTable = self.router.wpanctl("get", "get "+wpan.WPAN_THREAD_CHILD_TABLE_ASVALMAP, 2)
+        child_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE_ASVALMAP, 2)
 
-        print childTable
+        print(child_table)
 
         total_child_table_entry = len(self.joiner_list)
         for item in CHILD_TABLE_AS_VALMAP_ENTRY:
-            self.assertEqual(childTable.count(item), total_child_table_entry)
+            self.assertEqual(child_table.count(item), total_child_table_entry)
 
 
 if __name__ == "__main__":

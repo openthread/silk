@@ -11,24 +11,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Sample script to run SilkRunner to run testcases.
+"""
+
+import datetime
+import os
 
 from silk.tests import silk_run
-import os
-import datetime
 
-RESULT_LOG_PATH = '/opt/openthread_test/results/'+'silk_run_' + \
-                  datetime.datetime.today().strftime("%m-%d") + '/'
-CONFIG_PATH = '/opt/openthread_test/'
+RESULT_LOG_PATH = "/opt/openthread_test/results/" + "silk_run_" + \
+    datetime.datetime.today().strftime("%m-%d") + "/"
+CONFIG_PATH = "/opt/openthread_test/"
 
-os.chdir('../tests')
+os.chdir("/home/pi/silk/silk/tests/")
 
 timestamp = datetime.datetime.today().strftime("%m-%d-%H:%M")
 
-run_log_path = RESULT_LOG_PATH + 'test_run_on_' + timestamp + '/'
+run_log_path = RESULT_LOG_PATH + "test_run_on_" + timestamp + "/"
 
-argv = ['tests/silk_run.py', '-v2', '-c', CONFIG_PATH+'hwconfig.ini', '-d', run_log_path, 'ot_test_*.py']
+argv = [
+    "tests/silk_run.py", "-v2", "-c", CONFIG_PATH + "hwconfig.ini", "-d", run_log_path, "-s", "localhost",
+    "ot_test_*.py"
+]
 
 silk_run.SilkRunner(argv=argv)
-
-
-

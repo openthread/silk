@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-from silk.tools import wpan_table_parser
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.tools.wpan_util import verify, verify_within, is_associated
-from silk.utils import process_cleanup
-
 import random
 import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, verify_within, is_associated
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -36,16 +36,16 @@ class TestParentResetChildRecovery(testcase.TestCase):
     poll_interval = 4000
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.router = ffdb.ThreadDevBoard()
 
         cls.sleepy_children = []
         cls.rx_on_children = []
 
-        for num in range(NUM_SLEEP_CHILDREN):
+        for _ in range(NUM_SLEEP_CHILDREN):
             cls.sleepy_children.append(ffdb.ThreadDevBoard())
 
-        for num in range(NUM_RX_ON_CHILDREN):
+        for _ in range(NUM_RX_ON_CHILDREN):
             cls.rx_on_children.append(ffdb.ThreadDevBoard())
 
         cls.all_children = cls.sleepy_children + cls.rx_on_children
@@ -56,30 +56,29 @@ class TestParentResetChildRecovery(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         cls.add_test_device(cls.router)
 
         for end_node in cls.all_children:
             cls.add_test_device(end_node)
 
-        for d in cls.device_list:
-            d.set_logger(cls.logger)
-            d.set_up()
+        for device in cls.device_list:
+            device.set_logger(cls.logger)
+            device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name = "SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -93,15 +92,12 @@ class TestParentResetChildRecovery(testcase.TestCase):
         # Checks the child table includes the expected number of children.
         child_table = self.router.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
         child_table = wpan_table_parser.parse_child_table_result(child_table)
-
-        print child_table
-
         verify(len(child_table) == NUM_CHILDREN)
 
     @testcase.test_method_decorator
     def test01_Pairing(self):
-        self.router.form(self.network_data, 'router')
-        self.router.permit_join(60*NUM_CHILDREN)
+        self.router.form(self.network_data, "router")
+        self.router.permit_join(60 * NUM_CHILDREN)
         self.wait_for_completion(self.device_list)
 
         self.logger.info(self.router.ip6_lla)
@@ -112,19 +108,17 @@ class TestParentResetChildRecovery(testcase.TestCase):
 
         for end_node in self.sleepy_children:
             end_node.join(self.network_data, "sleepy-end-device")
+            self.wait_for_completion(self.device_list)
             end_node.set_sleep_poll_interval(self.poll_interval)
 
         for end_node in self.rx_on_children:
             end_node.join(self.network_data, "end-node")
+            self.wait_for_completion(self.device_list)
 
-        self.wait_for_completion(self.device_list)
-
-        ret = self.router.wpanctl("get", "status", 2)
-        print ret
+        self.router.wpanctl("get", "status", 2)
 
         for end_node in self.all_children:
-            ret = end_node.wpanctl("get", "status", 2)
-            print ret
+            end_node.wpanctl("get", "status", 2)
 
     @testcase.test_method_decorator
     def test02_Verify_ChildTable(self):
@@ -137,8 +131,6 @@ class TestParentResetChildRecovery(testcase.TestCase):
         child_num_state_changes = []
         for child in self.all_children:
             child_num_state_changes.append(len(wpan_table_parser.parse_list(child.get("stat:ncp"))))
-
-        print child_num_state_changes
 
         # Reset the parent
         self.router.reset_thread_radio()
@@ -154,7 +146,8 @@ class TestParentResetChildRecovery(testcase.TestCase):
 
         # Verify that number of state changes on all children stays as before (indicating they did not get detached).
         for i in range(len(self.all_children)):
-            verify(child_num_state_changes[i] == len(wpan_table_parser.parse_list(self.all_children[i].get("stat:ncp"))))
+            verify(
+                child_num_state_changes[i] == len(wpan_table_parser.parse_list(self.all_children[i].get("stat:ncp"))))
 
 
 if __name__ == "__main__":

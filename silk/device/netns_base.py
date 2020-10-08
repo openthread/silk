@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Base class for network namespace controller.
+"""
 
 import logging
 import os
@@ -21,29 +23,23 @@ from silk.node.base_node import BaseNode
 import silk.postprocessing.ip as silk_ip
 
 
-def createLinkPair(interface_1, interface_2):
+def create_link_pair(interface_1, interface_2):
     command = "sudo ip link add name %s " % interface_1
-    command += "type veth peer name %s"   % interface_2
+    command += "type veth peer name %s" % interface_2
 
-    print command
-
-    proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-
+    proc = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     return proc.communicate()[0]
 
 
 class NetnsController(SystemCallManager):
     """
-    This class contains methods for creating, destroying, and manipulating
-    network namespaces.  It also provides methods for making systems calls in
-    network namespaces.
+    This class contains methods for creating, destroying, and manipulating network namespaces. It also provides
+    methods for making systems calls in network namespaces.
 
-    Network namespace manipulation requires sudo.  All inheriting classes must
-    be run with sudo.
+    Network namespace manipulation requires sudo. All inheriting classes must be run with sudo.
 
     Classes that inherit from NetnsController
-    1) Must provide a self.device_path attribute. (This is used to roll a
-       unique network namespace name.)
+    1) Must provide a self.device_path attribute. (This is used to roll a unique network namespace name.)
     2) Inheriting class must define the following logging methods
         a) log_debug(log_line)
         b) log_info(log_line)
@@ -52,19 +48,21 @@ class NetnsController(SystemCallManager):
         e) log_critical(log_line)
     """
 
-    _hwModel = None
-    netns = None
-    device_path = None
+    _hw_model = None
 
-    def __init__(self):
+    def __init__(self, netns: str = None, device_path: str = None):
         """
         Carve out a unique network namespace for this device instance.
         Initialize the necessary synchronization mechanisms for async
         operations.
         Startup the system call worker thread.
         """
+        self.netns = netns
+        if netns is not None and device_path is None:
+            self.device_path = ""
+        else:
+            self.device_path = device_path
         self.create_netns()
-
         SystemCallManager.__init__(self)
 
     def create_netns(self):
@@ -72,37 +70,34 @@ class NetnsController(SystemCallManager):
         wpantund will run in a network namespace for these tests.
         This function should be called on instantiation to create a
         unique network namespace name.
-        This function returns the network namepsace name.
+        This function returns the network namespace name.
         """
         self.log_info("Adding network namespace for %s" % self.device_path)
-
-        self.netns = os.path.basename(self.device_path)
+        if self.netns is None:
+            self.netns = os.path.basename(self.device_path)
         command = "sudo ip netns add %s" % self.netns
-        output = self._make_system_call("netns-add", command, 2)
+        self._make_system_call("netns-add", command, 2)
         return self.netns
 
     def delete_netns(self):
-        """
-        Delete netns containing this device.
+        """Delete netns containing this device.
         """
         self.log_info("Deleting network namespace for %s" % self.device_path)
 
         command = "sudo ip netns del %s" % self.netns
-        output = self._make_system_call("netns-del", command, 2)
+        self._make_system_call("netns-del", command, 2)
 
     def netns_pids(self):
-        """
-        List all PIDs running in this device's netns
+        """List all PIDs running in this device's netns.
         """
         self.log_info("Getting PIDs for network namespace for %s" % self.device_path)
 
         command = "sudo ip netns pids %s" % self.netns
         output = self._make_system_call("netns-pids", command, 2).strip()
-        return output.split('\n')
+        return output.split("\n")
 
     def netns_killall(self):
-        """
-        Kill all PIDs in this netns.
+        """Kill all PIDs in this netns.
         """
         self.log_info("Killing all processes in %s" % self.device_path)
         for pid in self.netns_pids():
@@ -119,9 +114,7 @@ class NetnsController(SystemCallManager):
         self.delete_netns()
 
     def construct_netns_command(self, user_command):
-        """
-        Format a command so that it is called in this device's
-        network namespace.
+        """Format a command so that it is called in this device's network namespace.
         """
         command = "sudo ip netns exec %s " % self.netns
         command += user_command
@@ -136,14 +129,14 @@ class NetnsController(SystemCallManager):
         command = self.construct_netns_command(command)
         return self._make_system_call("netns-exec", command, timeout)
 
-    def make_netns_call_async(self, command, expect, timeout, field=None):
+    def make_netns_call_async(self, command, expect, timeout, field=None, exact_match: bool = False):
         """
         Take a standard system call (eg: ifconfig, ping, etc.).
         Format the command so that it will be called in this network namespace.
         Make the system call with a timeout.
         """
         command = self.construct_netns_command(command)
-        return self.make_system_call_async("netns-exec", command, expect, timeout, field)
+        return self.make_system_call_async("netns-exec", command, expect, timeout, field, exact_match)
 
     def link_set(self, interface_name, virtual_eth_peer):
         """
@@ -187,27 +180,26 @@ class NetnsController(SystemCallManager):
         self.make_netns_call_async(command, "", 1, None)
 
     def add_route(self, dest, dest_subnet_length, via_addr, interface_name):
-        command = "ip -6 route add %s/%s via %s dev %s" % (dest, dest_subnet_length,
-                                                           via_addr, interface_name)
+        command = "ip -6 route add %s/%s via %s dev %s" % (dest, dest_subnet_length, via_addr, interface_name)
         self.make_netns_call_async(command, "", 1, None)
 
 
 class StandaloneNetworkNamespace(NetnsController, BaseNode):
+    """Class to control a standalone network namespace that is not associated with a development board.
     """
-    Class to control a standalone network namespace that is not associated
-    with a development board.
-    """
+
     def __init__(self, netns_name):
-        self.device_path = os.path.join("/dev", netns_name)
+        device_path = os.path.join("/dev", netns_name)
         BaseNode.__init__(self, netns_name)
-        NetnsController.__init__(self)
+        NetnsController.__init__(self, netns_name, device_path)
 
     def tear_down(self):
         self.cleanup_netns()
 
-#################################
-#   Logging functions
-#################################
+    #################################
+    #   Logging functions
+    #################################
+
     def set_logger(self, parent_logger):
         self.logger = parent_logger.getChild(self.netns)
 

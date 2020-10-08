@@ -20,43 +20,24 @@ from setuptools import find_packages, setup
 exec(open("silk/version.py").read())
 here = os.path.abspath(os.path.dirname(__file__))
 
-setup(name="silk",
-
-      version=__version__,
-
-      description="Openthread testbed",
-
-      # long_description=long_description,
-
-      author="Google Nest, Inc.",
-
-      platforms=["Linux"],
-
-      classifiers=[
-          "Development Status :: 5 - Production/Stable",
-
-          "License :: OSI Approved :: Apache Software License",
-
-          "Intended Audience :: Developers",
-          "Intended Audience :: Education",
-
-          "Operating System :: POSIX :: Linux",
-
-          "Topic :: Software Development :: Testing",
-          "Topic :: Software Development :: Embedded Systems",
-          "Topic :: System :: Emulators",
-          "Topic :: System :: Networking"
-      ],
-
-      license="Apache",
-
-      packages=find_packages(),
-
-      package_data={'silk': ['config/clusters.conf',
-                            'shell/build_nrf52840.sh',
-                            'shell/nrfjprog.sh',
-                            'shell/flash_wpantund.sh',
-                            'shell/shell_wpanctl_cmd.sh',
-                            'shell/git_pull_wpantund.sh',
-                            'shell/shell_scp.sh']},
-      )
+setup(
+    name="silk",
+    version=__version__,
+    description="Openthread testbed",
+    author="Google Nest, Inc.",
+    platforms=["Linux"],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable", "License :: OSI Approved :: Apache Software License",
+        "Intended Audience :: Developers", "Intended Audience :: Education", "Operating System :: POSIX :: Linux",
+        "Topic :: Software Development :: Testing", "Topic :: Software Development :: Embedded Systems",
+        "Topic :: System :: Emulators", "Topic :: System :: Networking"
+    ],
+    license="Apache",
+    packages=find_packages(),
+    package_data={
+        "silk": [
+            "config/clusters.conf", "shell/build_nrf52840.sh", "shell/nrfjprog.sh", "shell/flash_wpantund.sh",
+            "shell/shell_wpanctl_cmd.sh", "shell/git_pull_wpantund.sh", "shell/shell_scp.sh"
+        ]
+    },
+)

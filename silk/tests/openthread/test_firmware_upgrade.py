@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import silk.node.fifteen_four_dev_board as ffdb
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
 import time
 
-FIRMWARE_FILE_CDC = '/opt/openthread_test/nrf52840_image/ot-ncp-ftd.hex'
-FIRMWARE_FILE_CLI = '/opt/openthread_test/nrf52840_image/ot-cli-ftd.hex'
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
+
+FIRMWARE_FILE_CDC = "/opt/openthread_test/nrf52840_image/ot-ncp-ftd.hex"
+FIRMWARE_FILE_CLI = "/opt/openthread_test/nrf52840_image/ot-cli-ftd.hex"
 
 hwr.global_instance()
 
@@ -27,7 +28,7 @@ hwr.global_instance()
 class TestFirmwareUpgrade(testcase.TestCase):
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.device_list = []
 
         # Get all connected devices
@@ -38,7 +39,7 @@ class TestFirmwareUpgrade(testcase.TestCase):
                 break
             else:
                 cls.device_list.append(device)
-        print cls.device_list
+        print(cls.device_list)
 
     @classmethod
     @testcase.setup_class_decorator
@@ -46,7 +47,7 @@ class TestFirmwareUpgrade(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for d in cls.device_list:
             d.set_logger(cls.logger)
@@ -75,10 +76,9 @@ class TestFirmwareUpgrade(testcase.TestCase):
             self.wait_for_completion(self.device_list)
             result_list.append((device.device.get_dut_serial(), device.flash_result))
 
-        self.logger.info('Firmware upgrade results:')
+        self.logger.info("Firmware upgrade results:")
         self.logger.info(result_list)
 
         overall_result = all(r for _, r in result_list)
-        self.assertTrue(overall_result, 'Firmware upgrade failed on devices or all devices. Please check the log.')
-
-
+        self.assertTrue(overall_result, ("Firmware upgrade failed on devices or all devices."
+                                         " Please check the log."))

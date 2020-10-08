@@ -1,0 +1,100 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  cancel-previous-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@master
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        if: "github.ref != 'refs/heads/master'"
+  
+  unit-tests:
+    name: Unit Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        os: [ubuntu-latest]
+    steps:
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel coverage
+          pip install -r requirements.txt
+      - name: Compile Proto
+        run: python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+      - name: Install
+        run: python setup.py install
+      - name: Test
+        run: |
+          python -m coverage run --parallel-mode silk/unit_tests/test_log_replay.py
+          python -m coverage run --parallel-mode silk/unit_tests/test_otns_manager.py
+          python -m coverage run --parallel-mode silk/unit_tests/test_utilities.py
+      - name: Combine coverage reports
+        run: python -m coverage combine
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+
+  integration-tests:
+    name: Integration Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel coverage
+          pip install -r requirements.txt
+      - name: Compile Proto
+        run: python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./silk/tools/pb/visualize_grpc.proto
+      - name: Install OTNS
+        run: |
+          OTNS_PATH="$HOME/src/otns"
+          mkdir -p $(go env GOPATH)/bin
+          mkdir -p $OTNS_PATH
+          git clone https://github.com/openthread/ot-ns.git $OTNS_PATH
+          cd $OTNS_PATH
+          ./script/install-deps
+          go get ./cmd/otns
+          go get ./cmd/real/...
+          cd pylibs
+          python setup.py install
+      - name: Install
+        run: python setup.py install
+      - name: Test
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          python -m coverage run silk/unit_tests/test_otns.py
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1

@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from silk.config import wpan_constants as wpan
-from silk.tools.wpan_util import verify
-from silk.tools import wpan_table_parser
-
-import silk.node.fifteen_four_dev_board as ffdb
-from silk.node.wpan_node import WpanCredentials
-import silk.hw.hw_resource as hwr
-import silk.tests.testcase as testcase
-from silk.utils import process_cleanup
-
 import random
 import unittest
+
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify
+from silk.utils import process_cleanup
+import silk.hw.hw_resource as hwr
+import silk.node.fifteen_four_dev_board as ffdb
+import silk.tests.testcase as testcase
 
 hwr.global_instance()
 
@@ -34,9 +33,9 @@ class TestMulticastAddresses(testcase.TestCase):
     poll_interval = 800
 
     @classmethod
-    def hardwareSelect(cls):
+    def hardware_select(cls):
         cls.r1 = ffdb.ThreadDevBoard()
-        cls.fed= ffdb.ThreadDevBoard()
+        cls.fed = ffdb.ThreadDevBoard()
         cls.sed = ffdb.ThreadDevBoard()
 
         cls.all_nodes = [cls.r1, cls.fed, cls.sed]
@@ -47,7 +46,7 @@ class TestMulticastAddresses(testcase.TestCase):
         # Check and clean up wpantund process if any left over
         process_cleanup.ps_cleanup()
 
-        cls.hardwareSelect()
+        cls.hardware_select()
 
         for device in cls.all_nodes:
 
@@ -56,19 +55,18 @@ class TestMulticastAddresses(testcase.TestCase):
 
             device.set_up()
 
-        cls.network_data = WpanCredentials(
-            network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
-            psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
-            channel=random.randint(11, 25),
-            fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
+        cls.network_data = WpanCredentials(network_name="SILK-{0:04X}".format(random.randint(0, 0xffff)),
+                                           psk="00112233445566778899aabbccdd{0:04x}".format(random.randint(0, 0xffff)),
+                                           channel=random.randint(11, 25),
+                                           fabric_id="{0:06x}dead".format(random.randint(0, 0xffffff)))
 
         cls.thread_sniffer_init(cls.network_data.channel)
 
     @classmethod
     @testcase.teardown_class_decorator
     def tearDownClass(cls):
-        for d in cls.device_list:
-            d.tear_down()
+        for device in cls.device_list:
+            device.tear_down()
 
     @testcase.setup_decorator
     def setUp(self):
@@ -96,25 +94,24 @@ class TestMulticastAddresses(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.fed.join(self.network_data, 'end-node')
-
-        self.sed.join(self.network_data, "sleepy-end-device")
-
-        self.sed.set_sleep_poll_interval(self.poll_interval)
-
+        self.fed.join(self.network_data, "end-node")
         self.wait_for_completion(self.device_list)
 
+        self.sed.join(self.network_data, "sleepy-end-device")
+        self.wait_for_completion(self.device_list)
+        self.sed.set_sleep_poll_interval(self.poll_interval)
+
         for device in self.device_list:
-            print device.wpanctl("get", "status", 2)
+            print(device.wpanctl("get", "status", 2))
 
     @testcase.test_method_decorator
     def test02_Verify_Multicast_Addresses(self):
         # Get the mesh-local prefix (remove the "/64" at the end of the string)
-        ml_prefix = self.r1.get(wpan.WPAN_IP6_MESH_LOCAL_PREFIX)[1:-1].split('/')[0]
+        ml_prefix = self.r1.get(wpan.WPAN_IP6_MESH_LOCAL_PREFIX)[1:-1].split("/")[0]
 
         # Derive the link-local/realm-local all thread nodes multicast addresses
-        ll_all_thread_nodes_addr = 'ff32:40:' + ml_prefix + '1'
-        rl_all_thread_nodes_addr = 'ff33:40:' + ml_prefix + '1'
+        ll_all_thread_nodes_addr = "ff32:40:" + ml_prefix + "1"
+        rl_all_thread_nodes_addr = "ff33:40:" + ml_prefix + "1"
 
         # List of multicast addresses subscribed by all nodes
         mcast_addrs = [
@@ -136,7 +133,7 @@ class TestMulticastAddresses(testcase.TestCase):
         self.check_multicast_addresses(self.sed, mcast_addrs)
 
     @testcase.test_method_decorator
-    def test03_Add_Mutilcast_Address(self):
+    def test03_Add_Multicast_Address(self):
 
         for node in self.device_list:
             node.add(wpan.WPAN_IP6_MULTICAST_ADDRESSES, MCAST_ADDR)

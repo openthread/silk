@@ -11,96 +11,94 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Base class of node profiles.
+"""
 
-"""
-Base class of node profiles
-"""
 import logging
 import threading
-import Queue
+import queue
 
 import silk.tools.watchable as watchable
 
 
 def not_implemented(f):
+
     def wrapper(self, *args):
-        print "'%s.%s' not implemented" % (self.__class__.__name__, f.__name__)
+        print("'%s.%s' not implemented" % (self.__class__.__name__, f.__name__))
+
     return wrapper
 
 
 class BaseNode(object):
+    """Base node superclass.
     """
-    Base node superclass
-    """
-    _maxTimeout = 60 * 3
+    _max_timeout = 60 * 3
 
-    def __init__(self, name='Node'):
+    def __init__(self, name="Node"):
         self._connected = False
         self._name = name
-        self._error = Queue.Queue(1)
+        self._error = queue.Queue(1)
         self._all_clear = threading.Event()
         self._lock = threading.Lock()
         self.__store = dict()
-        self.logger = logging.getLogger('SilkDefault')
+        self.logger = logging.getLogger("SilkDefault")
 
     def __get_log_prefix(self):
         return "%s" % self._name
 
     def log_debug(self, log):
-        """Helper to log debug events
+        """Helper to log debug events.
         """
         line = "DBG: %s: %s" % (self.__get_log_prefix(), log)
         self.logger.debug(line)
 
     def log_info(self, log):
-        """Helper to log info events
+        """Helper to log info events.
         """
         self.logger.info("%s: %s" % (self.__get_log_prefix(), log))
 
     def log_error(self, log):
-        """Helper to log error events
+        """Helper to log error events.
         """
         self.logger.error("ERR: %s: %s" % (self.__get_log_prefix(), log))
 
     def in_error(self):
-        """Returns true if error condition has been set
+        """Returns true if error condition has been set.
         """
         return not self._error.empty()
 
     def get_error(self):
-        """Returns error message and clears error condition, if any
+        """Returns error message and clears error condition, if any.
 
         Returns None if there is no error.
         """
         try:
             err_msg = self._error.get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             err_msg = None
         return err_msg
 
     def post_error(self, msg):
         """Posts the error msg if none exists.
         """
-        self.logger.error('Posting error: {0}'.format(msg))
+        self.logger.error(f"Posting error: {msg}")
         try:
             self.log_error(msg)
             self._error.put_nowait(msg)
-        except Queue.Full:
-            print '{0}: Failed to post error {1}. Already has error'.format(
-                self._name, msg)
+        except queue.Full:
+            print(f"{self._name}: Failed to post error {msg}. Already has error")
 
     def set_all_clear(self, is_all_clear):
-        """Update Event to the value of is_all_clear
+        """Update Event to the value of is_all_clear.
 
         Args:
             is_all_clear (bool): Boolean value to assign Event.
 
         This method should only be called with the lock and only on three
         occasions:
-            1: Initially at the start of the daemon (to set event)
-            2: After a message is been processed (set if queue is empty)
-            3: When a message has been queued (to clear event) 
-
+        1: Initially at the start of the daemon (to set event)
+        2: After a message is been processed (set if queue is empty)
+        3: When a message has been queued (to clear event)
         """
 
         self.log_debug("Setting all-clear to %s" % is_all_clear)
@@ -113,16 +111,16 @@ class BaseNode(object):
     def wait_for_completion(self):
         """Block until all queued commands and responses have been received.
         """
-        self._all_clear.wait(self._maxTimeout)
+        self._all_clear.wait(self._max_timeout)
         if not self._all_clear.is_set():
-            print 'Did not get an all-clear!'
+            self.log_debug("Did not get an all-clear!")
         return self.get_error()
 
     def store_data(self, value, field):
         with self._lock:
             assigned = False
 
-            print field, value
+            self.log_debug("Stored data: %s %s" % (field, value))
             if isinstance(value, str):
                 value = value.strip()
 
@@ -147,7 +145,7 @@ class BaseNode(object):
         # Convert to desired type
         if to_type is not None:
             try:
-                if to_type == 'hex-int':
+                if to_type == "hex-int":
                     value = int(value, 16)
                 else:
                     value = to_type(value)
@@ -165,7 +163,7 @@ class BaseNode(object):
 
     @property
     def ip6_lla_label(self):
-        return 'ip6_lla'
+        return "ip6_lla"
 
     @property
     def ip6_lla(self):
@@ -174,7 +172,7 @@ class BaseNode(object):
 
     @property
     def ip6_mla_label(self):
-        return 'ip6_mla'
+        return "ip6_mla"
 
     @property
     def ip6_mla(self):
@@ -183,7 +181,7 @@ class BaseNode(object):
 
     @property
     def ping6_sent_label(self):
-        return 'ping6_sent'
+        return "ping6_sent"
 
     @property
     def ping6_sent(self):
@@ -192,7 +190,7 @@ class BaseNode(object):
 
     @property
     def ping6_received_label(self):
-        return 'ping6_received'
+        return "ping6_received"
 
     @property
     def ping6_received(self):
@@ -201,7 +199,7 @@ class BaseNode(object):
 
     @property
     def ping6_results_label(self):
-        return 'ping6_results'
+        return "ping6_results"
 
     def ping6_results_process(self):
         match_results = self.get_data(self.ping6_results_label)
@@ -209,7 +207,7 @@ class BaseNode(object):
         self.store_data(match_results.group(1), self.ping6_sent_label)
         self.store_data(match_results.group(2), self.ping6_received_label)
 
-        return self.ping6_get_results(self)
+        return self.ping6_get_results()
 
     def ping6_get_results(self):
         return "%s / %s " % (self.ping6_received, self.ping6_sent)
@@ -226,7 +224,7 @@ class BaseNode(object):
     @not_implemented
     def set_up(self):
         """Perform all hardware and software set-up to ready the node.
-        """
+    """
         pass
 
     @not_implemented
@@ -236,7 +234,7 @@ class BaseNode(object):
         pass
 
     def set_logger(self, parent_logger):
-        """Set logger to a child from parent_logger
+        """Set logger to a child from parent_logger.
         """
         self.logger = parent_logger.getChild(self._name)
         self.logger.setLevel(logging.DEBUG)
@@ -246,37 +244,34 @@ class BaseNode(object):
 
         Store results in ping6_sent and ping6_received
         """
-        pass        
+        pass
 
     @not_implemented
     def reset_thread_radio(self):
-        """Reset the node's thread radio
+        """Reset the node's thread radio.
         """
         pass
 
     @not_implemented
     def reset_host_cpu(self, reset_thread_radio=False):
-        """Reset the node host (with or w/o radio)
+        """Reset the node host (with or w/o radio).
         """
         pass
 
     @not_implemented
     def firmware_version(self):
-        """
-        Query node's firmware version.
+        """Query node's firmware version.
         """
         return None
 
     @not_implemented
     def firmware_update(self, fw_file):
-        """
-        Update the node's firmware.
+        """Update the node's firmware.
         """
         pass
 
     @not_implemented
     def clear_state(self):
-        """
-        Clear any persistent state in the node.
+        """Clear any persistent state in the node.
         """
         pass

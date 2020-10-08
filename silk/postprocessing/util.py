@@ -15,7 +15,7 @@
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
 
 # Hex
-REGEX_HEX = "[\dA-Fa-f]"
+REGEX_HEX = r"[\dA-Fa-f]"
 
 # e.g 18:B4:30:00:00:6D:52:C0
 MAC_REGEX_CHUNK = "%s%s" % (REGEX_HEX, REGEX_HEX)

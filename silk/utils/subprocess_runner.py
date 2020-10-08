@@ -12,25 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import re
 import select
 import subprocess
 import threading
 import traceback
-import re
 
 from silk.utils import signal
 
 
 class SubprocessRunner(signal.Publisher, threading.Thread):
-    """
-    a class which runs a command
+    """A class which runs a command.
 
     :param command:
         command to run
-
     """
+
     def __init__(self, command):
-        super(SubprocessRunner, self).__init__()
+        super().__init__()
+        threading.Thread.__init__(self)
 
         self.command = command
 
@@ -38,17 +38,17 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
         self.daemon = True
 
     def start(self):
-        """ start the subprocessrunner, this does not start process """
+        """Start the subprocess runner, this does not start process.
+        """
         try:
-            super(SubprocessRunner, self).start()
+            super().start()
             self.running = True
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            print "Error in SubprocessRunner start:", str(e)
+            print("Error in SubprocessRunner start:", str(e))
 
     def stop(self, timeout=15):
-        """
-        end subprocessrunner
+        """End subprocess runner.
 
         :param int timeout:
             the seconds to wait before force killing the process
@@ -57,33 +57,33 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
             self.running = False
             # try joining for 15 seconds, else let the program tear down
             self.join(timeout)
-            if self.isAlive():
-                self.warn('SubprocessRunner join timed out')
+            if self.is_alive():
+                self.warn("SubprocessRunner join timed out")
                 self.proc.kill()
 
     def run(self):
-        """ start the command """
+        """start the command.
+        """
 
         # Added code to handle wpantund start in RCP mode
-        # sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath 'system:openthread/output/posix/x86_64-unknown-linux-
-        # gnu/bin/ot-ncp /dev/ttyACM0 115200' -o Config:TUN:InterfaceName wpan0 -o Daemon:SyslogMask "all"
+        # sudo /usr/local/sbin/wpantund -o Config:NCP:SocketPath "system:openthread/output/posix/x86_64-unknown-linux-
+        # gnu/bin/ot-ncp /dev/ttyACM0 115200" -o Config:TUN:InterfaceName wpan0 -o Daemon:SyslogMask "all"
 
-        command = re.findall("(?:\".*?\"|\S)+", self.command)
+        command = re.findall(r"(?:\".*?\"|\S)+", self.command)
 
-        command = ' '.join(e for e in command)
+        command = " ".join(e for e in command)
 
-        self.proc = subprocess.Popen(command,
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.STDOUT, shell=True)
+        self.proc = subprocess.Popen(command, bufsize=0, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         try:
             while self.running:
                 for s in select.select([self.proc.stdout], [], [], 1)[0]:
-                    line = self.proc.stdout.readline().rstrip()
+                    line = s.readline().rstrip()
                     if line:
+                        line = line.decode("utf-8")
                         self.emit(line=line)
-        except Exception, e:
+        except Exception as e:
             traceback.print_exc()
-            print "Error in SubprocessRunner run:", str(e)
+            print("Error in SubprocessRunner run:", str(e))
         finally:
             self.running = False
             try:

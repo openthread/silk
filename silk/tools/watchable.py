@@ -11,21 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+"""Watchable, an implementation of an object whose state can be watched.
 """
-Watchable, an implementation of an object whose state can be watched
-"""
-
-import threading
 
 from datetime import datetime
+import threading
 
-import deadline as silk_deadline
+from . import deadline as silk_deadline
 
 
-def is_watchable(object):
-    return (isinstance(object, WatchableWithHistory) or
-        isinstance(object, Watchable))
+def is_watchable(object_to_check):
+    return isinstance(object_to_check, (WatchableWithHistory, Watchable))
 
 
 # An object whose state can be watched
@@ -34,7 +30,7 @@ class Watchable(object):
     # @param value The initial value for this watchable
     # @param name The name for this watchable, for logging only
     # @Param logger A logger to invoke any logging operations
-    def __init__(self, value, name = None, logger = None):
+    def __init__(self, value, name=None, logger=None):
         self.value = value
         self.__lock = threading.Lock()
         self.__watchers = []
@@ -42,52 +38,52 @@ class Watchable(object):
         self.__logger = logger
 
     def __get__(self, instance, owner):
-        self.__lock.acquire()
-        value = self.value
-        self.__lock.release()
+        instance.__lock.acquire()
+        value = instance.value
+        instance.__lock.release()
 
         return value
 
     def __set__(self, instance, value):
         modify = False
 
-        self.__lock.acquire()
+        instance.__lock.acquire()
 
-        modify = value != self.value
+        modify = value != instance.value
         if modify:
-            self.value = value
+            instance.value = value
 
         # Instruct watchers to poll again
         # even if values have not changed
-        for watcher in self.__watchers:
+        for watcher in instance.__watchers:
             watcher.set()
 
-        self.__lock.release()
+        instance.__lock.release()
 
-        if modify and self.__logger:
+        if modify and instance.__logger:
             log = "%s modified" % str(self)
-            self.__logger.debug(log)
+            instance.__logger.debug(log)
 
         return value
 
     def __str__(self):
         return str(self.value)
-    
+
     # Get the name
     # @returns The name
     @property
     def name(self):
-        return self.__name;
+        return self.__name
 
     # Set the contained property
     # @param new_value The value to set
     def set(self, new_value):
-        return self.__set__(None, new_value)
+        return self.__set__(self, new_value)
 
     # Get the contained property
     # @return The value of the contained property
     def get(self):
-        return self.__get__(None, None)
+        return self.__get__(self, None)
 
     # Wait until the value of lambda_func(__property_object) == True
     # The below example will block until the underlying property becomes 5
@@ -95,7 +91,7 @@ class Watchable(object):
     # @param lambda_func A function or callable that returns not None when the desired watch condition is Met
     # @param timeout Timeout in seconds. Specify None for no timeout
     # @return The result of the watch function. A None result implies a timeout
-    def watch(self, lambda_func, timeout = None, must_update = False):
+    def watch(self, lambda_func, timeout=None, must_update=False):
         retval = None
 
         deadline = silk_deadline.Deadline(timeout)
@@ -136,8 +132,8 @@ class Watchable(object):
     # cases where an asynchronous operation (i.e a command) is pending and we want to
     # wait until things are updated
     # @param timeout Timeout in seconds. Specify None for no timeout
-    def watch_for_update(self, timeout = None):
-        return self.watch(lambda v: True, must_update = True)
+    def watch_for_update(self, timeout=None):
+        return self.watch(lambda v: True, must_update=True)
 
 
 # A watchable state that also tracks history of the object changing
@@ -146,7 +142,7 @@ class WatchableWithHistory(object):
     # @param initial_value The initial value of this watchable. Does not count towards history
     # @param name The name for this watchable, for logging only
     # @Param logger A logger to invoke any logging operations
-    def __init__(self, initial_value = None, name = None, logger = None):
+    def __init__(self, initial_value=None, name=None, logger=None):
         self.__history = []
         self.__initial_value = initial_value
         self.__value = Watchable(None, name, logger)
@@ -162,20 +158,18 @@ class WatchableWithHistory(object):
         return str(self.__value)
 
     def __update_value(self):
-        if len(self.__history):
+        if self.__history:
             [time, value] = self.__history[-1]
             self.__value.set(value)
 
     # Get the latest value
     def get(self):
-        retval = None
-
-        if len(self.__history):
-            retval = self.__value.get()
+        if self.__history:
+            value = self.__value.get()
         else:
-            retval = self.__initial_value
+            value = self.__initial_value
 
-        return retval
+        return value
 
     # Get the history
     def get_history(self):
@@ -204,15 +198,15 @@ class WatchableWithHistory(object):
     def set(self, value):
         return self.append([datetime.now(), value])
 
-    # Perform a watch. See the description of 'watch' above for Watchable
+    # Perform a watch. See the description of "watch" above for Watchable
     # @param lambda_func A callable
     # @param timeout  Timeout in seconds
     # @return the result of the lambda function
-    def watch(self, lambda_func, timeout = None):
+    def watch(self, lambda_func, timeout=None):
         return self.__value.watch(lambda_func, timeout)
 
     # Perform a watch, for any change to this object. Useful
     # For waiting for a side effect to take place on a watchable
     # object after issuing a command
-    def watch_for_update(self, timeout = None):
+    def watch_for_update(self, timeout=None):
         return self.__value.watch_for_update(timeout)

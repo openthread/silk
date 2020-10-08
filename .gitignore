@@ -3,7 +3,18 @@
 *.json
 silk/results/*.*
 silk/tests/results/*.*
-build/*.*
+build/*
 dist/*.*
 testbed.egg-info/*.*
+silk.egg-info/*
 
+env/*
+
+*.out
+*.pcap
+*.replay
+.coverage
+*pb2.py
+*pb2_grpc.py
+
+.idea/*
