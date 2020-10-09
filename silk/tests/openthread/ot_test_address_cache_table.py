@@ -19,15 +19,15 @@ import random
 import time
 import unittest
 
-from silk.config import wpan_constants as wpan
-from silk.node.wpan_node import WpanCredentials
-from silk.utils import process_cleanup
-from silk.tools import wpan_table_parser
-from silk.tools.wpan_util import verify, verify_within, VerifyError
-from silk.unit_tests.test_utils import random_string
 import silk.hw.hw_resource as hwr
 import silk.node.fifteen_four_dev_board as ffdb
 import silk.tests.testcase as testcase
+from silk.config import wpan_constants as wpan
+from silk.node.wpan_node import WpanCredentials
+from silk.tools import wpan_table_parser
+from silk.tools.wpan_util import verify, verify_within, VerifyError
+from silk.unit_tests.test_utils import random_string
+from silk.utils import process_cleanup
 
 hwr.global_instance()
 
@@ -37,8 +37,9 @@ ROUTER_TABLE_WAIT_TIME = 30
 INVALID_ROUTER_ID = 63
 CHILD_SUPERVISION_CHECK_TIMEOUT = 2
 PARENT_SUPERVISION_INTERVAL = 1
-REATTACH_WAIT_TIME = CHILD_SUPERVISION_CHECK_TIMEOUT
-WAIT_TIME = 180
+REATTACH_WAIT_TIME = 60
+ADDRESS_CACHE_TABLE_WAIT_TIME = 10
+PREFIX_PROPAGATION_DELAY = 60
 
 
 class TestAddressCacheTable(testcase.TestCase):
@@ -116,7 +117,6 @@ class TestAddressCacheTable(testcase.TestCase):
         for i, (src, dst, src_address, dst_address) in enumerate(addresses):
             port = random.randint(10000 + i * 100, 10099 + i * 100)
             message = random_string(10)
-            # src_address = f"{src_addr}%{src.netns}"
 
             dst.receive_udp_data(port, message, timeout)
             time.sleep(delay)
@@ -126,21 +126,12 @@ class TestAddressCacheTable(testcase.TestCase):
 
     @testcase.test_method_decorator
     def test01_pairing(self):
-
-        self.r1.allowlist_node(self.fed1)
-        self.fed1.allowlist_node(self.r1)
-
-        self.r1.allowlist_node(self.r2)
-        self.r2.allowlist_node(self.r1)
-
-        self.r2.allowlist_node(self.sed2)
-        self.sed2.allowlist_node(self.r2)
-
-        self.r2.allowlist_node(self.r3)
-        self.r3.allowlist_node(self.r2)
-
-        self.r3.allowlist_node(self.fed3)
-        self.fed3.allowlist_node(self.r3)
+        # Create allowlisted nodes based on the topology.
+        for node1, node2 in [(self.r1, self.fed1), (self.r1, self.r2),
+                             (self.r2, self.sed2), (self.r2, self.r3),
+                             (self.r3, self.fed3)]:
+            node1.allowlist_node(node2)
+            node2.allowlist_node(node1)
 
         self.r1.form(self.network_data, "router")
         self.r1.permit_join(3600)
@@ -152,21 +143,17 @@ class TestAddressCacheTable(testcase.TestCase):
         self.network_data.xpanid = self.r1.xpanid
         self.network_data.panid = self.r1.panid
 
-        self.r2.join(self.network_data, "router")
-        self.wait_for_completion(self.device_list)
+        for node in [self.r2, self.r3]:
+            node.join(self.network_data, "router")
+            self.wait_for_completion(self.device_list)
 
         self.sed2.join(self.network_data, "sleepy-end-device")
         self.sed2.set_sleep_poll_interval(POLL_INTERVAL)
         self.wait_for_completion(self.device_list)
 
-        self.r3.join(self.network_data, "router")
-        self.wait_for_completion(self.device_list)
-
-        self.fed3.join(self.network_data, "end-node")
-        self.wait_for_completion(self.device_list)
-
-        self.fed1.join(self.network_data, "end-node")
-        self.wait_for_completion(self.device_list)
+        for node in [self.fed1, self.fed3]:
+            node.join(self.network_data, "end-node")
+            self.wait_for_completion(self.device_list)
 
     @testcase.test_method_decorator
     def test02_verify_node_type_and_parent(self):
@@ -196,13 +183,13 @@ class TestAddressCacheTable(testcase.TestCase):
         self.wait_for_completion(self.device_list)
 
         # Wait for prefix to get added to all the nodes
-        time.sleep(60)
+        time.sleep(PREFIX_PROPAGATION_DELAY)
 
         self.get_rloc_and_ipv6_address_for_prefix()
 
         def check_r1_router_table():
             router_table = wpan_table_parser.parse_router_table_result(self.r1.get(wpan.WPAN_THREAD_ROUTER_TABLE))
-            self.assertEqual(len(router_table), 3)
+            verify(len(router_table) == 3)
 
             for entry in router_table:
                 if entry.rloc16 == self.r3_rloc:
@@ -216,7 +203,7 @@ class TestAddressCacheTable(testcase.TestCase):
         # Send a single UDP message from r1 to fed3
         self.transmit_receive_udp_message([(self.r1, self.sed2, self.r1_address, self.sed2_address),
                                            (self.r1, self.fed3, self.r1_address, self.fed3_address)])
-        time.sleep(WAIT_TIME)
+        time.sleep(ADDRESS_CACHE_TABLE_WAIT_TIME)
         # The address cache table on r1 should contain two entries for sed2 and fed3 addresses.
 
         addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
@@ -233,203 +220,208 @@ class TestAddressCacheTable(testcase.TestCase):
             else:
                 raise VerifyError("Unknown entry in the address cache table")
 
-    # @testcase.test_method_decorator
-    # def test05_verify_sed2_forced_switch_to_parent_r3(self):
-    #     # Force sed2 to switch its parent from r2 to r3
-    #     self.sed2.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
-    #     self.r3.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
-    #
-    #     self.r2.un_allowlist_node(self.sed2)
-    #     self.r3.allowlist_node(self.sed2)
-    #     self.sed2.allowlist_node(self.r3)
-    #
-    #     # Wait for sed2 to detach from r2 and attach to r3.
-    #     #
-    #     # Upon re-attach, previous parent r2 is notified and should remove sed2 from
-    #     # its child table.
-    #
-    #     def check_sed2_is_removed_from_r2_child_table():
-    #         child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-    #         child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-    #         self.assertEqual(len(child_table), 0)
-    #
-    #     verify_within(check_sed2_is_removed_from_r2_child_table, REATTACH_WAIT_TIME)
-    #
-    #     # Verify that both sed2, fed3 are children of r3
-    #     child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-    #     child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-    #     self.assertEqual(len(child_table), 2)
-    #
-    # @testcase.test_method_decorator
-    # def test06_verify_address_cache_table_on_r1_removes_sed2(self):
-    #
-    #     # New network topology
-    #     #
-    #     #     r1 ---- r2 ---- r3
-    #     #     |               /\
-    #     #     |              /  \
-    #     #     fed1           sed2 fed3
-    #
-    #     # From r1 send again to sed2 (which is now a child of r3).
-    #     #
-    #     # Note that r1 still has r2 as the destination for sed2's address in its address
-    #     # cache table.  But since r2 is aware that sed2 is no longer its child, when it
-    #     # receives the IPv6 message with sed2's address, r2 itself would do an address
-    #     # query for the address and forward the IPv6 message.
-    #
-    #     self.transmit_receive_udp_message([(self.r1, self.sed2, self.r1_address, self.sed2_address)])
-    #
-    #     # The address cache table on r1 should have sed2's address removed.
-    #     addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
-    #     addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-    #     self.assertEqual(len(addr_cache_table), 1)
-    #
-    #     for entry in addr_cache_table:
-    #         if entry.address == self.fed3_address:
-    #             # Entry for fed3 should still point towards fed3
-    #             verify(entry.rloc16 == self.fed3_rloc)
-    #         else:
-    #             raise VerifyError("Unknown entry in the address cache table")
-    #
-    # @testcase.test_method_decorator
-    # def test07_verify_address_cache_table_on_r1_adds_sed2(self):
-    #     # Send a UDP message from r1 to sed2.
-    #     self.transmit_receive_udp_message([(self.r1, self.sed2, self.r1_address, self.sed2_address)])
-    #
-    #     # The address cache table on r1 should have both fed1 and sed2.
-    #
-    #     addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
-    #     addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-    #     self.assertEqual(len(addr_cache_table), 2)
-    #
-    #     for entry in addr_cache_table:
-    #         if entry.address == self.sed2_address:
-    #             # Entry for sed2 should point towards r3
-    #             verify(entry.rloc16 == self.r3_rloc)
-    #         elif entry.address == self.fed3_address:
-    #             # Entry for fed3 should still point towards fed3
-    #             verify(entry.rloc16 == self.fed3_rloc)
-    #         else:
-    #             raise VerifyError("Unknown entry in the address cache table")
-    #
-    # @testcase.test_method_decorator
-    # def test08_verify_sed2_forced_switch_to_parent_r2(self):
-    #     # Force sed2 to switch its parent from r3 to r2
-    #     self.sed2.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
-    #     self.r2.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
-    #
-    #     self.r3.un_allowlist_node(self.sed2)
-    #     self.r2.allowlist_node(self.sed2)
-    #     self.sed2.allowlist_node(self.r2)
-    #
-    #     # Wait for sed2 to detach from r3 and attach to r2.
-    #     #
-    #     # Upon re-attach, previous parent r3 is notified and should remove sed2 from
-    #     # its child table.
-    #     def check_sed2_is_removed_from_r3_child_table():
-    #         child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-    #         child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-    #         self.assertEqual(len(child_table), 1)
-    #
-    #     verify_within(check_sed2_is_removed_from_r3_child_table, REATTACH_WAIT_TIME)
-    #
-    #     # Verify that sed2 is a child of r2
-    #     child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-    #     child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-    #     self.assertEqual(len(child_table), 1)
-    #
-    # @testcase.test_method_decorator
-    # def test09_verify_address_cache_table_on_r1_updates_sed2(self):
-    #     # New network topology
-    #     #
-    #     #     r1 ---- r2 ---- r3
-    #     #     |       |       |
-    #     #     |       |       |
-    #     #     fed1    sed2   fed3
-    #
-    #     # Send a UDP message from sed2 to fed1.
-    #     # This message will be forwarded by r1 to its FED child fed1.
-    #     self.transmit_receive_udp_message([(self.sed2, self.fed1, self.sed2_address, self.fed1_address)])
-    #
-    #     # r1 upon receiving and forwarding the message from sed2 (through r2 now) should
-    #     # update its address cache table for sed2 (address cache update through snooping).
-    #     #
-    #     # verify that the address cache table is updated correctly.
-    #     addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
-    #     addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-    #     self.assertEqual(len(addr_cache_table), 2)
-    #
-    #     for entry in addr_cache_table:
-    #         if entry.address == self.sed2_address:
-    #             # Entry for sed2's address should now point to r2
-    #             verify(entry.rloc16 == self.r2_rloc)
-    #         elif entry.address == self.fed3_address:
-    #             # Entry for fed3's address should still point to fed3
-    #             verify(entry.rloc16 == self.fed3_rloc)
-    #         else:
-    #             raise VerifyError("Unknown entry in the address cache table")
-    #
-    # @testcase.test_method_decorator
-    # def test10_verify_sed2_forced_switch_again_to_parent_r3(self):
-    #     # Force sed2 to switch its parent from r2 to r3
-    #     self.sed2.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
-    #     self.r3.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
-    #
-    #     self.r2.un_allowlist_node(self.sed2)
-    #     self.r3.allowlist_node(self.sed2)
-    #     self.sed2.allowlist_node(self.r3)
-    #
-    #     # Wait for sed2 to detach from r2 and attach to r3.
-    #     #
-    #     # Upon re-attach, previous parent r2 is notified and should remove sed2 from its child table.
-    #
-    #     def check_sed2_is_removed_from_r2_child_table():
-    #         child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-    #         child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-    #         self.assertEqual(len(child_table), 0)
-    #
-    #     verify_within(check_sed2_is_removed_from_r2_child_table, REATTACH_WAIT_TIME)
-    #
-    #     # Verify that both sed2, fed3 are children of r3
-    #     child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
-    #     child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-    #     self.assertEqual(len(child_table), 2)
-    #
-    # @testcase.test_method_decorator
-    # def test11_verify_address_cache_table_on_r1_again_updates_sed2(self):
-    #     # New network topology
-    #     #
-    #     #     r1 ---- r2 ---- r3
-    #     #     |               /\
-    #     #     |              /  \
-    #     #     fed1          sed2 fed3
-    #
-    #     # Send a UDP message from sed2 to fed1.
-    #     # This message will be forwarded by r1 to its FED child fed1.
-    #     self.transmit_receive_udp_message([(self.sed2, self.fed1, self.sed2_address, self.fed1_address)])
-    #
-    #     # r1 upon receiving and forwarding the message from sed2 (through r2 now) should
-    #     # update its address cache table for sed2 (address cache update through snooping).
-    #     #
-    #     # verify that the address cache table is updated correctly.
-    #     # The address cache table on r1 should have sed2's address removed.
-    #
-    #     # The address cache table on r1 should have both fed1 and sed2.
-    #
-    #     addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
-    #     addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-    #     self.assertEqual(len(addr_cache_table), 2)
-    #
-    #     for entry in addr_cache_table:
-    #         if entry.address == self.sed2_address:
-    #             # Entry for sed2 should point towards r3
-    #             verify(entry.rloc16 == self.r3_rloc)
-    #         elif entry.address == self.fed3_address:
-    #             # Entry for fed3 should still point towards fed3
-    #             verify(entry.rloc16 == self.fed3_rloc)
-    #         else:
-    #             raise VerifyError("Unknown entry in the address cache table")
+    @testcase.test_method_decorator
+    def test05_verify_sed2_forced_switch_to_parent_r3(self):
+        # Force sed2 to switch its parent from r2 to r3
+        self.sed2.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
+        self.r3.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
+
+        self.r2.un_allowlist_node(self.sed2)
+        self.r3.allowlist_node(self.sed2)
+        self.sed2.allowlist_node(self.r3)
+
+        # Wait for sed2 to detach from r2 and attach to r3.
+        #
+        # Upon re-attach, previous parent r2 is notified and should remove sed2 from
+        # its child table.
+
+        def check_sed2_is_removed_from_r2_child_table():
+            child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+            child_table = wpan_table_parser.parse_child_table_address_result(child_table)
+            verify(len(child_table) == 0)
+
+        verify_within(check_sed2_is_removed_from_r2_child_table, REATTACH_WAIT_TIME)
+
+        # Verify that both sed2, fed3 are children of r3
+        child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_address_result(child_table)
+        self.assertEqual(len(child_table), 2)
+
+    @testcase.test_method_decorator
+    def test06_verify_address_cache_table_on_r1_removes_sed2(self):
+
+        # New network topology
+        #
+        #     r1 ---- r2 ---- r3
+        #     |               /\
+        #     |              /  \
+        #     fed1           sed2 fed3
+
+        # From r1 send again to sed2 (which is now a child of r3).
+        #
+        # Note that r1 still has r2 as the destination for sed2's address in its address
+        # cache table.  But since r2 is aware that sed2 is no longer its child, when it
+        # receives the IPv6 message with sed2's address, r2 itself would do an address
+        # query for the address and forward the IPv6 message.
+
+        self.transmit_receive_udp_message([(self.r1, self.sed2, self.r1_address, self.sed2_address)])
+        time.sleep(ADDRESS_CACHE_TABLE_WAIT_TIME)
+
+        # The address cache table on r1 should have sed2's address removed.
+        addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
+        addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
+        self.assertEqual(len(addr_cache_table), 1)
+
+        for entry in addr_cache_table:
+            if entry.address == self.fed3_address:
+                # Entry for fed3 should still point towards fed3
+                verify(entry.rloc16 == self.fed3_rloc)
+            else:
+                raise VerifyError("Unknown entry in the address cache table")
+
+    @testcase.test_method_decorator
+    def test07_verify_address_cache_table_on_r1_adds_sed2(self):
+        # Send a UDP message from r1 to sed2.
+        self.transmit_receive_udp_message([(self.r1, self.sed2, self.r1_address, self.sed2_address)])
+
+        time.sleep(ADDRESS_CACHE_TABLE_WAIT_TIME)
+        # The address cache table on r1 should have both fed1 and sed2.
+
+        addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
+        addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
+        self.assertEqual(len(addr_cache_table), 2)
+
+        for entry in addr_cache_table:
+            if entry.address == self.sed2_address:
+                # Entry for sed2 should point towards r3
+                verify(entry.rloc16 == self.r3_rloc)
+            elif entry.address == self.fed3_address:
+                # Entry for fed3 should still point towards fed3
+                verify(entry.rloc16 == self.fed3_rloc)
+            else:
+                raise VerifyError("Unknown entry in the address cache table")
+
+    @testcase.test_method_decorator
+    def test08_verify_sed2_forced_switch_to_parent_r2(self):
+        # Force sed2 to switch its parent from r3 to r2
+        self.sed2.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
+        self.r2.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
+
+        self.r3.un_allowlist_node(self.sed2)
+        self.r2.allowlist_node(self.sed2)
+        self.sed2.allowlist_node(self.r2)
+
+        # Wait for sed2 to detach from r3 and attach to r2.
+        #
+        # Upon re-attach, previous parent r3 is notified and should remove sed2 from
+        # its child table.
+        def check_sed2_is_removed_from_r3_child_table():
+            child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+            child_table = wpan_table_parser.parse_child_table_address_result(child_table)
+            verify(len(child_table) == 1)
+
+        verify_within(check_sed2_is_removed_from_r3_child_table, REATTACH_WAIT_TIME)
+
+        # Verify that sed2 is a child of r2
+        child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_address_result(child_table)
+        self.assertEqual(len(child_table), 1)
+
+    @testcase.test_method_decorator
+    def test09_verify_address_cache_table_on_r1_updates_sed2(self):
+        # New network topology
+        #
+        #     r1 ---- r2 ---- r3
+        #     |       |       |
+        #     |       |       |
+        #     fed1    sed2   fed3
+
+        # Send a UDP message from sed2 to fed1.
+        # This message will be forwarded by r1 to its FED child fed1.
+        self.transmit_receive_udp_message([(self.sed2, self.fed1, self.sed2_address, self.fed1_address)])
+        time.sleep(ADDRESS_CACHE_TABLE_WAIT_TIME)
+
+        # r1 upon receiving and forwarding the message from sed2 (through r2 now) should
+        # update its address cache table for sed2 (address cache update through snooping).
+        #
+        # verify that the address cache table is updated correctly.
+        addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
+        addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
+        self.assertEqual(len(addr_cache_table), 2)
+
+        for entry in addr_cache_table:
+            if entry.address == self.sed2_address:
+                # Entry for sed2's address should now point to r2
+                verify(entry.rloc16 == self.r2_rloc)
+            elif entry.address == self.fed3_address:
+                # Entry for fed3's address should still point to fed3
+                verify(entry.rloc16 == self.fed3_rloc)
+            else:
+                raise VerifyError("Unknown entry in the address cache table")
+
+    @testcase.test_method_decorator
+    def test10_verify_sed2_forced_switch_again_to_parent_r3(self):
+        # Force sed2 to switch its parent from r2 to r3
+        self.sed2.setprop(wpan.WPAN_CHILD_SUPERVISION_CHECK_TIMEOUT, str(CHILD_SUPERVISION_CHECK_TIMEOUT))
+        self.r3.setprop(wpan.WPAN_CHILD_SUPERVISION_INTERVAL, str(PARENT_SUPERVISION_INTERVAL))
+
+        self.r2.un_allowlist_node(self.sed2)
+        self.r3.allowlist_node(self.sed2)
+        self.sed2.allowlist_node(self.r3)
+
+        # Wait for sed2 to detach from r2 and attach to r3.
+        #
+        # Upon re-attach, previous parent r2 is notified and should remove sed2 from its child table.
+
+        def check_sed2_is_removed_from_r2_child_table():
+            child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+            child_table = wpan_table_parser.parse_child_table_address_result(child_table)
+            verify(len(child_table) == 0)
+
+        verify_within(check_sed2_is_removed_from_r2_child_table, REATTACH_WAIT_TIME)
+
+        # Verify that both sed2, fed3 are children of r3
+        child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
+        child_table = wpan_table_parser.parse_child_table_address_result(child_table)
+        self.assertEqual(len(child_table), 2)
+
+    @testcase.test_method_decorator
+    def test11_verify_address_cache_table_on_r1_again_updates_sed2(self):
+        # New network topology
+        #
+        #     r1 ---- r2 ---- r3
+        #     |               /\
+        #     |              /  \
+        #     fed1          sed2 fed3
+
+        # Send a UDP message from sed2 to fed1.
+        # This message will be forwarded by r1 to its FED child fed1.
+        self.transmit_receive_udp_message([(self.sed2, self.fed1, self.sed2_address, self.fed1_address)])
+        time.sleep(ADDRESS_CACHE_TABLE_WAIT_TIME)
+
+        # r1 upon receiving and forwarding the message from sed2 (through r2 now) should
+        # update its address cache table for sed2 (address cache update through snooping).
+        #
+        # verify that the address cache table is updated correctly.
+        # The address cache table on r1 should have sed2's address removed.
+
+        # The address cache table on r1 should have both fed1 and sed2.
+
+        addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
+        addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
+        self.assertEqual(len(addr_cache_table), 2)
+
+        for entry in addr_cache_table:
+            if entry.address == self.sed2_address:
+                # Entry for sed2 should point towards r3
+                verify(entry.rloc16 == self.r3_rloc)
+            elif entry.address == self.fed3_address:
+                # Entry for fed3 should still point towards fed3
+                verify(entry.rloc16 == self.fed3_rloc)
+            else:
+                raise VerifyError("Unknown entry in the address cache table")
 
 
 if __name__ == "__main__":
     unittest.main()
+
