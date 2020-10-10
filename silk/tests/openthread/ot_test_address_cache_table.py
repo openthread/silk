@@ -208,7 +208,7 @@ class TestAddressCacheTable(testcase.TestCase):
 
         addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
         addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-        self.assertEqual(len(addr_cache_table), 2)
+        verify(len(addr_cache_table) == 2)
 
         for entry in addr_cache_table:
             if entry.address == self.sed2_address:
@@ -245,7 +245,7 @@ class TestAddressCacheTable(testcase.TestCase):
         # Verify that both sed2, fed3 are children of r3
         child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
         child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-        self.assertEqual(len(child_table), 2)
+        verify(len(child_table) == 2)
 
     @testcase.test_method_decorator
     def test06_verify_address_cache_table_on_r1_removes_sed2(self):
@@ -270,7 +270,7 @@ class TestAddressCacheTable(testcase.TestCase):
         # The address cache table on r1 should have sed2's address removed.
         addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
         addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-        self.assertEqual(len(addr_cache_table), 1)
+        verify(len(addr_cache_table) == 1)
 
         for entry in addr_cache_table:
             if entry.address == self.fed3_address:
@@ -289,7 +289,7 @@ class TestAddressCacheTable(testcase.TestCase):
 
         addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
         addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-        self.assertEqual(len(addr_cache_table), 2)
+        verify(len(addr_cache_table) == 2)
 
         for entry in addr_cache_table:
             if entry.address == self.sed2_address:
@@ -325,7 +325,7 @@ class TestAddressCacheTable(testcase.TestCase):
         # Verify that sed2 is a child of r2
         child_table = self.r2.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
         child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-        self.assertEqual(len(child_table), 1)
+        verify(len(child_table) == 1)
 
     @testcase.test_method_decorator
     def test09_verify_address_cache_table_on_r1_updates_sed2(self):
@@ -347,7 +347,7 @@ class TestAddressCacheTable(testcase.TestCase):
         # verify that the address cache table is updated correctly.
         addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
         addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-        self.assertEqual(len(addr_cache_table), 2)
+        verify(len(addr_cache_table) == 2)
 
         for entry in addr_cache_table:
             if entry.address == self.sed2_address:
@@ -383,7 +383,7 @@ class TestAddressCacheTable(testcase.TestCase):
         # Verify that both sed2, fed3 are children of r3
         child_table = self.r3.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
         child_table = wpan_table_parser.parse_child_table_address_result(child_table)
-        self.assertEqual(len(child_table), 2)
+        verify(len(child_table) == 2)
 
     @testcase.test_method_decorator
     def test11_verify_address_cache_table_on_r1_again_updates_sed2(self):
@@ -409,7 +409,7 @@ class TestAddressCacheTable(testcase.TestCase):
 
         addr_cache_table = self.r1.wpanctl("get", "get " + wpan.WPAN_THREAD_ADDRESS_CACHE_TABLE, 2)
         addr_cache_table = wpan_table_parser.parse_address_cache_table_result(addr_cache_table)
-        self.assertEqual(len(addr_cache_table), 2)
+        verify(len(addr_cache_table) == 2)
 
         for entry in addr_cache_table:
             if entry.address == self.sed2_address:
@@ -424,4 +424,3 @@ class TestAddressCacheTable(testcase.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
