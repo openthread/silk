@@ -276,7 +276,7 @@ class AddressCacheEntry(object):
         # Convert the rest into a dictionary by splitting the text using `:` as separator
         items_dict = {item.split(":")[0]: item.split(":")[1] for item in items[3:]}
 
-        self._age = int(items_dict["age"], 0)
+        self._age = int(items_dict["Age"], 0)
 
     @property
     def address(self):
@@ -297,7 +297,7 @@ class AddressCacheEntry(object):
 def parse_address_cache_table_result(addr_cache_table_list):
     """Parses address cache table list string and returns an array of `AddressCacheEntry` objects.
     """
-    return [AddressCacheEntry(item) for item in addr_cache_table_list.split("\n")[1:-1]]
+    return [AddressCacheEntry(item) for item in addr_cache_table_list.split("\n")[1:-2]]
 
 
 # wpan scan parse
