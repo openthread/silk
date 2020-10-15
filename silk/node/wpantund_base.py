@@ -128,7 +128,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #   wpan_node functionality
     #################################
 
-    def form(self, network, role, xpanid=None, panid=None):
+    def form(self, network, role, xpanid=None, panid=None, mesh_local_prefix=None):
         """
         Form the PAN specified by the arguments.
         """
@@ -150,6 +150,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
             command += " -x {}".format(xpanid)
         if panid:
             command += " -p {}".format(hex(panid))
+        if mesh_local_prefix:
+            command += " -M {}".format(mesh_local_prefix)
 
         self.wpanctl_async("form", command, "Successfully formed!", 60)
 
@@ -330,6 +332,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
                    configure=False,
                    default_route=False,
                    preferred=False):
+
         return self.wpanctl(
             "add-prefix", "add-prefix " + prefix + (" -l {}".format(prefix_len) if prefix_len is not None else "") +
             (" -P {}".format(priority) if priority is not None else "") + (" -s" if stable else "") +
@@ -347,7 +350,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl(
             "add-route",
             "add-route " + route_prefix + (" -l {}".format(prefix_len) if prefix_len is not None else "") +
-            (" -p {}".format(priority) if priority is not None else "") + ("" if stable else "-n"), 20)
+            (" -p {}".format(priority) if priority is not None else "") + ("" if stable else " -n"), 20)
 
     def remove_route(self, route_prefix, prefix_len=None, priority=None, stable=True):
         """route priority [(>0 for high, 0 for medium, <0 for low)].
@@ -355,7 +358,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
         return self.wpanctl(
             "remove-route",
             "remove-route " + route_prefix + (" -l {}".format(prefix_len) if prefix_len is not None else "") +
-            (" -p {}".format(priority) if priority is not None else ""))
+            (" -p {}".format(priority) if priority is not None else ""), 20)
 
     #################################
     #   Calls into wpanctl for commissioning process in commissioner-joiner model
@@ -367,6 +370,10 @@ class WpantundWpanNode(wpan_node.WpanNode):
     def commissioner_add_joiner(self, eui64, pskd, timeout="100"):
         cmd = "commissioner joiner-add {} {} {}".format(eui64, timeout, pskd)
         return self.wpanctl("commissioner add-joiner", cmd, 20)
+
+    def commissioner_add_joiner_with_discerner(self, discerner_value, discerner_bit_len, pskd, timeout='100'):
+        cmd = f"commissioner joiner-add-discerner {discerner_value} {discerner_bit_len} {timeout} {pskd}"
+        return self.wpanctl("commissioner add joiner with discerner", cmd, 20)
 
     def joiner_join(self, pskd):
         return self.wpanctl("joiner-join", "joiner --join {}".format(pskd), 60)
