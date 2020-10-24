@@ -137,7 +137,6 @@ class TestNetworkDataStableFull(testcase.TestCase):
 
         new_version = int(self.leader.get(wpan.WPAN_THREAD_NETWORK_DATA_VERSION), 0)
         new_stable_version = int(self.leader.get(wpan.WPAN_THREAD_STABLE_NETWORK_DATA_VERSION), 0)
-
         verify(new_version == ((old_version + 1) % 256))
         verify(new_stable_version == ((old_stable_version + 1) % 256))
 
@@ -162,7 +161,6 @@ class TestNetworkDataStableFull(testcase.TestCase):
 
         new_version = int(self.leader.get(wpan.WPAN_THREAD_NETWORK_DATA_VERSION), 0)
         new_stable_version = int(self.leader.get(wpan.WPAN_THREAD_STABLE_NETWORK_DATA_VERSION), 0)
-
         verify(new_version == ((old_version + 1) % 256))
         verify(new_stable_version == old_stable_version)
 
@@ -186,7 +184,6 @@ class TestNetworkDataStableFull(testcase.TestCase):
 
         verify(new_version == ((old_version + 1) % 256))
         verify(new_stable_version == ((old_stable_version + 1) % 256))
-
         old_version = new_version
         old_stable_version = new_stable_version
         self.logger.info(f"Thread network data version: {old_version}")
@@ -273,7 +270,7 @@ class TestNetworkDataStableFull(testcase.TestCase):
         self.leader.add_route_using_prefix(prefix1, stable=False)
         # Wait till network data is updated and all nodes see all the added off-mesh routes.
         time.sleep(WAIT_TIME)
-        num_routes = num_routes + 1
+        num_routes += 1
         self.prefix_add_remove()
         verify(len(wpan_table_parser.parse_list(self.ed2.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))) == num_routes)
 
@@ -281,7 +278,7 @@ class TestNetworkDataStableFull(testcase.TestCase):
         self.leader.add_route_using_prefix(prefix2, stable=True)
         # Wait till network data is updated and all nodes see all the added off-mesh routes.
         time.sleep(WAIT_TIME)
-        num_routes = num_routes + 1
+        num_routes += 1
         self.prefix_add_remove()
         verify(len(wpan_table_parser.parse_list(self.ed2.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))) == num_routes)
 
@@ -295,7 +292,7 @@ class TestNetworkDataStableFull(testcase.TestCase):
         self.leader.remove_route(prefix2)
         # Wait till network data is updated and all nodes see all the added off-mesh routes.
         time.sleep(WAIT_TIME)
-        num_routes = num_routes - 1
+        num_routes -= 1
         self.prefix_add_remove()
         verify(len(wpan_table_parser.parse_list(self.ed2.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))) == num_routes)
 
@@ -303,11 +300,10 @@ class TestNetworkDataStableFull(testcase.TestCase):
         self.leader.remove_route(prefix1)
         # Wait till network data is updated and all nodes see all the added off-mesh routes.
         time.sleep(WAIT_TIME)
-        num_routes = num_routes - 1
+        num_routes -= 1
         self.prefix_add_remove()
         verify(len(wpan_table_parser.parse_list(self.ed2.get(wpan.WPAN_THREAD_OFF_MESH_ROUTES))) == num_routes)
 
 
 if __name__ == "__main__":
     unittest.main()
-
