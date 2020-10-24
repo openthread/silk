@@ -272,3 +272,18 @@ def check_unselected_parent(parent, children):
     child_table_on_unselected_parent = parent.wpanctl("get", "get " + wpan.WPAN_THREAD_CHILD_TABLE, 2)
     child_table_on_unselected_parent = wpan_table_parser.parse_child_table_result(child_table_on_unselected_parent)
     verify(len(child_table_on_unselected_parent) == 0)
+
+
+def verify_channel(nodes, new_channel, wait_time=40):
+    """
+    This function checks the channel on a given list of `nodes` and verifies that all nodes
+    switch to a given `new_channel` (as int) within certain `wait_time` (int and in seconds)
+    """
+    start_time = time.time()
+
+    while not all([(new_channel == int(node.get(wpan.WPAN_CHANNEL), 0)) for node in nodes]):
+        if time.time() - start_time > wait_time:
+            print('Took too long to switch to channel {} ({}>{} sec)'.format(new_channel,
+                                                                             time.time() - start_time, wait_time))
+            exit(1)
+        time.sleep(0.1)

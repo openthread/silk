@@ -49,6 +49,8 @@ else
     COMMISSIONER=1 \
     JOINER=1 \
     USB=1 \
+    CHANNEL_MANAGER=1 \
+    CHANNEL_MONITOR=1 \
     OTNS=1
 
   echo "Completed building, change to output/nrf52840/bin"
