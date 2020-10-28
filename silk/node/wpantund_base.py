@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import random
+
+import silk.hw.hw_resource
 from silk.config import wpan_constants as wpan
 from silk.node import wpan_node
-import silk.hw.hw_resource
+
 
 
 def role_is_thread(role):
