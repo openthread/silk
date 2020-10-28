@@ -232,12 +232,11 @@ class WpantundWpanNode(wpan_node.WpanNode):
         if should_set_key:
             command = "setprop Network:Key --data %s" % network.psk
             self.wpanctl_async("join", command, None, 1)
-            self.wpanctl_async("join", join_command,
-                               r"Partial \(insecure\) join. Credentials needed. Update key to continue.", 30)
-        else:
             self.wpanctl_async("join", join_command, "Successfully Joined!", 60)
 
-        self.__get_network_properties("join", network)
+        else:
+            self.wpanctl_async("join", join_command,
+                               r"Partial \(insecure\) join. Credentials needed. Update key to continue.", 30)
 
         self._get_addr("join")
 
