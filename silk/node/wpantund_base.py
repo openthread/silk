@@ -219,8 +219,6 @@ class WpantundWpanNode(wpan_node.WpanNode):
         """Join a network specified by another node based on should_set_key parameter.
            Perform an insecure join in case should_set_key=False.
         """
-        # if not node.is_associated():
-        #     return "{} is not associated".format(node)
         self.store_data(network.fabric_id, "fabric-id")
 
         self.store_data(network.xpanid, self.xpanid_label)
