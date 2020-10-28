@@ -476,7 +476,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #   UDP functionality
     #################################
 
-    def send_udp_data(self, target: str, port: int, message: str, source: str = None, hop_limit: int = 64):
+    def send_udp_data(self, target: str, port: int, message: str, source: str = None,
+                      src_port: int = random.randint(11200, 11400), hop_limit: int = 64):
         """Perform netcat command to send UDP message to ipv6_target via port.
 
         Args:
@@ -484,11 +485,11 @@ class WpantundWpanNode(wpan_node.WpanNode):
             port (int): target port.
             message (str): message to send.
             source (str, optional): source address. Defaults to None.
+            src_port (int, optional): source port. Defaults to None.
             hop_limit (int, optional): packet hop limit. Defaults to 64.
         """
         source_clause = f"-s {source}" if source else ""
-        command = f"nc -6u -M {hop_limit} {source_clause} {target} {port} <<< \"{message}\""
-
+        command = f"nc -6u -M {hop_limit} -p {src_port} {source_clause} {target} {port} <<< \"{message}\""
         self.make_netns_call(command)
 
     def receive_udp_data(self, port: int, message: str, timeout: int = 10):
@@ -502,3 +503,16 @@ class WpantundWpanNode(wpan_node.WpanNode):
         command = f"nc -6lu {port}"
 
         self.make_netns_call_async(command, message, timeout=timeout, exact_match=True)
+
+    def receive_no_udp_data(self, port: int, message: str, timeout: int = 10):
+        """Perform netcat command on listener nodes which are not supposed to receive expected UDP message from port.
+
+        Args:
+            port (int): target listening port.
+            message (str): message to not expect.
+            timeout (int, optional): timeout for waiting for the async call output. Defaults to 10.
+        """
+        command = f"nc -6lu {port}"
+
+        self.make_netns_call_async(command, "", timeout=timeout, exact_match=True)
+
