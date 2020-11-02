@@ -39,6 +39,17 @@ def ps_cleanup(usb_port="ALL", logname=LOG_FILE):
     output = subprocess.check_output("ps -ef | grep ttyACM", shell=True).decode("utf-8")
     logging.info(output)
 
+    output = subprocess.check_output("sudo ip netns list", shell=True).decode("utf-8")
+    logging.info("#" * 10 + "list of network namespaces after tearDownClass" + "#" * 10)
+    logging.info(output)
+
+    logging.info("#" * 10 + "Kill all open network namespaces if any " + "#" * 10)
+    netns_list = output.split('\n')[:-1]
+    for netns in netns_list:
+        if netns != '':
+            cmd = "sudo ip netns del " + netns
+            logging.info(subprocess.check_output(cmd, shell=True).decode("utf-8"))
+
 
 if __name__ == "__main__":
     ps_cleanup(LOG_FILE)

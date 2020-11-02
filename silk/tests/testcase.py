@@ -21,6 +21,7 @@ import json
 import logging
 import os
 import sys
+import subprocess
 import time
 import traceback
 import unittest
@@ -242,8 +243,11 @@ def setup_class_decorator(func):
 
         # Call the user's setUpClass
         try:
-            func(*args, **kwargs)
+            output = subprocess.check_output("usbinfo|grep -i nr", shell=True).decode("utf-8")
+            cls.logger.info("#" * 10 + " List all available dev boards " + "#" * 10)
+            cls.logger.info(output)
 
+            func(*args, **kwargs)
             # If the user's setUpClass call succeeded, try to Thread sniffers
             cls.thread_sniffer_start_all()
 
