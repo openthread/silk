@@ -18,6 +18,7 @@ import configparser
 from . import hw_module
 import os.path
 import silk.tests
+import logging
 
 DEFAULT_CONFIG_PATH = os.path.join(silk.tests.__path__[0], "hwconfig.ini")
 
@@ -77,9 +78,9 @@ class HwResource(object):
         self._layout_center = int(layout_center_parts[0]), int(layout_center_parts[1])
         self._layout_radius = int(self._parser["DEFAULT"].get(LAYOUT_RADIUS, "100"))
 
-        print("Found {0} HW Config Resources from {1}...".format(len(self._parser.sections()), self._filename))
+        logging.info("Found {0} HW Config Resources from {1}...".format(len(self._parser.sections()), self._filename))
         self._update_hw_modules()
-        print("Located {0} Physical Resources...".format(len(self._hw_modules)))
+        logging.info("Located {0} Physical Resources...".format(len(self._hw_modules)))
 
     def free_hw_module(self, module):
         """Free a particular module.
