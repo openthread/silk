@@ -154,6 +154,13 @@ STATE_NETWAKE_ASLEEP = "\"associated:netwake-asleep\""
 STATE_NETWAKE_WAKING = "\"associated:netwake-waking\""
 
 #--------------------------------------------------------------------------------------------------------------------
+# Address Cache Table Entry States
+
+ADDRESS_CACHE_ENTRY_STATE_CACHED = "cached"
+ADDRESS_CACHE_ENTRY_STATE_SNOOPED = "snooped"
+ADDRESS_CACHE_ENTRY_STATE_QUERY = "query"
+ADDRESS_CACHE_ENTRY_STATE_RETRY_QUERY = "retry-query"
+#--------------------------------------------------------------------------------------------------------------------
 # MCU Power state from `WPAN_NCP_MCU_POWER_STATE`
 
 MCU_POWER_STATE_ON = "\"on\""
