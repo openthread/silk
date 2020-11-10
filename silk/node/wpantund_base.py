@@ -19,7 +19,6 @@ from silk.config import wpan_constants as wpan
 from silk.node import wpan_node
 
 
-
 def role_is_thread(role):
     if not isinstance(role, int):
         role = getattr(wpan, "ROLES")[role]
@@ -485,7 +484,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
             port (int): target port.
             message (str): message to send.
             source (str, optional): source address. Defaults to None.
-            src_port (int, optional): source port. Defaults to None.
+            src_port (int, optional): source port. Defaults to random port between 11200 and 11400.
             hop_limit (int, optional): packet hop limit. Defaults to 64.
         """
         source_clause = f"-s {source}" if source else ""
@@ -503,16 +502,3 @@ class WpantundWpanNode(wpan_node.WpanNode):
         command = f"nc -6lu {port}"
 
         self.make_netns_call_async(command, message, timeout=timeout, exact_match=True)
-
-    def receive_no_udp_data(self, port: int, message: str, timeout: int = 10):
-        """Perform netcat command on listener nodes which are not supposed to receive expected UDP message from port.
-
-        Args:
-            port (int): target listening port.
-            message (str): message to not expect.
-            timeout (int, optional): timeout for waiting for the async call output. Defaults to 10.
-        """
-        command = f"nc -6lu {port}"
-
-        self.make_netns_call_async(command, "", timeout=timeout, exact_match=True)
-
