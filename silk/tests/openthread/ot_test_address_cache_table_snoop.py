@@ -132,7 +132,7 @@ class TestAddressCacheTableSnoop(testcase.TestCase):
             node1.allowlist_node(node2)
             node2.allowlist_node(node1)
 
-        self.r1.form(self.network_data, "router", test="snoop")
+        self.r1.form(self.network_data, "router", add_ip_addr=False)
         self.r1.permit_join(3600)
         self.wait_for_completion(self.device_list)
 
@@ -143,14 +143,14 @@ class TestAddressCacheTableSnoop(testcase.TestCase):
         self.network_data.panid = self.r1.panid
 
         for node in [self.r2, self.r3]:
-            node.join(self.network_data, "router", test="snoop")
+            node.join(self.network_data, "router", add_ip_addr=False)
             self.wait_for_completion(self.device_list)
 
-        self.c3.join(self.network_data, "sleepy-end-device", test="snoop")
+        self.c3.join(self.network_data, "sleepy-end-device", add_ip_addr=False)
         self.c3.set_sleep_poll_interval(POLL_INTERVAL)
         self.wait_for_completion(self.device_list)
 
-        self.c2.join(self.network_data, "end-node", test="snoop")
+        self.c2.join(self.network_data, "end-node", add_ip_addr=False)
         self.wait_for_completion(self.device_list)
 
     @testcase.test_method_decorator

@@ -131,9 +131,17 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #   wpan_node functionality
     #################################
 
-    def form(self, network, role, xpanid=None, panid=None, mesh_local_prefix=None):
+    def form(self, network, role, xpanid=None, panid=None, mesh_local_prefix=None, add_ip_addr=True):
         """
         Form the PAN specified by the arguments.
+        Args:
+            network (object): Stores network credentials {fabric_id, xpanid, psk, name, channel, panid}.
+            role (str): role for the node.
+            xpanid (str, optional): used to set specific xpanid. Defaults to None.
+            panid (int, optional): used to set specific panid. Defaults to None.
+            mesh_local_prefix (str, optional): used to set mesh local prefix. Defaults to None.
+            add_ip_addr (boolean, optional): used to specify if ip addresses should be added by default
+                                             on the nodes during setup process. Defaults to True.
         """
 
         self.store_data(network.fabric_id, "fabric-id")
@@ -160,12 +168,18 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.__get_network_properties("form", network)
 
-        self._get_addr("form")
+        if add_ip_addr:
+            self._get_addr("form")
 
-    def join(self, network, role):
+    def join(self, network, role, add_ip_addr=True):
         """Tell the NCP to join the PAN specified by the commissioning data.
 
         The Network Key should always be set prior to a join attempt.
+        Args:
+            network (object): Stores network credentials {fabric_id, xpanid, psk, name, channel, panid}.
+            role (str): role for the node.
+            add_ip_addr (boolean, optional): used to specify if ip addresses should be added by default
+                                             on the nodes during setup process. Defaults to True.
         """
 
         self.store_data(network.fabric_id, "fabric-id")
@@ -186,7 +200,8 @@ class WpantundWpanNode(wpan_node.WpanNode):
 
         self.__get_network_properties("join", network)
 
-        self._get_addr("join")
+        if add_ip_addr:
+            self._get_addr("join")
 
     def provisional_join(self, network, role):
         """Perform an insecure join and then set the network key.
@@ -480,7 +495,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
     #################################
 
     def send_udp_data(self, target: str, port: int, message: str, source: str = None,
-                      src_port: int = random.randint(11200, 11400), hop_limit: int = 64):
+                      src_port: int = random.randint(11200, 11400), hop_limit: int = 64, timeout: float = 10):
         """Perform netcat command to send UDP message to ipv6_target via port.
 
         Args:
@@ -490,10 +505,11 @@ class WpantundWpanNode(wpan_node.WpanNode):
             source (str, optional): source address. Defaults to None.
             src_port (int, optional): source port. Defaults to None.
             hop_limit (int, optional): packet hop limit. Defaults to 64.
+            timeout (float, optional): timeout for waiting for the async call output. Defaults to 10.
         """
         source_clause = f"-s {source}" if source else ""
         command = f"nc -6u -M {hop_limit} -p {src_port} {source_clause} {target} {port} <<< \"{message}\""
-        self.make_netns_call(command)
+        self.make_netns_call(command, timeout)
 
     def receive_udp_data(self, port: int, message: str, timeout: int = 10):
         """Perform netcat command to receive expected UDP message from port.
