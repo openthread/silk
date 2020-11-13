@@ -19,7 +19,6 @@ from silk.config import wpan_constants as wpan
 from silk.node import wpan_node
 
 
-
 def role_is_thread(role):
     if not isinstance(role, int):
         role = getattr(wpan, "ROLES")[role]
@@ -234,8 +233,6 @@ class WpantundWpanNode(wpan_node.WpanNode):
         """Join a network specified by another node based on should_set_key parameter.
            Perform an insecure join in case should_set_key=False.
         """
-        # if not node.is_associated():
-        #     return "{} is not associated".format(node)
         self.store_data(network.fabric_id, "fabric-id")
 
         self.store_data(network.xpanid, self.xpanid_label)
@@ -249,12 +246,11 @@ class WpantundWpanNode(wpan_node.WpanNode):
         if should_set_key:
             command = "setprop Network:Key --data %s" % network.psk
             self.wpanctl_async("join", command, None, 1)
-            self.wpanctl_async("join", join_command,
-                               r"Partial \(insecure\) join. Credentials needed. Update key to continue.", 30)
-        else:
             self.wpanctl_async("join", join_command, "Successfully Joined!", 60)
 
-        self.__get_network_properties("join", network)
+        else:
+            self.wpanctl_async("join", join_command,
+                               r"Partial \(insecure\) join. Credentials needed. Update key to continue.", 30)
 
         self._get_addr("join")
 
@@ -503,7 +499,7 @@ class WpantundWpanNode(wpan_node.WpanNode):
             port (int): target port.
             message (str): message to send.
             source (str, optional): source address. Defaults to None.
-            src_port (int, optional): source port. Defaults to None.
+            src_port (int, optional): source port. Defaults to random port between 11200 and 11400.
             hop_limit (int, optional): packet hop limit. Defaults to 64.
             timeout (float, optional): timeout for waiting for the async call output. Defaults to 10.
         """
@@ -522,16 +518,3 @@ class WpantundWpanNode(wpan_node.WpanNode):
         command = f"nc -6lu {port}"
 
         self.make_netns_call_async(command, message, timeout=timeout, exact_match=True)
-
-    def receive_no_udp_data(self, port: int, message: str, timeout: int = 10):
-        """Perform netcat command on listener nodes which are not supposed to receive expected UDP message from port.
-
-        Args:
-            port (int): target listening port.
-            message (str): message to not expect.
-            timeout (int, optional): timeout for waiting for the async call output. Defaults to 10.
-        """
-        command = f"nc -6lu {port}"
-
-        self.make_netns_call_async(command, "", timeout=timeout, exact_match=True)
-
