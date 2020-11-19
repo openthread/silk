@@ -260,10 +260,11 @@ class AddressCacheEntry(object):
     """
 
     def __init__(self, text):
+
         # Example of expected text:
         #
-        # `\t"fd00:1234::d427:a1d9:6204:dbae -> 0x9c00, age:0"`
-        #
+        # `\t"fd00:1234::100:8 -> 0xfffe, Age:1, State:query, CanEvict:no, Timeout:3, RetryDelay:15"`
+        # `\t"fd00:1234::3:2 -> 0x2000, Age:0, State:cached, LastTrans:0, ML-EID:fd40:ea58:a88c:0:b7ab:4919:aa7b:11a3"`
 
         # We get rid of the first two chars `\t"` and last char `"`, split the rest using whitespace as separator.
         # Then remove any `,` at end of items in the list.
@@ -276,7 +277,16 @@ class AddressCacheEntry(object):
         # Convert the rest into a dictionary by splitting the text using `:` as separator
         items_dict = {item.split(":")[0]: item.split(":")[1] for item in items[3:]}
 
-        self._age = int(items_dict["Age"], 0)
+        self._age = int(items_dict['Age'], 0)
+
+        self._state = items_dict['State']
+
+        if self._state == wpan.ADDRESS_CACHE_ENTRY_STATE_CACHED:
+            self._last_trans = int(items_dict.get("LastTrans", "-1"), 0)
+        else:
+            self._can_evict = (items_dict['CanEvict'] == 'yes')
+            self._timeout = int(items_dict['Timeout'])
+            self._retry_delay = int(items_dict['RetryDelay'])
 
     @property
     def address(self):
@@ -290,6 +300,25 @@ class AddressCacheEntry(object):
     def age(self):
         return self._age
 
+    @property
+    def state(self):
+        return self._state
+
+    def can_evict(self):
+        return self._can_evict
+
+    @property
+    def timeout(self):
+        return self._timeout
+
+    @property
+    def retry_delay(self):
+        return self._retry_delay
+
+    @property
+    def last_trans(self):
+        return self._last_trans
+
     def __repr__(self):
         return "AddressCacheEntry({})".format(self.__dict__)
 
@@ -298,9 +327,6 @@ def parse_address_cache_table_result(addr_cache_table_list):
     """Parses address cache table list string and returns an array of `AddressCacheEntry` objects.
     """
     return [AddressCacheEntry(item) for item in addr_cache_table_list.split("\n")[1:-2]]
-
-
-# wpan scan parse
 
 
 class ScanResult(object):
