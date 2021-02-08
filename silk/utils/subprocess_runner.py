@@ -51,7 +51,7 @@ class SubprocessRunner(signal.Publisher, threading.Thread):
         """End subprocess runner.
 
         :param int timeout:
-            the seconds to wait before force killing the process
+            the seconds to wait before force stopping the process
         """
         if self.running:
             self.running = False

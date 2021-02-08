@@ -27,7 +27,7 @@ def ps_cleanup(usb_port="ALL", logname=LOG_FILE):
     logging.info("#" * 10 + "wpantund and ttyACM process info after tearDownClass" + "#" * 10)
     logging.info(output)
 
-    logging.info("#" * 10 + "Kill all wpantund processes if any " + "#" * 10)
+    logging.info("#" * 10 + "Stop all wpantund processes if any " + "#" * 10)
     output_str = output.decode("utf-8")
     for line in output_str:
         if "sbin/wpantund" in line and (usb_port.upper() == "ALL" or line.split()[-1] == usb_port):
@@ -43,7 +43,7 @@ def ps_cleanup(usb_port="ALL", logname=LOG_FILE):
     logging.info("#" * 10 + "list of network namespaces after tearDownClass" + "#" * 10)
     logging.info(output)
 
-    logging.info("#" * 10 + "Kill all open network namespaces if any " + "#" * 10)
+    logging.info("#" * 10 + "Stop all open network namespaces if any " + "#" * 10)
     netns_list = output.split('\n')[:-1]
     for netns in netns_list:
         if netns != '':

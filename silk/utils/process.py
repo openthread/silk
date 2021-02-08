@@ -34,9 +34,9 @@ class Process(object):
 
     def process_cmd_asyc_end(self, key_word):
         self.stop_thread.set()
-        kill_cmd = "ps -ef | grep '" + key_word + "' | grep -v grep | awk '{print $2}' | xargs kill"
-        print(kill_cmd)
-        os.popen(kill_cmd)
+        stop_cmd = "ps -ef | grep '" + key_word + "' | grep -v grep | awk '{print $2}' | xargs kill"
+        print(stop_cmd)
+        os.popen(stop_cmd)
 
     def process_cmd_asyc(self):
         self.stop_thread = threading.Event()
