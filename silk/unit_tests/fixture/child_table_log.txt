@@ -3114,7 +3114,7 @@ output: "Done"
 [2020-08-27 16:09:11,941] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 2, resp: output: "Done"
 [2020-08-27 16:09:11,942] [silk.otnsManager] [DEBUG] Updating nodes layout
 [2020-08-27 16:09:11,942] [silk.Dev-9119] [INFO] Cleaning up network namespace for /dev/ttyACM8
-[2020-08-27 16:09:11,943] [silk.Dev-9119] [INFO] Killing all processes in /dev/ttyACM8
+[2020-08-27 16:09:11,943] [silk.Dev-9119] [INFO] Stopping all processes in /dev/ttyACM8
 [2020-08-27 16:09:11,943] [silk.Dev-9119] [INFO] Getting PIDs for network namespace for /dev/ttyACM8
 [2020-08-27 16:09:11,943] [silk.Dev-9119] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:09:11,944] [silk.Dev-9119] [DEBUG] sudo ip netns pids ttyACM8
@@ -3474,7 +3474,7 @@ output: "Done"
 [2020-08-27 16:09:26,010] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 3, resp: output: "Done"
 [2020-08-27 16:09:26,011] [silk.otnsManager] [DEBUG] Updating nodes layout
 [2020-08-27 16:09:26,011] [silk.Dev-4456] [INFO] Cleaning up network namespace for /dev/ttyACM1
-[2020-08-27 16:09:26,011] [silk.Dev-4456] [INFO] Killing all processes in /dev/ttyACM1
+[2020-08-27 16:09:26,011] [silk.Dev-4456] [INFO] Stopping all processes in /dev/ttyACM1
 [2020-08-27 16:09:26,011] [silk.Dev-4456] [INFO] Getting PIDs for network namespace for /dev/ttyACM1
 [2020-08-27 16:09:26,011] [silk.Dev-4456] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:09:26,012] [silk.Dev-4456] [DEBUG] sudo ip netns pids ttyACM1
@@ -3671,7 +3671,7 @@ output: "Done"
 [2020-08-27 16:09:40,075] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 4, resp: output: "Done"
 [2020-08-27 16:09:40,076] [silk.otnsManager] [DEBUG] Updating nodes layout
 [2020-08-27 16:09:40,077] [silk.Dev-C179] [INFO] Cleaning up network namespace for /dev/ttyACM3
-[2020-08-27 16:09:40,077] [silk.Dev-C179] [INFO] Killing all processes in /dev/ttyACM3
+[2020-08-27 16:09:40,077] [silk.Dev-C179] [INFO] Stopping all processes in /dev/ttyACM3
 [2020-08-27 16:09:40,078] [silk.Dev-C179] [INFO] Getting PIDs for network namespace for /dev/ttyACM3
 [2020-08-27 16:09:40,078] [silk.Dev-C179] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:09:40,078] [silk.Dev-C179] [DEBUG] sudo ip netns pids ttyACM3
@@ -3781,7 +3781,7 @@ output: "Done"
 [2020-08-27 16:09:54,075] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 5, resp: output: "Done"
 [2020-08-27 16:09:54,076] [silk.otnsManager] [DEBUG] Updating nodes layout
 [2020-08-27 16:09:54,076] [silk.Dev-BB23] [INFO] Cleaning up network namespace for /dev/ttyACM7
-[2020-08-27 16:09:54,077] [silk.Dev-BB23] [INFO] Killing all processes in /dev/ttyACM7
+[2020-08-27 16:09:54,077] [silk.Dev-BB23] [INFO] Stopping all processes in /dev/ttyACM7
 [2020-08-27 16:09:54,077] [silk.Dev-BB23] [INFO] Getting PIDs for network namespace for /dev/ttyACM7
 [2020-08-27 16:09:54,078] [silk.Dev-BB23] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:09:54,078] [silk.Dev-BB23] [DEBUG] sudo ip netns pids ttyACM7
@@ -3851,7 +3851,7 @@ output: "Done"
 [2020-08-27 16:10:08,160] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 6, resp: output: "Done"
 [2020-08-27 16:10:08,161] [silk.otnsManager] [DEBUG] Updating nodes layout
 [2020-08-27 16:10:08,162] [silk.Dev-1560] [INFO] Cleaning up network namespace for /dev/ttyACM4
-[2020-08-27 16:10:08,163] [silk.Dev-1560] [INFO] Killing all processes in /dev/ttyACM4
+[2020-08-27 16:10:08,163] [silk.Dev-1560] [INFO] ing all processes in /dev/ttyACM4
 [2020-08-27 16:10:08,163] [silk.Dev-1560] [INFO] Getting PIDs for network namespace for /dev/ttyACM4
 [2020-08-27 16:10:08,164] [silk.Dev-1560] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:10:08,164] [silk.Dev-1560] [DEBUG] sudo ip netns pids ttyACM4
@@ -3901,7 +3901,7 @@ output: "Done"
 [2020-08-27 16:10:22,618] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 7, resp: output: "Done"
 [2020-08-27 16:10:22,619] [silk.otnsManager] [DEBUG] Updating nodes layout
 [2020-08-27 16:10:22,620] [silk.Dev-6521] [INFO] Cleaning up network namespace for /dev/ttyACM2
-[2020-08-27 16:10:22,620] [silk.Dev-6521] [INFO] Killing all processes in /dev/ttyACM2
+[2020-08-27 16:10:22,620] [silk.Dev-6521] [INFO] Stopping all processes in /dev/ttyACM2
 [2020-08-27 16:10:22,621] [silk.Dev-6521] [INFO] Getting PIDs for network namespace for /dev/ttyACM2
 [2020-08-27 16:10:22,621] [silk.Dev-6521] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:10:22,622] [silk.Dev-6521] [DEBUG] sudo ip netns pids ttyACM2
@@ -3951,7 +3951,7 @@ output: "Done"
 [2020-08-27 16:10:36,629] [silk.otnsManager.gRPCClient] [INFO] Sending cmd: del 8
 [2020-08-27 16:10:36,636] [silk.otnsManager.gRPCClient] [INFO] Sent cmd: del 8, resp: output: "Done"
 [2020-08-27 16:10:36,636] [silk.Dev-4F76] [INFO] Cleaning up network namespace for /dev/ttyACM0
-[2020-08-27 16:10:36,637] [silk.Dev-4F76] [INFO] Killing all processes in /dev/ttyACM0
+[2020-08-27 16:10:36,637] [silk.Dev-4F76] [INFO] Stopping all processes in /dev/ttyACM0
 [2020-08-27 16:10:36,637] [silk.Dev-4F76] [INFO] Getting PIDs for network namespace for /dev/ttyACM0
 [2020-08-27 16:10:36,637] [silk.Dev-4F76] [DEBUG] Making system call for netns-pids
 [2020-08-27 16:10:36,638] [silk.Dev-4F76] [DEBUG] sudo ip netns pids ttyACM0

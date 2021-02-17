@@ -129,7 +129,7 @@ elif [ "$1" = "--rtt" ]; then
     echo -e "\n${STATUS_COLOR}Connecting to RTT Server...${RESET}"
     #telnet localhost 19021
     JLinkRTTClient
-    echo -e "\n${STATUS_COLOR}Killing RTT server ($JLINK_PID)...${RESET}"
+    echo -e "\n${STATUS_COLOR}Stopping RTT server ($JLINK_PID)...${RESET}"
     kill $JLINK_PID
 elif [ "$1" = "--gdbserver" ]; then
     $JLINKGDBSERVER -port $GDB_PORT

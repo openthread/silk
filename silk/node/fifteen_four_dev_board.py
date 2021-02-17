@@ -220,8 +220,8 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
     def tear_down(self):
         """
-        Kill wpantund in this network namespace.
-        Kill all PIDs running in this network namespace.
+        Stop wpantund in this network namespace.
+        Stop all PIDs running in this network namespace.
         Free the hardware device resource.
         """
         if self.virtual_link_peer is not None:
@@ -340,7 +340,7 @@ class FifteenFourDevBoardNode(WpantundWpanNode, NetnsController):
 
     def __stop_wpantund(self):
         """
-        Kill wpantund inside the network namespace.
+        Stop wpantund inside the network namespace.
         """
         self.log_info("Stopping wpantund")
 

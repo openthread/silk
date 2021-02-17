@@ -97,16 +97,16 @@ class NetnsController(SystemCallManager):
         return output.split("\n")
 
     def netns_killall(self):
-        """Kill all PIDs in this netns.
+        """Stop all PIDs in this netns.
         """
-        self.log_info("Killing all processes in %s" % self.device_path)
+        self.log_info("Stopping all processes in %s" % self.device_path)
         for pid in self.netns_pids():
             if len(pid.strip()) > 0:
                 self.make_netns_call("kill -SIGINT %s" % pid)
 
     def cleanup_netns(self):
         """
-        Kill all PIDs running in the netns.
+        Stop all PIDs running in the netns.
         Delete the netns.
         """
         self.log_info("Cleaning up network namespace for %s" % self.device_path)
