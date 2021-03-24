@@ -483,11 +483,12 @@ class OnMeshPrefix(object):
         # Example of expected text:
         #
         # `\t"fd00:abba:cafe::       prefix_len:64   origin:user     stable:yes flags:0x31`
-        # ` [on-mesh:1 def-route:0 config:0 dhcp:0 slaac:1 pref:1 prio:med] rloc:0x0000"`
+        # ` [on-mesh:1 def-route:0 config:0 dhcp:0 slaac:1 pref:1 nd-dns:0 dp:0 prio:med] rloc:0x0000"`
 
         m = re.match(
             r"\t\"([0-9a-fA-F:]+)\s*prefix_len:(\d+)\s+origin:(\w*)\s+stable:(\w*).* \[" +
-            r"on-mesh:(\d)\s+def-route:(\d)\s+config:(\d)\s+dhcp:(\d)\s+slaac:(\d)\s+pref:(\d)\s+prio:(\w*)\]" +
+            r"on-mesh:(\d)\s+def-route:(\d)\s+config:(\d)\s+dhcp:(\d)\s+slaac:(\d)\s+pref:(\d)\s+"
+            r"nd-dns:(\d)\s+dp:(\d)\s+prio:(\w*)\]" +
             r"\s+rloc:(0x[0-9a-fA-F]+)", text)
         wpan_util.verify(m is not None)
         data = m.groups()
@@ -502,8 +503,10 @@ class OnMeshPrefix(object):
         self._dhcp = (data[7] == "1")
         self._slaac = (data[8] == "1")
         self._preferred = (data[9] == "1")
-        self._priority = (data[10])
-        self._rloc16 = (data[11])
+        self._nd_dns = (data[10] == "1")
+        self._dp = (data[11] == "1")
+        self._priority = (data[12])
+        self._rloc16 = (data[13])
 
     @property
     def prefix(self):
@@ -541,6 +544,12 @@ class OnMeshPrefix(object):
 
     def is_preferred(self):
         return self._preferred
+
+    def is_nd_dns(self):
+        return self._nd_dns
+
+    def is_dp(self):
+        return self._dp
 
     def rloc16(self):
         return self._rloc16
